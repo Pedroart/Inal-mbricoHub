@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2021",                           // ⬅ Mejor que ES6 para soporte moderno
+    "module": "commonjs",
+    "lib": ["ES2021", "DOM"],                     // ⬅ Añade DOM si usas React en el renderer
+    "strict": true,                               // ⬅ Recomendado para mejores tipos
+    "allowJs": true,
+    "jsx": "react",                               // ⬅ Necesario para usar React correctamente
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,                         // ⬅ Evita errores por tipos externos (como los tuyos)
+    "noImplicitAny": false,                       // ⬅ Opcional: más permisivo
+    "baseUrl": ".",
+    "outDir": "dist",
+    "paths": {
+      "*": ["node_modules/*"]
+    },
+    "types": ["node"]                             // ⬅ Muy importante para preload y main
+  },
+  "include": ["src/**/*"]
+}
