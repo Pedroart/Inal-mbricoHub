@@ -17,7 +17,7 @@
     "paths": {
       "*": ["node_modules/*"]
     },
-    "types": ["node"],                            // ⬅ Muy importante para preload y main
+    "types": ["node","jest"],                            // ⬅ Muy importante para preload y main
     "typeRoots": ["src/types", "node_modules/@types"],
   },
   "include": ["src/**/*", "src/types/global.d.ts"]
