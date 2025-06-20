@@ -10,7 +10,24 @@
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "eslint --ext .ts,.tsx .",
-    "test": "jest"
+    "test": "jest",
+    "build": "tsc && electron-builder"
+  },
+  "build": {
+    "appId": "com.miempresa.miapp",
+    "productName": "MiApp",
+    "files": [
+      "dist/**/*", 
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    }
   },
   "keywords": [],
   "author": {
@@ -39,6 +56,7 @@
     "babel-loader": "^10.0.0",
     "css-loader": "^6.11.0",
     "electron": "^36.5.0",
+    "electron-builder": "^26.0.12",
     "electron-rebuild": "^3.2.9",
     "eslint": "^8.57.1",
     "eslint-plugin-import": "^2.31.0",
