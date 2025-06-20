@@ -28,19 +28,19 @@ export const rules: Required<ModuleOptions>['rules'] = [
       },
     },
   },
-  /*  CSS Modules (*.module.css)
-  {
-    test: /\.module\.css$/,
-    use: [
-      'style-loader',
-      {
-        loader: 'css-loader',
-        options: {
-          modules: true,
-        },
-      },
-    ],
-  },*/
+  //  CSS Modules (*.module.css)
+  // {
+  //   test: /\.module\.css$/,
+  //   use: [
+  //     'style-loader',
+  //     {
+  //       loader: 'css-loader',
+  //       options: {
+  //         module: true
+  //       }
+  //     }
+  //   ]
+  // },
   {
     test: /\.css$/,
     exclude: /\.module\.css$/i,
