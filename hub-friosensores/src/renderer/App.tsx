@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TopBar } from './components/TopBar/index';
 import { Vista } from '../types/views'
+import { VistaMapSensor } from '../renderer/page/Tunel'
 
 export default function App() {
   const handleClick = async () => {
@@ -14,7 +15,7 @@ export default function App() {
     switch (vistas) {
       case Vista.Tunel: return <div>Tunel</div>;
       case Vista.Config: return <div>Configuración</div>;
-      default: return <div>Configuración</div>;
+      default: return <VistaMapSensor />;
     }
   };
 
