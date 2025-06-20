@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { TopBar } from './components/TopBar/index';
+import { Vista } from '../types/views'
 
 export default function App() {
   const handleClick = async () => {
@@ -6,10 +8,22 @@ export default function App() {
     alert(result);
   };
 
+  const [vistas, setVista] = useState<Vista>(Vista.Inicio);
+
+  const renderVista = () => {
+    switch (vistas) {
+      case Vista.Tunel: return <div>Tunel</div>;
+      case Vista.Config: return <div>Configuración</div>;
+      default: return <div>Configuración</div>;
+    }
+  };
+
   return (
-    <div style={{ padding: 40 }}>
-      <h1>Hub de Sensores Inalámbricos</h1>
-      <button onClick={handleClick}>Probar conexión con el backend</button>
+    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <TopBar onNavigate={setVista} />
+      <div style={{ flex: 1, overflow: 'auto' }}>
+        {renderVista()}
+      </div>
     </div>
   );
 }

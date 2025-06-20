@@ -12,7 +12,7 @@ export const rules: Required<ModuleOptions>['rules'] = [
     test: /[/\\]node_modules[/\\].+\.(m?js|node)$/,
     parser: { amd: false },
     use: {
-      loader: '@vercel/webpack-asset-relocator-loader',
+      loader: '@timfish/webpack-asset-relocator-loader',
       options: {
         outputAssetBase: 'native_modules',
       },
@@ -28,4 +28,22 @@ export const rules: Required<ModuleOptions>['rules'] = [
       },
     },
   },
+  /*  CSS Modules (*.module.css)
+  {
+    test: /\.module\.css$/,
+    use: [
+      'style-loader',
+      {
+        loader: 'css-loader',
+        options: {
+          modules: true,
+        },
+      },
+    ],
+  },*/
+  {
+    test: /\.css$/,
+    exclude: /\.module\.css$/i,
+    use: ['style-loader', 'css-loader'],
+  }
 ];
