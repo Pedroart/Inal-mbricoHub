@@ -14,7 +14,7 @@ db.exec(`
         fullName TEXT
     );
 
-    CREATE TABLE IF NOT EXISTS lecturas (
+    CREATE TABLE IF NOT EXISTS registros (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         sensor_id INTEGER,
         valor REAL,
