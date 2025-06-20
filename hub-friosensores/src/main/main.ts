@@ -15,22 +15,22 @@ if (require('electron-squirrel-startup')) {
 
 const createWindow = (): void => {
   const mainWindow = new BrowserWindow({
-    width: 1024,
-    height: 600,
+    width: 600,
+    height: 1024,
     resizable: false,         // Fijar tamaño para Raspberry Pi
     fullscreen: false,        // Puedes cambiar esto a true si deseas sin bordes
     kiosk: false,             // O true si quieres bloquear al usuario fuera del sistema
     autoHideMenuBar: true,    // Oculta menú superior
     webPreferences: {
       nodeIntegration: false,  // Si necesitas usar ipcRenderer directamente
-      contextIsolation: false, // Importante si usas preload
+      contextIsolation: true, // Importante si usas preload
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
   });
 
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
-  mainWindow.webContents.openDevTools(); // Solo en dev
+  //mainWindow.webContents.openDevTools(); // Solo en dev
 };
 
 // This method will be called when Electron has finished
