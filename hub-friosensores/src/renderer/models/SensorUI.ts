@@ -1,20 +1,12 @@
-
-export enum Units {
-  celsius = "°C"
-}
-
-export enum Status {
-    Operativo = "Operativo",
-    BateriaBaja = "Batería Baja",
-    Desconectado = "Desconectado"
-}
+import { Unidades } from "./Unidades";
+import { Estados } from "./Estados";
 
 export interface SensorUI {
   id: number;
   name: string;
   value: number;
-  unit: Units;
-  status: Status;
+  unit: Unidades;
+  status: Estados;
   x: number; // % relativo al ancho
   y: number; // % relativo al alto
 }
