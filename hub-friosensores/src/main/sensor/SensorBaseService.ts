@@ -1,6 +1,7 @@
 import { SensorInstanciaConfig } from "../../renderer/models/Sensor";
 import { MapaService } from "../mapa/mapaService";
-import { SensorTipos } from "../../renderer/models/Sensor";
+import { SensorTipos, SensorView } from "../../renderer/models/Sensor";
+import { Estados } from "../../renderer/models/Estados";
 
 export class SensorBaseService {
     static getSensoresBle(): SensorInstanciaConfig[] {
@@ -9,7 +10,7 @@ export class SensorBaseService {
 
         return dispositivos.flatMap(dispositivo =>
             dispositivo.sensores
-                .filter(s => s.habilitador && s.tipo === SensorTipos.Ble )//&& s.config?.codigoBle)
+                .filter(s => s.tipo === SensorTipos.Ble )//&& s.config?.codigoBle)
                 .map(sensor => ({
                     codigoSensor: sensor.codigoSensor,
                     codigoBle: sensor.config!.codigoBle,
@@ -26,7 +27,7 @@ export class SensorBaseService {
 
         return dispositivos.flatMap(dispositivo =>
             dispositivo.sensores
-                .filter(s => s.habilitador && s.tipo === SensorTipos.Modbus )//&& s.config?.modbusNodeCode)
+                .filter(s => s.tipo === SensorTipos.Modbus )//&& s.config?.modbusNodeCode)
                 .map(sensor => ({
                     codigoSensor: sensor.codigoSensor,
                     modbusNodeCode: sensor.config!.modbusNodeCode,
@@ -45,4 +46,29 @@ export class SensorBaseService {
             ...SensorBaseService.getSensoresModbus()
         ];
     }
+
+    static getSensorViews(): SensorView[] {
+        const mapaService = MapaService.getInstance();
+        const dispositivos = mapaService.getDispositivos().filter(d => d.habilitador);
+        
+        const sensorViews: SensorView[] = [];
+
+        for (const dispositivo of dispositivos) {
+            for (const sensor of dispositivo.sensores) {
+            if (!sensor.habilitador) continue;
+
+            sensorViews.push({
+                codigoSensor: sensor.codigoSensor,
+                nombre: sensor.nombre,
+                unidad: sensor.unidad,
+                tipo: sensor.tipo,
+                posicion: sensor.posicion,
+            });
+            }
+        }
+
+        return sensorViews;
+    }
+
+
 }

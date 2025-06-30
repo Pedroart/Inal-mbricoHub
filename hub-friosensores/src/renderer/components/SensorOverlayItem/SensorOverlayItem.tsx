@@ -26,7 +26,7 @@ export const SensorOverlayItem: React.FC<SensorUI> = ({ id, name, value, unit, s
     >
         <div>{name}</div>
         <div>
-            {value} {unit}
+            {value.toFixed(2)} {unit}
         </div>
     </div>
 );

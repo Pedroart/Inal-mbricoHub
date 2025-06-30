@@ -51,8 +51,8 @@ export interface SensorValue extends Omit<SensorBase, 'tipo' | 'posicion'>  {
 // Extencion para Visualizacion
 
 export interface SensorView extends SensorBase {
-    valor: number;
-    estado: Estados;
+    valor?: number;
+    estado?: Estados;
 }
 
 

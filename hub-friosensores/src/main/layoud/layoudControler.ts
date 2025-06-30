@@ -1,12 +1,21 @@
 import { ipcMain } from 'electron';
-import { layoudManager } from './layoudService'
+import { layoudManager } from './layoudService';
+import { MapaWithConfig } from '../../renderer/models/Mapa';
 
 export function registerLayoudHandlers() {
-  
-
-  // GET layouds
+  // Obtener todos los mapas disponibles
   ipcMain.handle('layoud:get-layouds', () => {
-    return layoudManager.getMapasDisponibles()
+    return layoudManager.getMapasDisponibles();
   });
 
+  // Obtener el mapa activo desde la caché o cargar el primero disponible
+  ipcMain.handle('layoud:get-activo', () => {
+    return layoudManager.obtenerMapaActivo();
+  });
+
+  // Guardar un nuevo mapa como activo en la caché
+  ipcMain.handle('layoud:set-activo', (_event, mapa: MapaWithConfig) => {
+    layoudManager.guardarMapaSeleccionado(mapa);
+    return { success: true };
+  });
 }
