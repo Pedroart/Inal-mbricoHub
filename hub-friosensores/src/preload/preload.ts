@@ -6,6 +6,7 @@ export const api = {
   ping: () => ipcRenderer.invoke('ping'),
 
   // ✅ Agrega estos métodos
+  getSensores: () => ipcRenderer.invoke('sensor:getSensores'),
   getEmpresa: () => ipcRenderer.invoke('storage:get-empresa'),
   setEmpresa: (nuevaEmpresa: string) => ipcRenderer.invoke('storage:set-empresa', nuevaEmpresa),
 

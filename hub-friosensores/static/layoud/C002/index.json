@@ -1,6 +1,6 @@
 {
   "nombre": "Túnel Californiano de 2 Vent",
-  "layoud": "static/layoud/TunelCaliforniano3Vent.png",
+  "layoud": "TunelCaliforniano3Vent.png",
   "dispositivos": [
     {
       "nombre": "Termómetro 01",

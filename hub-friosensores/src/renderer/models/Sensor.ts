@@ -27,10 +27,18 @@ export interface SensorWithConfig extends SensorBase {
 
 export interface SensorConfig{
     codigoBle?: string,
-    modbusNode?: ModbusNode,
+    modbusNodeCode?: string,
     address?: number,
     cantidad?: number,
 }
+
+export interface SensorInstanciaConfig extends SensorBase {
+    codigoBle?: string;
+    modbusNodeCode?: string;
+    address?: number;
+    cantidad?: number;
+}
+
 
 // Extencion para Guardados
 

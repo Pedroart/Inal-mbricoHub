@@ -1,11 +1,11 @@
 {
   "nombre": "Túnel Californiano de 3 Vent",
-  "layoud": "static/layoud/TunelCaliforniano3Vent.png",
+  "layoud": "TunelCaliforniano3Vent.png",
   "dispositivos": [
     {
       "nombre": "Termómetro 01",
       "codigoDispositivo": "TM01",
-      "habilitador": false,
+      "habilitador": true,
       "sensores": [
         {
           "nombre": "S01",
@@ -32,7 +32,7 @@
     {
       "nombre": "Termómetro 02",
       "codigoDispositivo": "TM02",
-      "habilitador": false,
+      "habilitador": true,
       "sensores": [
         {
           "nombre": "S02",
@@ -59,7 +59,7 @@
     {
       "nombre": "Termómetro 03",
       "codigoDispositivo": "TM03",
-      "habilitador": false,
+      "habilitador": true,
       "sensores": [
         {
           "nombre": "S03",
@@ -86,7 +86,7 @@
     {
       "nombre": "Termómetro 04",
       "codigoDispositivo": "TM04",
-      "habilitador": false,
+      "habilitador": true,
       "sensores": [
         {
           "nombre": "S04",
@@ -113,7 +113,7 @@
     {
       "nombre": "Termómetro 05",
       "codigoDispositivo": "TM05",
-      "habilitador": false,
+      "habilitador": true,
       "sensores": [
         {
           "nombre": "S05",
@@ -140,7 +140,7 @@
     {
       "nombre": "Termómetro 06",
       "codigoDispositivo": "TM06",
-      "habilitador": false,
+      "habilitador": true,
       "sensores": [
         {
           "nombre": "S06",
@@ -167,7 +167,7 @@
     {
       "nombre": "Termómetro 07",
       "codigoDispositivo": "TM07",
-      "habilitador": false,
+      "habilitador": true,
       "sensores": [
         {
           "nombre": "S07",
@@ -194,7 +194,7 @@
     {
       "nombre": "Termómetro 08",
       "codigoDispositivo": "TM08",
-      "habilitador": false,
+      "habilitador": true,
       "sensores": [
         {
           "nombre": "S08",
@@ -221,7 +221,7 @@
     {
       "nombre": "Termómetro 09",
       "codigoDispositivo": "TM09",
-      "habilitador": false,
+      "habilitador": true,
       "sensores": [
         {
           "nombre": "S09",
@@ -248,7 +248,7 @@
     {
       "nombre": "Termómetro 10",
       "codigoDispositivo": "TM10",
-      "habilitador": false,
+      "habilitador": true,
       "sensores": [
         {
           "nombre": "S10",
@@ -275,7 +275,7 @@
     {
       "nombre": "Termómetro 11",
       "codigoDispositivo": "TM11",
-      "habilitador": false,
+      "habilitador": true,
       "sensores": [
         {
           "nombre": "S11",
@@ -302,7 +302,7 @@
     {
       "nombre": "Termómetro 12",
       "codigoDispositivo": "TM12",
-      "habilitador": false,
+      "habilitador": true,
       "sensores": [
         {
           "nombre": "S12",
@@ -329,7 +329,7 @@
     {
       "nombre": "Termómetro 13",
       "codigoDispositivo": "TM13",
-      "habilitador": false,
+      "habilitador": true,
       "sensores": [
         {
           "nombre": "S13",
@@ -356,7 +356,7 @@
     {
       "nombre": "Termómetro 14",
       "codigoDispositivo": "TM14",
-      "habilitador": false,
+      "habilitador": true,
       "sensores": [
         {
           "nombre": "S14",
@@ -383,7 +383,7 @@
     {
       "nombre": "Termómetro 15",
       "codigoDispositivo": "TM15",
-      "habilitador": false,
+      "habilitador": true,
       "sensores": [
         {
           "nombre": "S15",
@@ -410,7 +410,7 @@
     {
       "nombre": "Termómetro 16",
       "codigoDispositivo": "TM16",
-      "habilitador": false,
+      "habilitador": true,
       "sensores": [
         {
           "nombre": "S16",
@@ -437,7 +437,7 @@
     {
       "nombre": "Termómetro AMB",
       "codigoDispositivo": "TMAMB",
-      "habilitador": false,
+      "habilitador": true,
       "sensores": [
         {
           "nombre": "TM_AMB",
@@ -456,7 +456,7 @@
     {
       "nombre": "Termómetro RET",
       "codigoDispositivo": "TMRET",
-      "habilitador": false,
+      "habilitador": true,
       "sensores": [
         {
           "nombre": "TM_RET",
