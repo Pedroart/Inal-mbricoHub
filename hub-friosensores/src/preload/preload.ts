@@ -4,7 +4,12 @@ import { contextBridge, ipcRenderer } from 'electron';
 
 export const api = {
   ping: () => ipcRenderer.invoke('ping'),
-  // ... otras funciones
+
+  // ✅ Agrega estos métodos
+  getEmpresa: () => ipcRenderer.invoke('storage:get-empresa'),
+  setEmpresa: (nuevaEmpresa: string) => ipcRenderer.invoke('storage:set-empresa', nuevaEmpresa),
+
+  // ...otros métodos si los tienes
 };
 
 contextBridge.exposeInMainWorld('api', api);

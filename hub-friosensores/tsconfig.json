@@ -20,5 +20,5 @@
     "types": ["node","jest"],                            // ⬅ Muy importante para preload y main
     "typeRoots": ["src/types", "node_modules/@types"],
   },
-  "include": ["src/**/*", "src/types/global.d.ts"]
+  "include": ["src/**/*", "src/types/global.d.ts", "static", "static/**/*"]
 }
