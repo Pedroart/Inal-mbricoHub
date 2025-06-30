@@ -1,10 +1,17 @@
 import Database from 'better-sqlite3';
+import { app } from 'electron';
+import path from 'path';
 
 const isTest = process.env.NODE_ENV === 'test' ||
     process.argv.some(arg => arg.includes('vitest') || arg.includes('mocha') || arg.includes('jest')) ||
     !!process.env.VITEST;
 
-export const db = new Database(isTest ? ':memory:' : 'hub.db');
+const dbPath = isTest
+  ? ':memory:'
+  : path.join(app.getPath('userData'), 'hub.db');
+
+export const db = new Database(dbPath);
+
 
 db.exec(`
     CREATE TABLE IF NOT EXISTS sensores (
