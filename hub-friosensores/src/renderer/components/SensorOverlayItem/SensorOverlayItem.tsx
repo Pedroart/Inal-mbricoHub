@@ -1,10 +1,12 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Status, Units, SensorUI } from '../../models/SensorUI';
+import { Unidades } from "../../models/Unidades";
+import { Estados } from "../../models/Estados";
+import { SensorUI } from '../../models/SensorUI';
 
-const backgroundColorByStatus: Record<Status, string> = {
-    [Status.Operativo]: 'rgba(0,0,0,0.7)',
-    [Status.BateriaBaja]: 'rgba(226, 174, 174, 0.7)',
-    [Status.Desconectado]: 'rgba(207, 45, 153, 0.7)',
+const backgroundColorByStatus: Record<Estados, string> = {
+    [Estados.Operativo]: 'rgba(0,0,0,0.7)',
+    [Estados.BateriaBaja]: 'rgba(226, 174, 174, 0.7)',
+    [Estados.Desconectado]: 'rgba(207, 45, 153, 0.7)',
 };
 
 export const SensorOverlayItem: React.FC<SensorUI> = ({ id, name, value, unit, status, x, y }) => (

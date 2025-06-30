@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { MapSensor } from '../components/MapSensor';
-import { SensorUI, Status, Units } from '../models/SensorUI';
+import { Unidades } from "../models/Unidades";
+import { Estados } from "../models/Estados";
+import { SensorUI } from '../models/SensorUI';
 import mapImg from '../assets/FondoTunel.jpeg'
 
 const generateRandomSensorData = (id: number): SensorUI => {
@@ -18,8 +20,8 @@ return {
     id,
     name: `Sensor ${id}`,
     value: parseFloat((Math.random() * 100).toFixed(2)),
-    unit: Units.celsius,
-    status: Math.random() > 0.5 ? Status.Operativo : Status.Desconectado,
+    unit: Unidades.celsius,
+    status: Math.random() > 0.5 ? Estados.Operativo : Estados.Desconectado,
     x: pos.x,
     y: pos.y,
 };

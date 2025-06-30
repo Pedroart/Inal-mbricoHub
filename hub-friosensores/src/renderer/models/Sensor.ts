@@ -6,9 +6,10 @@ import { Estados } from "./Estados";
 
 export interface SensorBase{
     codigoSensor: string,
+    nombre: string,
     unidad: Unidades,
     tipo: SensorTipos,
-    posicion: Posicion,
+    posicion?: Posicion,
 }
 
 export enum SensorTipos{
@@ -26,7 +27,7 @@ export interface SensorWithConfig extends SensorBase {
 
 export interface SensorConfig{
     codigoBle?: string,
-    modbusNode?: ModbusNode;
+    modbusNode?: ModbusNode,
     address?: number,
     cantidad?: number,
 }

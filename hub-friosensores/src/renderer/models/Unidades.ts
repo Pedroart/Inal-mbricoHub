@@ -1,3 +1,4 @@
 export enum Unidades {
-  celsius = "°C"
+  celsius = "°C",
+  porcentaje = "%",
 }

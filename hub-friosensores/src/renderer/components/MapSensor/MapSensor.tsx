@@ -1,5 +1,9 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Status, Units, SensorUI } from '../../models/SensorUI';
+import { Unidades } from "../../models/Unidades";
+import { Estados } from "../../models/Estados";
+
+import { SensorUI } from '../../models/SensorUI';
+
 import { SensorOverlayItem } from '../SensorOverlayItem/index';
 
 interface Props {
