@@ -29,27 +29,38 @@ export const MapSensor: React.FC<Props> = ({ background, sensores }) => {
   }, []);
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: 'auto' }}>
-        <img
-            src={background}
-            alt="Fondo"
-            ref={imgRef}
-            style={{ width: '100%', height: 'auto', display: 'block' }}
-        />
-        {dimensions.width > 0 &&
-            sensores.map((s) => {
-                const pxX = (s.x / 100) * dimensions.width;
-                const pxY = (s.y / 100) * dimensions.height;
+    <div style={{ 
+      position: 'relative', 
+      width: '100%', 
+      height: '100%',     // importante
+      overflow: 'hidden', // ✅ evita scroll en este div
+    }}>
+      <img
+        src={background}
+        alt="Fondo"
+        ref={imgRef}
+        style={{ 
+          width: '100%', 
+          height: '100%',
+          objectFit: 'fill', // o 'cover', según tu preferencia
+          display: 'block'
+        }}
+      />
 
-                return (
-                <SensorOverlayItem
-                    key={s.id}
-                    {...s}
-                    x={pxX}
-                    y={pxY}
-                />
-            );
-        })}
+      {dimensions.width > 0 && sensores.map((s) => {
+        const pxX = (s.x / 100) * dimensions.width;
+        const pxY = (s.y / 100) * dimensions.height;
+
+        return (
+          <SensorOverlayItem
+            key={s.id}
+            {...s}
+            x={pxX}
+            y={pxY}
+          />
+        );
+      })}
     </div>
   );
+
 };

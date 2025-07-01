@@ -20,7 +20,14 @@ export default function App() {
   };
 
   return (
-    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ 
+      height: '100vh', 
+      width: '100vw',
+      display: 'flex', 
+      flexDirection: 'column',
+      overflow: 'hidden',      // 🔒 evita desbordes
+      fontSize: '4rem',      // 🔠 aumenta fuente general
+    }}>
       <TopBar onNavigate={setVista} />
       <div style={{ flex: 1, overflow: 'auto' }}>
         {renderVista()}

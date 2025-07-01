@@ -1,0 +1,7 @@
+pedro@artpc:~/proyectos/Inal-mbricoHub/hub-friosensores$ electron-forge make --arch=arm64 --platform=linux
+
+instalar 
+
+scp hub-friosensores_1.0.0_arm64.deb root@192.168.86.28:/home
+
+sudo dpkg -i nombre-del-paquete.deb

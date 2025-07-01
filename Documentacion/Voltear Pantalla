@@ -1,0 +1,70 @@
+root@rpi4-20231108:~# nano ~/.xprofile
+
+xrandr --output HDMI-1 --rotate right
+xinput set-prop "QDtech MPI7003" "Coordinate Transformation Matrix" 0 1 0 -1 0 1 0 0 1
+
+
+
+## Opciopn 2
+
+🔧 Implementación recomendada para Debian
+🧪 1. Escribe tu script de corrección
+
+Guárdalo como /usr/local/bin/fix-rotation.sh:
+
+#!/bin/bash
+export DISPLAY=:0
+export XAUTHORITY=/home/tu_usuario/.Xauthority
+
+xrandr --output HDMI‑1 --rotate right
+
+DEVICE="QDtech MPI7003"
+TRANSFORM="0 1 0 -1 0 1 0 0 1"
+
+for i in {1..10}; do
+  if xinput list | grep -q "$DEVICE"; then
+    xinput set-prop "$DEVICE" "Coordinate Transformation Matrix" $TRANSFORM
+    exit 0
+  fi
+  sleep 1
+done
+
+exit 1
+
+Hazlo ejecutable:
+
+sudo chmod +x /usr/local/bin/fix-rotation.sh
+
+⚙️ 2. Regla udev para detectar el touch
+
+Crea el archivo /etc/udev/rules.d/99-touch-rotate.rules:
+
+ACTION=="add", SUBSYSTEM=="input", ENV{ID_INPUT_TOUCHSCREEN}=="1", RUN+="/usr/local/bin/fix-rotation.sh"
+
+📌 3. Por qué esto es mejor
+
+    La regla se dispara cuando el touch es detectado por el kernel, sin depender de sesiones gráficas.
+
+    Se ejecuta incluso tras suspensión, sin necesidad de systemd.timer.
+
+    Evita problemas de sincronización con udev y xinput list (este patrón "ACTION==add" es ampliamente recomendado)
+    reddit.com+13superuser.com+13forum.qubes-os.org+13
+    askubuntu.com
+    forum.qubes-os.org+4unix.stackexchange.com+4unix.stackexchange.com+4
+    unix.stackexchange.com
+    blog.patshead.com+5community.volumio.com+5askubuntu.com+5
+    .
+
+📂 4. Opcional: agregar autostart al inicio de sesión
+
+Para asegurar también la aplicación al iniciar sesión gráfica, puedes agregar un archivo .desktop en ~/.config/autostart/apply-rotation.desktop:
+
+[Desktop Entry]
+Type=Application
+Exec=/usr/local/bin/fix-rotation.sh
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name=Fix Touchscreen Rotation
+
+Esto garantiza que al iniciar tu entorno gráfico (por ejemplo GNOME, Xfce, etc.), se aplique la corrección.

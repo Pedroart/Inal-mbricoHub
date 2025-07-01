@@ -28,23 +28,25 @@ export const rules: Required<ModuleOptions>['rules'] = [
       },
     },
   },
-  //  CSS Modules (*.module.css)
-  // {
-  //   test: /\.module\.css$/,
-  //   use: [
-  //     'style-loader',
-  //     {
-  //       loader: 'css-loader',
-  //       options: {
-  //         module: true
-  //       }
-  //     }
-  //   ]
-  // },
+  /*
+  {
+    test: /\.module\.css$/i,
+    use: [
+      'style-loader',
+      {
+        loader: 'css-loader',
+        options: {
+          module: true,
+          importLoaders: 1
+        }
+      },
+      'postcss-loader'
+    ]
+  },*/
   {
     test: /\.css$/,
     exclude: /\.module\.css$/i,
-    use: ['style-loader', 'css-loader'],
+    use: ['style-loader', 'css-loader','postcss-loader'],
   },
   {
     test: /\.(png|jpe?g|gif|svg)$/i,

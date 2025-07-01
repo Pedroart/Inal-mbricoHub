@@ -1,0 +1,57 @@
+ChatGPT Plus
+
+⚠️ Advertencia importante
+Iniciar sesión automáticamente como root en entorno gráfico es altamente inseguro y no recomendado. Puede dejar tu sistema vulnerable a errores y accesos maliciosos, especialmente si estás conectado a una red.
+
+🔒 Alternativa más segura: usar un usuario normal con permisos sudo.
+✅ Si aun así deseas continuar: autologin en root (LXDE en Debian)
+1. Verifica que estás usando LightDM
+
+Este es el gestor de sesiones más común en Debian con LXDE.
+
+Comprueba:
+
+cat /etc/lightdm/lightdm.conf
+
+Si no existe, puedes crear el archivo.
+2. Configura LightDM para hacer autologin como root
+
+Edita el archivo:
+
+sudo nano /etc/lightdm/lightdm.conf
+
+Agrega (o edita) lo siguiente:
+
+[Seat:*]
+autologin-user=root
+autologin-user-timeout=0
+allow-guest=false
+greeter-session=lightdm-gtk-greeter
+user-session=LXDE
+
+Guarda y cierra.
+3. Verifica que root tenga acceso a X
+
+A veces el entorno gráfico bloquea acceso directo de root. Para evitar errores como Can't open display, edita:
+
+sudo nano /root/.bash_profile
+
+Y agrega:
+
+export DISPLAY=:0
+xhost +SI:localuser:root
+
+4. Habilita LightDM si no lo está
+
+sudo systemctl enable lightdm
+sudo systemctl start lightdm
+
+5. Reinicia
+
+sudo reboot
+
+6. Edita el archivo PAM para autologin
+
+Abre:
+
+sudo nano /etc/pam.d/lightdm-autologin
