@@ -1,37 +1,52 @@
-import React, { useState } from 'react';
-import { TopBar } from './components/TopBar/index';
-import { Vista } from '../types/views'
+import React from "react"
+import { useState, useEffect } from "react"
+import Header from "./components/Header/Header"
+import Menu from "./components/Menu/Menu"
+import { Vista } from "../types/views" // Enum de vistas
 import { VistaMapSensor } from '../renderer/page/Tunel'
 
-export default function App() {
-  const handleClick = async () => {
-    const result = await window.api.ping();
-    alert(result);
-  };
 
-  const [vistas, setVista] = useState<Vista>(Vista.Inicio);
+export default function App() {
+  const [currentTime, setCurrentTime] = useState(new Date())
+  const [vistaActual, setVistaActual] = useState<Vista>(Vista.Inicio)
+  const [menuOpen, setMenuOpen] = useState(false)
+
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000)
+    return () => clearInterval(timer)
+  }, [])
 
   const renderVista = () => {
-    switch (vistas) {
-      case Vista.Tunel: return <div>Tunel</div>;
-      case Vista.Config: return <div>Configuración</div>;
-      default: return <VistaMapSensor />;
+    switch (vistaActual) {
+      case Vista.Tunel:
+        return  <div>Tunel</div>;
+      case Vista.Config:
+        return <div>Configuración</div>;
+      case Vista.Inicio:
+      default:
+        return <VistaMapSensor />;
     }
-  };
+  }
 
   return (
-    <div style={{ 
-      height: '100vh', 
-      width: '100vw',
-      display: 'flex', 
-      flexDirection: 'column',
-      overflow: 'hidden',      // 🔒 evita desbordes
-      fontSize: '4rem',      // 🔠 aumenta fuente general
-    }}>
-      <TopBar onNavigate={setVista} />
-      <div style={{ flex: 1, overflow: 'auto' }}>
+    <div className="h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 text-white overflow-hidden">
+      <Header
+        currentTime={currentTime}
+        menuOpen={menuOpen}
+        setMenuOpen={setMenuOpen}
+      />
+
+      {menuOpen && (
+        <Menu
+          activeView={vistaActual}
+          setActiveView={setVistaActual}
+          setMenuOpen={setMenuOpen}
+        />
+      )}
+
+      <div className="h-[80vh] p-3 sm:p-4 lg:p-6 overflow-hidden">
         {renderVista()}
       </div>
     </div>
-  );
+  )
 }

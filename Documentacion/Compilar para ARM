@@ -1,4 +1,4 @@
-pedro@artpc:~/proyectos/Inal-mbricoHub/hub-friosensores$ electron-forge make --arch=arm64 --platform=linux
+npx electron-forge make --arch=arm64 --platform=linux
 
 instalar 
 
