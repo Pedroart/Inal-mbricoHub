@@ -1,5 +1,6 @@
 export enum Vista {
-    Inicio = 'inicio',
-    Tunel = 'tunel',
-    Config = 'config'
+    Inicio = 'map',
+    Sensores = 'sensors',
+    Control = 'control',
+    Status = 'status',
 }

@@ -48,9 +48,8 @@ export const VistaMapSensor: React.FC = () => {
   }, []);
 
   return (
-    <div style={{ padding: '1rem' }}>
-      <h2>Vista del Mapa de Sensores</h2>
+    
       <MapSensor background={mapImg} sensores={sensores} />
-    </div>
+    
   );
 };

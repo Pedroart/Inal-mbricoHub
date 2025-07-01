@@ -33,7 +33,7 @@ const createWindow = (): void => {
   const mainWindow = new BrowserWindow({
     //width: 600,
     //height: 1024,
-    resizable: false,         // Fijar tamaño para Raspberry Pi
+    resizable: true,         // Fijar tamaño para Raspberry Pi
     fullscreen: true,        // Puedes cambiar esto a true si deseas sin bordes
     kiosk: false,             // O true si quieres bloquear al usuario fuera del sistema
     autoHideMenuBar: true,    // Oculta menú superior

@@ -8,8 +8,10 @@ export const api = {
   // ✅ Agrega estos métodos
   getSensoresView: () => ipcRenderer.invoke('sensor:getSensoresView'),
   getSensores: () => ipcRenderer.invoke('sensor:getSensores'),
+  getDispositivos: () => ipcRenderer.invoke('dispositivo:getDeviceViews'),
   getEmpresa: () => ipcRenderer.invoke('storage:get-empresa'),
   setEmpresa: (nuevaEmpresa: string) => ipcRenderer.invoke('storage:set-empresa', nuevaEmpresa),
+
 
   layoud:{
     getllista: () => ipcRenderer.invoke('layoud:get-layouds'),

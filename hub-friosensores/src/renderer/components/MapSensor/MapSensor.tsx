@@ -29,22 +29,12 @@ export const MapSensor: React.FC<Props> = ({ background, sensores }) => {
   }, []);
 
   return (
-    <div style={{ 
-      position: 'relative', 
-      width: '100%', 
-      height: '100%',     // importante
-      overflow: 'hidden', // ✅ evita scroll en este div
-    }}>
+    <div className="relative h-full">
       <img
         src={background}
         alt="Fondo"
         ref={imgRef}
-        style={{ 
-          width: '100%', 
-          height: '100%',
-          objectFit: 'fill', // o 'cover', según tu preferencia
-          display: 'block'
-        }}
+        className="w-full h-full object-fill"
       />
 
       {dimensions.width > 0 && sensores.map((s) => {

@@ -2,6 +2,9 @@ import { SensorBaseService } from './SensorBaseService';
 import { SensorValue } from "../../renderer/models/Sensor";
 import { Estados } from "../../renderer/models/Estados";
 import { SensorInstanciaConfig } from "../../renderer/models/Sensor";
+import { SensorTipos, SensorView } from "../../renderer/models/Sensor";
+import { DeviceWithSensores } from "../../renderer/models/Disposito";
+import { MapaService } from "../mapa/mapaService";
 
 export class SensorPollingService {
     private static bleIntervalId: NodeJS.Timeout;
@@ -56,5 +59,41 @@ export class SensorPollingService {
 
     static getTodas(): SensorValue[] {
         return [...this.ultimasLecturasBLE, ...this.ultimasLecturasModbus];
+    }
+
+    static getDeviceViews(): DeviceWithSensores[] {
+        const mapaService = MapaService.getInstance();
+        const dispositivos = mapaService.getDispositivos().filter(d => d.habilitador);
+
+        const lecturas: SensorValue[] = SensorPollingService.getTodas();
+
+        const result: DeviceWithSensores[] = [];
+
+
+        for (const dispositivo of dispositivos) {
+            const sensores: SensorView[] = dispositivo.sensores.map(sensor => {
+                const lectura = lecturas.find(l => l.codigoSensor === sensor.codigoSensor);
+
+                return {
+                codigoSensor: sensor.codigoSensor,
+                nombre: sensor.nombre,
+                unidad: sensor.unidad,
+                tipo: sensor.tipo,
+                posicion: sensor.posicion,
+                habilitador: sensor.habilitador,
+                valor: lectura?.valor,
+                estado: lectura?.estado,
+                };
+            });
+
+            result.push({
+                nombre: dispositivo.nombre,
+                codigoDispositivo: dispositivo.codigoDispositivo,
+                habilitador: dispositivo.habilitador,
+                sensores,
+            });
+        }
+
+        return result;
     }
 }

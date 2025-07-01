@@ -2,6 +2,7 @@ import { SensorInstanciaConfig } from "../../renderer/models/Sensor";
 import { MapaService } from "../mapa/mapaService";
 import { SensorTipos, SensorView } from "../../renderer/models/Sensor";
 import { Estados } from "../../renderer/models/Estados";
+import { DeviceWithSensores } from "../../renderer/models/Disposito";
 
 export class SensorBaseService {
     static getSensoresBle(): SensorInstanciaConfig[] {
@@ -69,6 +70,5 @@ export class SensorBaseService {
 
         return sensorViews;
     }
-
 
 }

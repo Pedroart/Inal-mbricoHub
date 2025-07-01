@@ -11,4 +11,8 @@ export function registerSensorHandlers() {
   ipcMain.handle('sensor:getSensoresView', () => {
     return SensorBaseService.getSensorViews();
   });
+
+  ipcMain.handle('dispositivo:getDeviceViews',() => {
+    return SensorPollingService.getDeviceViews();
+  });
 }

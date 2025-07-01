@@ -11,16 +11,12 @@ const backgroundColorByStatus: Record<Estados, string> = {
 
 export const SensorOverlayItem: React.FC<SensorUI> = ({ id, name, value, unit, status, x, y }) => (
     <div
+        className="absolute px-2 py-1 rounded-md text-white text-4xl font-medium shadow"
         key={id}
         style={{
-            position: 'absolute',
             left: x,
             top: y,
             background: backgroundColorByStatus[status],
-            color: '#fff',
-            padding: '4px 8px',
-            borderRadius: 4,
-            fontSize: '12px',
             transform: 'translate(-50%, -50%)',
         }}
     >

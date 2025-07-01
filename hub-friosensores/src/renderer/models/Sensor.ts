@@ -53,6 +53,7 @@ export interface SensorValue extends Omit<SensorBase, 'tipo' | 'posicion'>  {
 export interface SensorView extends SensorBase {
     valor?: number;
     estado?: Estados;
+    habilitador?: boolean,
 }
 
 

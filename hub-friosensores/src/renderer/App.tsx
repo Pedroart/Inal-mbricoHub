@@ -4,6 +4,7 @@ import Header from "./components/Header/Header"
 import Menu from "./components/Menu/Menu"
 import { Vista } from "../types/views" // Enum de vistas
 import { VistaMapSensor } from '../renderer/page/Tunel'
+import { MainView } from '../renderer/page/DispositivoView'
 
 
 export default function App() {
@@ -18,18 +19,19 @@ export default function App() {
 
   const renderVista = () => {
     switch (vistaActual) {
-      case Vista.Tunel:
-        return  <div>Tunel</div>;
-      case Vista.Config:
-        return <div>Configuración</div>;
-      case Vista.Inicio:
+      case Vista.Status:
+        return  <div>Status</div>;
+      case Vista.Sensores:
+        return <MainView />;
+      case Vista.Control:
+        return <div>Control</div>;
       default:
         return <VistaMapSensor />;
     }
   }
 
   return (
-    <div className="h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 text-white overflow-hidden">
+    <div className="w-screen h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 text-white ">
       <Header
         currentTime={currentTime}
         menuOpen={menuOpen}
@@ -44,8 +46,10 @@ export default function App() {
         />
       )}
 
-      <div className="h-[80vh] p-3 sm:p-4 lg:p-6 overflow-hidden">
+      <div className="h-[88vh] p-3">
+              
         {renderVista()}
+
       </div>
     </div>
   )
