@@ -1,0 +1,9 @@
+sudo apt install libudev-dev
+
+🔁 Luego, vuelve a ejecutar:
+
+npx electron-rebuild -f -w @abandonware/noble
+
+    O tu script si lo agregaste:
+
+npm run rebuild

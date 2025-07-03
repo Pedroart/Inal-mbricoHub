@@ -5,6 +5,8 @@ import { SensorInstanciaConfig } from "../../renderer/models/Sensor";
 import { SensorTipos, SensorView } from "../../renderer/models/Sensor";
 import { DeviceWithSensores } from "../../renderer/models/Disposito";
 import { MapaService } from "../mapa/mapaService";
+import { BLEScannerService } from "../BLE/BLEScannerService";
+import { Unidades } from '../../renderer/models/Unidades';
 
 export class SensorPollingService {
     private static bleIntervalId: NodeJS.Timeout;
@@ -17,7 +19,7 @@ export class SensorPollingService {
         this.bleIntervalId = setInterval(async () => {
             const bleSensores = SensorBaseService.getSensoresBle();
             
-            const results = await this.simularLecturas(bleSensores, "BLE");
+            const results = await this.getLecturaBle(bleSensores);
             this.ultimasLecturasBLE = results;
             console.log("Lecturas BLE", results);
         }, 5000);
@@ -34,6 +36,56 @@ export class SensorPollingService {
     static stop(): void {
         clearInterval(this.bleIntervalId);
         clearInterval(this.modbusIntervalId);
+    }
+
+    private static async getLecturaBle(sensores: SensorInstanciaConfig[]): Promise<SensorValue[]> {
+        const paquetes = BLEScannerService.getLecturas();
+
+        return sensores.map(sensor => {
+            if (!sensor.codigoBle) {
+                return {
+                    codigoSensor: sensor.codigoSensor,
+                    nombre: sensor.nombre,
+                    unidad: sensor.unidad,
+                    valor: NaN,
+                    estado: Estados.Desconectado, // <- asegúrate que exista
+                    timestamp: Date.now()
+                };
+            }
+
+            const codigoBle = parseInt(sensor.codigoBle);
+            const paquete = paquetes.find(p => p.codigoBle === codigoBle);
+
+            if (!paquete) {
+                return {
+                    codigoSensor: sensor.codigoSensor,
+                    nombre: sensor.nombre,
+                    unidad: sensor.unidad,
+                    valor: NaN,
+                    estado: Estados.Desconectado,
+                    timestamp: Date.now()
+                };
+            }
+            
+            let valor: number;
+
+            if (sensor.unidad === Unidades.celsius) {
+            valor = paquete.temp;
+            } else if (sensor.unidad === Unidades.porcentaje) {
+            valor = paquete.bateria;
+            } else {
+            valor = NaN; // Si no sabemos qué es
+            }
+
+            return {
+                codigoSensor: sensor.codigoSensor,
+                nombre: sensor.nombre,
+                unidad: sensor.unidad,
+                valor: valor,
+                estado: Estados.Operativo,
+                timestamp: paquete.timestamp
+            };
+        });
     }
 
     private static async simularLecturas(sensores: SensorInstanciaConfig[], tipo: string): Promise<SensorValue[]> {
