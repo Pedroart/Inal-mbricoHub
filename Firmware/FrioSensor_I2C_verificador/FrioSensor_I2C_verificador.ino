@@ -1,5 +1,6 @@
 #include <Wire.h>
 
+
 // Reemplaza por los pines correctos de tu hardware
 #define SDA_CUSTOM 5
 #define SCL_CUSTOM 4
