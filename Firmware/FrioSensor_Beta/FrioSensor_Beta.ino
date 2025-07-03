@@ -18,7 +18,7 @@ Board: Seed XIA nRF52840
 #define LED_PIN        LED_BLUE
 #define REBOOT_TIME_S  10
 
-#define ENABLE_LOGS true
+#define ENABLE_LOGS false
 
 #if ENABLE_LOGS
   #define LOG_PRINT(x)   Serial.print(x)
