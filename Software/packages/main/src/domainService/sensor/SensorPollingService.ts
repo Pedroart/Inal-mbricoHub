@@ -38,25 +38,21 @@ export class SensorPollingService {
         clearInterval(this.modbusIntervalId);
     }
 
+    static getLecturaPorCodigoSensor(codigoSensor: string): SensorValue | undefined {
+        const todas = this.getTodas();
+        return todas.find(s => s.codigoSensor === codigoSensor);
+    }
+
+
     private static async getLecturaBle(sensores: SensorInstanciaConfig[]): Promise<SensorValue[]> {
         const paquetes = BLEScannerService.getLecturas();
+        console.log(`📦 Paquetes BLE disponibles: ${paquetes.length}`);
 
         return sensores.map(sensor => {
+            console.log(`🔍 Procesando sensor: ${sensor.nombre} (Código BLE: ${sensor.codigoBle})`);
+
             if (!sensor.codigoBle) {
-                return {
-                    codigoSensor: sensor.codigoSensor,
-                    nombre: sensor.nombre,
-                    unidad: sensor.unidad,
-                    valor: NaN,
-                    estado: Estados.Desconectado, // <- asegúrate que exista
-                    timestamp: Date.now()
-                };
-            }
-
-            const codigoBle = parseInt(sensor.codigoBle);
-            const paquete = paquetes.find(p => p.codigoBle === codigoBle);
-
-            if (!paquete) {
+                console.warn(`⚠️ Sensor ${sensor.nombre} no tiene código BLE definido`);
                 return {
                     codigoSensor: sensor.codigoSensor,
                     nombre: sensor.nombre,
@@ -66,27 +62,46 @@ export class SensorPollingService {
                     timestamp: Date.now()
                 };
             }
-            
+
+            const codigoBle = parseInt(sensor.codigoBle);
+            const paquete = paquetes.find(p => p.codigoBle === codigoBle);
+
+            if (!paquete) {
+                console.warn(`❌ No se encontró paquete BLE para el código ${codigoBle}`);
+                return {
+                    codigoSensor: sensor.codigoSensor,
+                    nombre: sensor.nombre,
+                    unidad: sensor.unidad,
+                    valor: NaN,
+                    estado: Estados.Desconectado,
+                    timestamp: Date.now()
+                };
+            }
+
             let valor: number;
 
             if (sensor.unidad === Unidades.celsius) {
-            valor = paquete.temp;
+                valor = paquete.temp;
+                console.log(`✅ Sensor ${sensor.nombre}: ${valor} °C`);
             } else if (sensor.unidad === Unidades.porcentaje) {
-            valor = paquete.bateria;
+                valor = paquete.bateria;
+                console.log(`✅ Sensor ${sensor.nombre}: ${valor}% batería`);
             } else {
-            valor = NaN; // Si no sabemos qué es
+                valor = NaN;
+                console.warn(`❓ Unidad desconocida para sensor ${sensor.nombre}`);
             }
 
             return {
                 codigoSensor: sensor.codigoSensor,
                 nombre: sensor.nombre,
                 unidad: sensor.unidad,
-                valor: valor,
+                valor,
                 estado: Estados.Operativo,
                 timestamp: paquete.timestamp
             };
         });
     }
+
 
     private static async simularLecturas(sensores: SensorInstanciaConfig[], tipo: string): Promise<SensorValue[]> {
         // Simulación (reemplaza por tu lógica real de lectura)

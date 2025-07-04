@@ -19,6 +19,11 @@ export class SensorModule implements AppModule {
     ipcMain.handle('dispositivo:getDeviceViews', () => {
       return SensorPollingService.getDeviceViews();
     });
+
+    ipcMain.handle('sensor:getDeviceValue', (event, codigoSensor: string) => {
+      return SensorPollingService.getLecturaPorCodigoSensor(codigoSensor);
+    });
+
   }
 }
 

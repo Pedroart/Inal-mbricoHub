@@ -68,7 +68,7 @@ const TermometroModbus: DispositivoWithConfig[] = TermometroFijos.map(({ id, x, 
 
 
 const mapaC002: MapaWithConfig = {
-  nombre: "Túnel Californiano de 2 Vent",
+  nombre: "C002",
   layoud: "C002/TunelCaliforniano3Vent.png",
   dispositivos: [ ...TermometroBle, ...TermometroModbus ],
 };

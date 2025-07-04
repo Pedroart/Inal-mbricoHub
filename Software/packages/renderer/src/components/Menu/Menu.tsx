@@ -1,7 +1,7 @@
 import React from "react"
 import { Button } from "../ui/button"
 import {
-  Map, Thermometer, Activity, CheckCircle,
+  Map, Thermometer, CheckCircle,
 } from "lucide-react"
 
 import { Vista } from "../../models/vista"

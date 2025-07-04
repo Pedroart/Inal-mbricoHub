@@ -12,6 +12,7 @@ export const api = {
   getEmpresa: () => ipcRenderer.invoke('storage:get-empresa'),
   setEmpresa: (nuevaEmpresa: string) => ipcRenderer.invoke('storage:set-empresa', nuevaEmpresa),
 
+  getSensorValue: ( codigoSensor: String ) => ipcRenderer.invoke('sensor:getDeviceValue',codigoSensor),
 
   layoud:{
     getllista: () => ipcRenderer.invoke('layoud:get-layouds'),

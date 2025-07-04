@@ -73,12 +73,12 @@ export class SensorBaseService {
         });
     });
 
-    console.log("📦 MODBUS → Sensores encontrados:", sensores.length);
+    //console.log("📦 MODBUS → Sensores encontrados:", sensores.length);
     return sensores;
   }
 
   static getTodosSensores(): SensorInstanciaConfig[] {
-    console.log("📊 Obteniendo todos los sensores...");
+    //console.log("📊 Obteniendo todos los sensores...");
     const ble = SensorBaseService.getSensoresBle();
     const modbus = SensorBaseService.getSensoresModbus();
     console.log("📊 Total sensores:", ble.length + modbus.length);
@@ -89,7 +89,7 @@ export class SensorBaseService {
     const mapaService = MapaService.getInstance();
     const dispositivos = mapaService.getDispositivos();
 
-    console.log("🧭 SensorView → Dispositivos:", dispositivos);
+    //console.log("🧭 SensorView → Dispositivos:", dispositivos);
 
     const habilitados = dispositivos.filter(d => d.habilitador);
     console.log("🧭 SensorView → Dispositivos habilitados:", habilitados.length);
@@ -108,7 +108,7 @@ export class SensorBaseService {
           posicion: sensor.posicion,
         };
 
-        console.log("👁️ SensorView → Agregando sensor:", view);
+        //console.log("👁️ SensorView → Agregando sensor:", view);
         sensorViews.push(view);
       }
     }
