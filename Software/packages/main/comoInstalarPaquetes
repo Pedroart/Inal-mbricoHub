@@ -1,1 +1,3 @@
 npm i @abandonware/noble --workspace=@app/main
+
+/proyectos/Inal-mbricoHub/Software/packages/main$ node --loader ts-node/esm compilar-mapas.ts

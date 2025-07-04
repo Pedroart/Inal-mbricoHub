@@ -18,8 +18,8 @@ const TermometroInalambricos = Array.from({ length: 16 }, (_, index) => {
 });
 
 const TermometroFijos = [
-    { id: "AMB", x: 50, y: 10,},
-    { id: "RET", x: 50, y: 55,},
+    { id: "RET", x: 50, y: 10,},
+    { id: "AMB", x: 50, y: 55,},
 ];
 
 const TermometroBle: DispositivoWithConfig[] = TermometroInalambricos.map(({ id, x, y }) => ({
@@ -68,7 +68,7 @@ const TermometroModbus: DispositivoWithConfig[] = TermometroFijos.map(({ id, x, 
 
 export const mapaC001: MapaWithConfig = {
   nombre: "Túnel Californiano de 3 Vent",
-  layoud: "TunelCaliforniano3Vent.png",
+  layoud: "C001/TunelCaliforniano3Vent1.png",
   dispositivos: [ ...TermometroBle, ...TermometroModbus ],
 };
 

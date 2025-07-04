@@ -2,7 +2,8 @@ import { ipcMain } from 'electron';
 import type { AppModule } from '../../AppModule.js';
 import type { ModuleContext } from '../../ModuleContext.js';
 import { layoudManager } from './layoudService.js';
-import type { MapaWithConfig } from '../../models/Mapa.js';
+import { layoudItem, layoud } from "./layoudModel.js";
+
 
 export class LayoudModule implements AppModule {
   enable(_ctx: ModuleContext): void {
@@ -17,9 +18,17 @@ export class LayoudModule implements AppModule {
     });
 
     // Guardar un nuevo mapa como activo en la caché
-    ipcMain.handle('layoud:set-activo', (_event, mapa: MapaWithConfig) => {
-      layoudManager.guardarMapaSeleccionado(mapa);
+    ipcMain.handle('layoud:set-activo', (_event, mapa: layoudItem) => {
+      layoudManager.seleccionarMapaDesdeLayoudItem(mapa);
       return { success: true };
+    });
+
+    ipcMain.handle('layoud:get-imagen-path', () => {
+      return layoudManager.getLayoudImagePath();
+    });
+
+    ipcMain.handle('layoud:get-imagen', () => {
+      return layoudManager.getLayoudImageDataUrl();
     });
   }
 }

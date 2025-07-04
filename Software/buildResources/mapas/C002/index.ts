@@ -6,26 +6,27 @@ import {
   SensorTipos,
 } from "../layoud.js";
 
-const TermometroInalambricos = [
-  { id: "01", x: 20, y: 20,},
-  { id: "02", x: 30, y: 20,},
-  { id: "03", x: 40, y: 20,},
-  { id: "04", x: 50, y: 20,},
-  { id: "05", x: 60, y: 20,},
-  { id: "06", x: 70, y: 20,},
-  { id: "07", x: 80, y: 20,},
-  { id: "08", x: 90, y: 20,},
-];
+const TermometroInalambricos = Array.from({ length: 8 }, (_, index) => {
+  const col = Math.floor(index / 4); // columnas de izquierda a derecha
+  const row = index % 4;             // filas de arriba hacia abajo
+
+  return {
+    id: (index + 1).toString().padStart(2, "0"),
+    x: 20 + col * 20, // separación horizontal de 40 px entre columnas
+    y: 30 + row * 15, // separación vertical de 20 px entre filas
+  };
+});
+
 
 const TermometroFijos = [
-    { id: "AMB", x: 160, y: 20,},
-    { id: "RET", x: 170, y: 20,},
+    { id: "RET", x: 50, y: 10,},
+    { id: "AMB", x: 50, y: 55,},
 ];
 
 const TermometroBle: DispositivoWithConfig[] = TermometroInalambricos.map(({ id, x, y }) => ({
   nombre: `Termómetro ${id}`,
   codigoDispositivo: `TM${id}`,
-  habilitador: false,
+  habilitador: true,
   sensores: [
     {
       nombre: `S${id}`,
@@ -40,7 +41,7 @@ const TermometroBle: DispositivoWithConfig[] = TermometroInalambricos.map(({ id,
       nombre: `S${id}_BAT`,
       codigoSensor: `TM${id}_BAT`,
       config: {},
-      habilitador: true,
+      habilitador: false,
       unidad: Unidades.porcentaje,
       tipo: SensorTipos.Ble,
     },
@@ -68,7 +69,7 @@ const TermometroModbus: DispositivoWithConfig[] = TermometroFijos.map(({ id, x, 
 
 const mapaC002: MapaWithConfig = {
   nombre: "Túnel Californiano de 2 Vent",
-  layoud: "TunelCaliforniano3Vent.png",
+  layoud: "C002/TunelCaliforniano3Vent.png",
   dispositivos: [ ...TermometroBle, ...TermometroModbus ],
 };
 

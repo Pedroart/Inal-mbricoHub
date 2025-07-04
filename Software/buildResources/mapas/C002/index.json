@@ -1,11 +1,11 @@
 {
   "nombre": "Túnel Californiano de 2 Vent",
-  "layoud": "TunelCaliforniano3Vent.png",
+  "layoud": "C002/TunelCaliforniano3Vent.png",
   "dispositivos": [
     {
       "nombre": "Termómetro 01",
       "codigoDispositivo": "TM01",
-      "habilitador": false,
+      "habilitador": true,
       "sensores": [
         {
           "nombre": "S01",
@@ -16,14 +16,14 @@
           "tipo": "Ble",
           "posicion": {
             "x": 20,
-            "y": 20
+            "y": 30
           }
         },
         {
           "nombre": "S01_BAT",
           "codigoSensor": "TM01_BAT",
           "config": {},
-          "habilitador": true,
+          "habilitador": false,
           "unidad": "%",
           "tipo": "Ble"
         }
@@ -32,7 +32,7 @@
     {
       "nombre": "Termómetro 02",
       "codigoDispositivo": "TM02",
-      "habilitador": false,
+      "habilitador": true,
       "sensores": [
         {
           "nombre": "S02",
@@ -42,15 +42,15 @@
           "unidad": "°C",
           "tipo": "Ble",
           "posicion": {
-            "x": 30,
-            "y": 20
+            "x": 20,
+            "y": 45
           }
         },
         {
           "nombre": "S02_BAT",
           "codigoSensor": "TM02_BAT",
           "config": {},
-          "habilitador": true,
+          "habilitador": false,
           "unidad": "%",
           "tipo": "Ble"
         }
@@ -59,7 +59,7 @@
     {
       "nombre": "Termómetro 03",
       "codigoDispositivo": "TM03",
-      "habilitador": false,
+      "habilitador": true,
       "sensores": [
         {
           "nombre": "S03",
@@ -69,15 +69,15 @@
           "unidad": "°C",
           "tipo": "Ble",
           "posicion": {
-            "x": 40,
-            "y": 20
+            "x": 20,
+            "y": 60
           }
         },
         {
           "nombre": "S03_BAT",
           "codigoSensor": "TM03_BAT",
           "config": {},
-          "habilitador": true,
+          "habilitador": false,
           "unidad": "%",
           "tipo": "Ble"
         }
@@ -86,7 +86,7 @@
     {
       "nombre": "Termómetro 04",
       "codigoDispositivo": "TM04",
-      "habilitador": false,
+      "habilitador": true,
       "sensores": [
         {
           "nombre": "S04",
@@ -96,15 +96,15 @@
           "unidad": "°C",
           "tipo": "Ble",
           "posicion": {
-            "x": 50,
-            "y": 20
+            "x": 20,
+            "y": 75
           }
         },
         {
           "nombre": "S04_BAT",
           "codigoSensor": "TM04_BAT",
           "config": {},
-          "habilitador": true,
+          "habilitador": false,
           "unidad": "%",
           "tipo": "Ble"
         }
@@ -113,7 +113,7 @@
     {
       "nombre": "Termómetro 05",
       "codigoDispositivo": "TM05",
-      "habilitador": false,
+      "habilitador": true,
       "sensores": [
         {
           "nombre": "S05",
@@ -123,15 +123,15 @@
           "unidad": "°C",
           "tipo": "Ble",
           "posicion": {
-            "x": 60,
-            "y": 20
+            "x": 40,
+            "y": 30
           }
         },
         {
           "nombre": "S05_BAT",
           "codigoSensor": "TM05_BAT",
           "config": {},
-          "habilitador": true,
+          "habilitador": false,
           "unidad": "%",
           "tipo": "Ble"
         }
@@ -140,7 +140,7 @@
     {
       "nombre": "Termómetro 06",
       "codigoDispositivo": "TM06",
-      "habilitador": false,
+      "habilitador": true,
       "sensores": [
         {
           "nombre": "S06",
@@ -150,15 +150,15 @@
           "unidad": "°C",
           "tipo": "Ble",
           "posicion": {
-            "x": 70,
-            "y": 20
+            "x": 40,
+            "y": 45
           }
         },
         {
           "nombre": "S06_BAT",
           "codigoSensor": "TM06_BAT",
           "config": {},
-          "habilitador": true,
+          "habilitador": false,
           "unidad": "%",
           "tipo": "Ble"
         }
@@ -167,7 +167,7 @@
     {
       "nombre": "Termómetro 07",
       "codigoDispositivo": "TM07",
-      "habilitador": false,
+      "habilitador": true,
       "sensores": [
         {
           "nombre": "S07",
@@ -177,15 +177,15 @@
           "unidad": "°C",
           "tipo": "Ble",
           "posicion": {
-            "x": 80,
-            "y": 20
+            "x": 40,
+            "y": 60
           }
         },
         {
           "nombre": "S07_BAT",
           "codigoSensor": "TM07_BAT",
           "config": {},
-          "habilitador": true,
+          "habilitador": false,
           "unidad": "%",
           "tipo": "Ble"
         }
@@ -194,7 +194,7 @@
     {
       "nombre": "Termómetro 08",
       "codigoDispositivo": "TM08",
-      "habilitador": false,
+      "habilitador": true,
       "sensores": [
         {
           "nombre": "S08",
@@ -204,36 +204,17 @@
           "unidad": "°C",
           "tipo": "Ble",
           "posicion": {
-            "x": 90,
-            "y": 20
+            "x": 40,
+            "y": 75
           }
         },
         {
           "nombre": "S08_BAT",
           "codigoSensor": "TM08_BAT",
           "config": {},
-          "habilitador": true,
+          "habilitador": false,
           "unidad": "%",
           "tipo": "Ble"
-        }
-      ]
-    },
-    {
-      "nombre": "Termómetro AMB",
-      "codigoDispositivo": "TMAMB",
-      "habilitador": false,
-      "sensores": [
-        {
-          "nombre": "TM_AMB",
-          "codigoSensor": "TMAMB_TEMP",
-          "config": {},
-          "habilitador": true,
-          "unidad": "°C",
-          "tipo": "Modbus",
-          "posicion": {
-            "x": 160,
-            "y": 20
-          }
         }
       ]
     },
@@ -250,8 +231,27 @@
           "unidad": "°C",
           "tipo": "Modbus",
           "posicion": {
-            "x": 170,
-            "y": 20
+            "x": 50,
+            "y": 10
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "Termómetro AMB",
+      "codigoDispositivo": "TMAMB",
+      "habilitador": false,
+      "sensores": [
+        {
+          "nombre": "TM_AMB",
+          "codigoSensor": "TMAMB_TEMP",
+          "config": {},
+          "habilitador": true,
+          "unidad": "°C",
+          "tipo": "Modbus",
+          "posicion": {
+            "x": 50,
+            "y": 55
           }
         }
       ]

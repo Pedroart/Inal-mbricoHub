@@ -13,7 +13,7 @@ export class MapaService {
         throw new Error("❌ No hay mapa activo disponible");
         }
         this.mapa = mapaActivo;
-        console.log(this.mapa.nombre);
+        console.log(this.mapa);
     }
 
     static getInstance(): MapaService {

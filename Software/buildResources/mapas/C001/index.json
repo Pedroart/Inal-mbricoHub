@@ -1,6 +1,6 @@
 {
   "nombre": "Túnel Californiano de 3 Vent",
-  "layoud": "TunelCaliforniano3Vent.png",
+  "layoud": "C001/TunelCaliforniano3Vent1.png",
   "dispositivos": [
     {
       "nombre": "Termómetro 01",
@@ -435,13 +435,13 @@
       ]
     },
     {
-      "nombre": "Termómetro AMB",
-      "codigoDispositivo": "TMAMB",
+      "nombre": "Termómetro RET",
+      "codigoDispositivo": "TMRET",
       "habilitador": true,
       "sensores": [
         {
-          "nombre": "TM_AMB",
-          "codigoSensor": "TMAMB_TEMP",
+          "nombre": "TM_RET",
+          "codigoSensor": "TMRET_TEMP",
           "config": {},
           "habilitador": true,
           "unidad": "°C",
@@ -454,13 +454,13 @@
       ]
     },
     {
-      "nombre": "Termómetro RET",
-      "codigoDispositivo": "TMRET",
+      "nombre": "Termómetro AMB",
+      "codigoDispositivo": "TMAMB",
       "habilitador": true,
       "sensores": [
         {
-          "nombre": "TM_RET",
-          "codigoSensor": "TMRET_TEMP",
+          "nombre": "TM_AMB",
+          "codigoSensor": "TMAMB_TEMP",
           "config": {},
           "habilitador": true,
           "unidad": "°C",
