@@ -1,32 +1,37 @@
 import { ipcMain } from 'electron';
 import { ModbusNodeService } from './modbusNodeService.js';
-import { ModbusNode } from '../../renderer/models/ModbusNode';
+import { ModbusNode } from '../../models/ModbusNode.js';
 
-export function registerModbusNodeHandlers() {
-  const service = ModbusNodeService.getInstance();
+import type { AppModule } from '../../AppModule.js';
+import type { ModuleContext } from '../../ModuleContext.js';
 
-  // Obtener todos los nodos
-  ipcMain.handle('modbus:get-all', () => {
-    return service.getAll();
-  });
+export class ModbusNodeModule implements AppModule {
+  enable(_ctx: ModuleContext): void {
+    const service = ModbusNodeService.getInstance();
 
-  // Obtener nodo por ID
-  ipcMain.handle('modbus:get-by-id', (_event, id: string) => {
-    return service.getById(id);
-  });
+    // Obtener todos los nodos
+    ipcMain.handle('modbus:get-all', () => {
+      return service.getAll();
+    });
 
-  // Crear nuevo nodo
-  ipcMain.handle('modbus:create', (_event, nodo: ModbusNode) => {
-    return service.crear(nodo);
-  });
+    // Obtener nodo por ID
+    ipcMain.handle('modbus:get-by-id', (_event, id: string) => {
+      return service.getById(id);
+    });
 
-  // Editar nodo
-  ipcMain.handle('modbus:edit', (_event, id: string, datos: Partial<ModbusNode>) => {
-    return service.editar(id, datos);
-  });
+    // Crear nuevo nodo
+    ipcMain.handle('modbus:create', (_event, nodo: ModbusNode) => {
+      return service.crear(nodo);
+    });
 
-  // Eliminar nodo
-  ipcMain.handle('modbus:delete', (_event, id: string) => {
-    return service.eliminar(id);
-  });
+    // Editar nodo
+    ipcMain.handle('modbus:edit', (_event, id: string, datos: Partial<ModbusNode>) => {
+      return service.editar(id, datos);
+    });
+
+    // Eliminar nodo
+    ipcMain.handle('modbus:delete', (_event, id: string) => {
+      return service.eliminar(id);
+    });
+  }
 }

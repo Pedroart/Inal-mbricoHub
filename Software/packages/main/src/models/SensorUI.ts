@@ -1,5 +1,5 @@
-import { Unidades } from "./Unidades";
-import { Estados } from "./Estados";
+import { Unidades } from "./Unidades.js";
+import { Estados } from "./Estados.js";
 
 export interface SensorUI {
   id: number;

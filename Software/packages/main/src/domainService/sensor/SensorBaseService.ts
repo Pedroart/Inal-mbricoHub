@@ -1,8 +1,8 @@
-import { SensorInstanciaConfig } from "../../renderer/models/Sensor";
+import { SensorInstanciaConfig } from "../../models/Sensor.js";
 import { MapaService } from "../mapa/mapaService.js";
-import { SensorTipos, SensorView } from "../../renderer/models/Sensor";
-import { Estados } from "../../renderer/models/Estados";
-import { DeviceWithSensores } from "../../renderer/models/Disposito";
+import { SensorTipos, SensorView } from "../../models/Sensor.js";
+import { Estados } from "../../models/Estados.js";
+import { DeviceWithSensores } from "../../models/Disposito.js";
 
 export class SensorBaseService {
     static getSensoresBle(): SensorInstanciaConfig[] {

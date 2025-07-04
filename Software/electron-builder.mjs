@@ -22,6 +22,7 @@ export default /** @type import('electron-builder').Configuration */
     'LICENSE*',
     pkg.main,
     '!node_modules/@app/**',
+    'buildResources/mapas/**',
     ...await getListOfFilesFromEachWorkspace(),
   ],
 });

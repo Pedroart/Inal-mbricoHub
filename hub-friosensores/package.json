@@ -6,28 +6,33 @@
   "main": ".webpack/main",
   "scripts": {
     "gen-maps": "ts-node script/genMaps.ts",
-    "start": "cross-env NODE_ENV=development npm run gen-maps && electron-forge start",
-    "package": "electron-forge package",
-    "make": "cross-env NODE_ENV=production electron-forge make",
-    "publish": "electron-forge publish",
     "lint": "eslint --ext .ts,.tsx .",
     "test": "jest",
-    "build": "tsc && electron-builder"
+    "build": "webpack --config webpack.main.config.js && electron-builder"
   },
   "build": {
     "appId": "com.miempresa.miapp",
-    "productName": "MiApp",
+    "productName": "HubFriosensores",
     "files": [
       "dist/**/*",
       "node_modules/**/*",
-      "package.json"
+      "package.json",
+      "!**/*.ts",
+      "!src/**/*"
+    ],
+    "extraResources": [
+      "static/layoud"
     ],
     "directories": {
       "buildResources": "assets"
     },
-    "win": {
-      "target": "nsis",
-      "icon": "assets/icon.ico"
+    "asar": true,
+    "linux": {
+      "target": [
+        "deb"
+      ],
+      "maintainer": "Pedro Arteta <tu@email.com>",
+      "category": "Utility"
     }
   },
   "keywords": [],
@@ -39,14 +44,7 @@
   "devDependencies": {
     "@babel/core": "^7.27.4",
     "@babel/preset-react": "^7.27.1",
-    "@electron-forge/cli": "^7.8.1",
-    "@electron-forge/maker-deb": "^7.8.1",
-    "@electron-forge/maker-rpm": "^7.8.1",
-    "@electron-forge/maker-squirrel": "^7.8.1",
-    "@electron-forge/maker-zip": "^7.8.1",
-    "@electron-forge/plugin-auto-unpack-natives": "^7.8.1",
-    "@electron-forge/plugin-fuses": "^7.8.1",
-    "@electron-forge/plugin-webpack": "^7.8.1",
+    "@electron-toolkit/tsconfig": "^1.0.1",
     "@electron/fuses": "^1.8.0",
     "@reforged/maker-appimage": "^5.0.0",
     "@timfish/webpack-asset-relocator-loader": "^0.1.0",
@@ -78,6 +76,7 @@
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3",
+    "webpack-cli": "^6.0.1",
     "webpack-node-externals": "^3.0.0"
   },
   "dependencies": {

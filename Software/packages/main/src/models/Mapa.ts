@@ -1,4 +1,4 @@
-import { DispositivoWithConfig } from "./Disposito";
+import { DispositivoWithConfig } from "./Disposito.js";
 
 export interface MapaWithConfig{
     nombre: string,

@@ -1,6 +1,6 @@
-import { MapaWithConfig } from "../../renderer/models/Mapa";
-import { DispositivoWithConfig } from "../../renderer/models/Disposito";
-import { SensorWithConfig, SensorTipos, SensorConfig } from "../../renderer/models/Sensor";
+import { MapaWithConfig } from "../../models/Mapa.js";
+import { DispositivoWithConfig } from "../../models/Disposito.js";
+import { SensorWithConfig, SensorTipos, SensorConfig } from "../../models/Sensor.js";
 import { layoudManager } from '../layoud/layoudService.js';
 
 export class MapaService {
@@ -13,7 +13,7 @@ export class MapaService {
         throw new Error("❌ No hay mapa activo disponible");
         }
         this.mapa = mapaActivo;
-        console.log(this.mapa);
+        console.log(this.mapa.nombre);
     }
 
     static getInstance(): MapaService {

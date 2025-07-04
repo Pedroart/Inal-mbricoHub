@@ -1,4 +1,4 @@
-import { SensorWithConfig, SensorView } from "./Sensor"
+import { SensorWithConfig, SensorView } from "./Sensor.js"
 
 export interface DispositivoWithConfig{
     nombre: string,

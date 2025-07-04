@@ -1,12 +1,12 @@
 import { SensorBaseService } from './SensorBaseService.js';
-import { SensorValue } from "../../renderer/models/Sensor";
-import { Estados } from "../../renderer/models/Estados";
-import { SensorInstanciaConfig } from "../../renderer/models/Sensor";
-import { SensorTipos, SensorView } from "../../renderer/models/Sensor";
-import { DeviceWithSensores } from "../../renderer/models/Disposito";
+import { SensorValue } from "../../models/Sensor.js";
+import { Estados } from "../../models/Estados.js";
+import { SensorInstanciaConfig } from "../../models/Sensor.js";
+import { SensorTipos, SensorView } from "../../models/Sensor.js";
+import { DeviceWithSensores } from "../../models/Disposito.js";
 import { MapaService } from "../mapa/mapaService.js";
 import { BLEScannerService } from "../BLE/BLEScannerService.js";
-import { Unidades } from '../../renderer/models/Unidades';
+import { Unidades } from '../../models/Unidades.js';
 
 export class SensorPollingService {
     private static bleIntervalId: NodeJS.Timeout;

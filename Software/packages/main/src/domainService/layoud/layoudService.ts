@@ -1,25 +1,19 @@
 import fs from "fs";
 import path from "path";
 import { app, ipcMain } from "electron";
-import { readFileSync } from 'fs';
-import {MapaWithConfig} from "../../renderer/models/Mapa"
+import {MapaWithConfig} from "../../models/Mapa.js"
 import { layoudItem, layoud } from "./layoudModel.js";
 
-const CACHE_PATH = path.join(app.getPath("userData"), "confMap.json");
-
-console.log(CACHE_PATH);
-
-const isProd = process.env.NODE_ENV === 'production';
-const basePath = isProd
-  ? path.join(process.resourcesPath, 'layoud')
-  : path.join(__dirname, 'layoud');
 
 export class layoudManager {
   private static readonly CACHE_PATH = path.join(app.getPath("userData"), "confMap.json");
 
   private static readonly basePaths = [
-    basePath,
-    path.join(app.getPath("userData"), "layouds"),
+    path.join(app.getPath('userData'), 'layouds'),         // mapas del usuario
+    path.join(app.isPackaged
+      ? path.join(process.resourcesPath, 'mapas')          // mapas embebidos
+      : path.join(process.cwd(), 'buildResources', 'mapas')
+    )
   ];
 
   // 🔍 Devuelve todos los mapas disponibles

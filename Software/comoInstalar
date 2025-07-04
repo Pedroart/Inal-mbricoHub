@@ -1,0 +1,18 @@
+# como instalr .deb
+
+sudo dpkg -i dist/root-3.1.0-linux-amd64.deb
+
+
+# Tu binario tiene permisos cap_net_raw
+
+getcap /opt/frioshub/frioshub
+# Debe mostrar: /opt/frioshub/frioshub cap_net_raw=eip
+
+2. Copia libffmpeg.so al sistema para evitar errores de librerías:
+
+sudo cp /opt/frioshub/libffmpeg.so /usr/lib/
+sudo ldconfig
+
+3. Ahora ejecuta sin root:
+
+/opt/frioshub/frioshub

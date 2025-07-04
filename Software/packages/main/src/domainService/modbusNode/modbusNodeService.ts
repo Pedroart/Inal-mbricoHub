@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { app } from 'electron';
-import { ModbusNode } from '../../renderer/models/ModbusNode';
+import { ModbusNode } from '../../models/ModbusNode.js';
 
 const STORAGE_PATH = path.join(app.getPath('userData'), 'modbusNodes.json');
 
