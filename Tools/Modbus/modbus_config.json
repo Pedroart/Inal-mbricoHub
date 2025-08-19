@@ -1,0 +1,16 @@
+{
+  "tags": [
+    {
+      "address": 0,
+      "min": 10,
+      "max": 30,
+      "period_ms": 70
+    },
+    {
+      "address": 1,
+      "min": 10,
+      "max": 30,
+      "period_ms": 50
+    }
+  ]
+}
