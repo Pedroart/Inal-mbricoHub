@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import Header from "./components/Header/Header"
 import Menu from "./components/Menu/Menu"
@@ -12,8 +13,9 @@ import './assets/main.css';
 
 
 
-export default function App() {
-  
+//export default function App() {
+
+function App0(){
   const [currentTime, setCurrentTime] = useState(new Date())
   const [vistaActual, setVistaActual] = useState<Vista>(Vista.Inicio)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -61,3 +63,10 @@ export default function App() {
   )
 }
 
+export default function App(){
+  return (
+    <Routes>
+      
+    </Routes>
+  )
+}
