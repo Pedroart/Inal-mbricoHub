@@ -1,6 +1,6 @@
 // src/models/vista.ts
 export const Vista = {
-  Inicio: "inicio",
+  Inicio: "",
   Sensores: "sensores",
   Control: "control",
   Status : "status",
