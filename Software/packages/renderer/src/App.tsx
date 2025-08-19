@@ -13,6 +13,7 @@ import './assets/main.css';
 
 
 export default function App() {
+  
   const [currentTime, setCurrentTime] = useState(new Date())
   const [vistaActual, setVistaActual] = useState<Vista>(Vista.Inicio)
   const [menuOpen, setMenuOpen] = useState(false)
