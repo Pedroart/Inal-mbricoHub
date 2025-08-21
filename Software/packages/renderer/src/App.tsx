@@ -9,20 +9,20 @@ import { MainView } from './page/DispositivoView'
 import { Vista } from '../src/models/vista'
 import './assets/main.css';
 import { ConfiguracionGeneral } from "./page/ConfiguracionGeneral";
-
+import { HubOpciones } from "./page/Config/hub"
 
 export default function App(){
   return (
     <Routes>
       {/* Uso UI */ }
       <Route element={<UseLayout />}>
-        <Route path={Vista.Inicio} element={<VistaMapSensor />} />
-        <Route path={Vista.Sensores} element={<MainView/>} />
-        <Route path={Vista.Status} element={<div>Status</div>} />
+        <Route path={Vista.inicio} element={<VistaMapSensor />} />
+        <Route path={Vista.sensores} element={<MainView/>} />
+        <Route path={Vista.status} element={<div>Status</div>} />
       </Route>
 
-      <Route path={Vista.Config} element={<UseConfig/>}>
-        <Route index element={<ConfiguracionGeneral/>}/>
+      <Route path={Vista.configRoot} element={<UseConfig/>}>
+        <Route index element={<HubOpciones/>}/>
       </Route>
 
     </Routes>

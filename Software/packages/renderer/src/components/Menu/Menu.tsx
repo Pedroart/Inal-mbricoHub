@@ -5,24 +5,24 @@ import {
   Map, Thermometer, CheckCircle,
 } from "lucide-react"
 
-import { Vista } from "../../models/vista"
+import  { type RoutePath, Vista } from "../../models/vista"
 
 interface MenuProps {
   setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 type MenuItem = {
-  id: Vista;
+  id: RoutePath;
   label: string;
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   end?: boolean;
 }
 
 const menuItems: MenuItem[] = [
-  { id: Vista.Inicio,   label: "MAPA",      icon: Map},
-  { id: Vista.Sensores, label: "SENSORES",  icon: Thermometer},
-  { id: Vista.Status,   label: "ESTADO",    icon: CheckCircle},
-  { id: Vista.Config,   label: "CONFIG",    icon: CheckCircle},
+  { id: Vista.inicio,   label: "MAPA",      icon: Map},
+  { id: Vista.sensores, label: "SENSORES",  icon: Thermometer},
+  { id: Vista.status,   label: "ESTADO",    icon: CheckCircle},
+  { id: Vista.configRoot,   label: "CONFIG",    icon: CheckCircle},
 ];
 
 export default function Menu({ setMenuOpen }: MenuProps) {

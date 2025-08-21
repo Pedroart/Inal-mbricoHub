@@ -1,10 +1,18 @@
 // src/models/vista.ts
 export const Vista = {
-  Inicio: "",
-  Sensores: "sensores",
-  Control: "control",
-  Status : "status",
-  Config : "configuracion",
+  inicio: "",                     // index route
+  sensores: "sensores",
+  control: "control",
+  status: "status",
+
+  configRoot: "configuracion",    // /configuracion
+  configVista: "configuracion/vista",
+  configMapa: "configuracion/mapa",
+  configBluetooth: "configuracion/bluetooth",
+  configModbus: "configuracion/modbus-server",
+  configS7: "configuracion/s7-server",
+  configBaseDatos: "configuracion/base-datos",
+  configPlantilla: "configuracion/plantilla",
 } as const;
 
-export type Vista = typeof Vista[keyof typeof Vista];
+export type RoutePath = typeof Vista[keyof typeof Vista];

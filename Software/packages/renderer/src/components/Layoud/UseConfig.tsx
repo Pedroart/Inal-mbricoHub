@@ -1,15 +1,25 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
+import { Background } from "../Layoud/elementos/background"
+import { Button } from '../ui/button';
+import { ArrowLeft } from 'lucide-react';
 
 export default function UseConfig(){
-
+    const navigate = useNavigate();
     return (
-        <div className="w-screen h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 text-white ">
-          
-          <div className="h-[88vh] p-3">
-                  
-            <Outlet/>
-    
+        <Background>
+          <div className="flex items-center gap-4 p-3">
+            
+            <Button variant="ghost" size="sm" className="text-slate-300 hover:text-white"
+              onClick={()=>navigate(-1)}
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Regresar
+            </Button>
+            
           </div>
-        </div>
+          <div className="h-[88vh] p-3">
+            <Outlet/>
+          </div>
+        </Background>
     )
 }
