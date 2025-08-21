@@ -8,8 +8,9 @@ import { MainView } from './page/DispositivoView'
 
 import { Vista } from '../src/models/vista'
 import './assets/main.css';
-import { ConfiguracionGeneral } from "./page/ConfiguracionGeneral";
+
 import { HubOpciones } from "./page/Config/hub"
+import { SensorsPage } from "./page/Config/sensores"
 
 export default function App(){
   return (
@@ -23,6 +24,7 @@ export default function App(){
 
       <Route path={Vista.configRoot} element={<UseConfig/>}>
         <Route index element={<HubOpciones/>}/>
+        <Route path={Vista.configVista} element={<SensorsPage/>}/>
       </Route>
 
     </Routes>
