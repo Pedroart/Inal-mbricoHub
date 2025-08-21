@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import Link from "next/link"
+
 import { Button } from "../../components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table"
@@ -38,7 +38,7 @@ const initialSensors: Sensor[] = [
   { id: "4", name: "Retorno 1", type: "BLE", enabled: true, visible: true },
 ]
 
-export default function SensorsPage() {
+export const SensorsPage: React.FC = () =>{
   const [sensors, setSensors] = useState<Sensor[]>(initialSensors)
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
@@ -131,8 +131,75 @@ export default function SensorsPage() {
       <div>
         {/* Sensors Table */}
         <Card className="bg-slate-800/50 border-slate-700 backdrop-blur-sm">
-          <CardHeader>
+          <CardHeader  className="flex flex-row items-center justify-between">
             <CardTitle className="text-white">Lista de Sensores</CardTitle>
+
+            <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+              <DialogTrigger asChild>
+                <Button className="bg-blue-600 hover:bg-blue-700">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Agregar Sensores
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="bg-slate-800 border-slate-700 text-white">
+                <DialogHeader>
+                  <DialogTitle>Agregar Nuevos Sensores</DialogTitle>
+                  <DialogDescription className="text-slate-300">
+                    Selecciona el tipo y categoría de sensores a crear
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="sensor-type">Tipo de Sensor</Label>
+                    <Select value={newSensorType} onValueChange={setNewSensorType}>
+                      <SelectTrigger className="bg-slate-700 border-slate-600">
+                        <SelectValue placeholder="Seleccionar tipo" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-slate-700 border-slate-600">
+                        <SelectItem value="BLE">BLE</SelectItem>
+                        <SelectItem value="Modbus">Modbus</SelectItem>
+                        <SelectItem value="S7">S7</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="sensor-category">Categoría</Label>
+                    <Select value={newSensorCategory} onValueChange={setNewSensorCategory}>
+                      <SelectTrigger className="bg-slate-700 border-slate-600">
+                        <SelectValue placeholder="Seleccionar categoría" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-slate-700 border-slate-600">
+                        <SelectItem value="Pulpa °C">Pulpa °C</SelectItem>
+                        <SelectItem value="Pulpa V">Pulpa V</SelectItem>
+                        <SelectItem value="Ambiente">Ambiente</SelectItem>
+                        <SelectItem value="Retorno">Retorno</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="quantity">Cantidad</Label>
+                    <Input
+                      id="quantity"
+                      type="number"
+                      min="1"
+                      max={getMaxQuantity(newSensorCategory)}
+                      value={newSensorQuantity}
+                      onChange={(e) => setNewSensorQuantity(Number.parseInt(e.target.value) || 1)}
+                      className="bg-slate-700 border-slate-600"
+                    />
+                    {newSensorCategory && (
+                      <p className="text-sm text-slate-400 mt-1">
+                        Máximo: {getMaxQuantity(newSensorCategory)} sensores
+                      </p>
+                    )}
+                  </div>
+                  <Button onClick={handleAddSensors} className="w-full bg-blue-600 hover:bg-blue-700">
+                    Crear Sensores
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+
           </CardHeader>
           <CardContent>
             <Table>
@@ -162,7 +229,7 @@ export default function SensorsPage() {
                       </span>
                     </TableCell>
                     <TableCell>
-                      <Switch checked={sensor.visible} onCheckedChange={() => toggleSensorVisibility(sensor.id)} />
+                      <Switch className="bg-white" checked={sensor.visible} onCheckedChange={() => toggleSensorVisibility(sensor.id)} />
                     </TableCell>
                     <TableCell>
                       <Button
