@@ -11,6 +11,7 @@ import './assets/main.css';
 
 import { HubOpciones } from "./page/Config/hub"
 import { SensorsPage } from "./page/Config/sensores"
+import { MapMarker } from "./page/Config/map"
 
 export default function App(){
   return (
@@ -25,6 +26,8 @@ export default function App(){
       <Route path={Vista.configRoot} element={<UseConfig/>}>
         <Route index element={<HubOpciones/>}/>
         <Route path={Vista.configVista} element={<SensorsPage/>}/>
+        <Route path={Vista.configMapa} element={<MapMarker/>}/>
+
       </Route>
 
     </Routes>
