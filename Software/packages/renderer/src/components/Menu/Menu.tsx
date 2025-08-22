@@ -25,9 +25,9 @@ const menuItems: MenuItem[] = [
   { id: Vista.configRoot,   label: "CONFIG",    icon: CheckCircle},
 ];
 
-export default function Menu({ setMenuOpen }: MenuProps) {
+export default function Menuclass({ setMenuOpen }: MenuProps) {
   return (
-    <div className="absolute top-[12vh] left-0 right-0 bg-slate-800/95 backdrop-blur-sm border-b border-slate-700 z-50 p-4">
+    <div className="absolute top-[8rem] left-0 right-0 bg-slate-800/95 backdrop-blur-sm border-b border-slate-700 z-50 p-4">
       <div className="grid grid-cols-2  gap-4">
         {menuItems.map(({ id, label, icon: Icon }) => (
           <NavLink key={id} to={id}>
@@ -35,13 +35,13 @@ export default function Menu({ setMenuOpen }: MenuProps) {
               <Button
                 size="lg"
                 onClick={() => setMenuOpen(false)}
-                className={`h-20 text-3xl font-bold flex items-center ${
+                className={`font-bold flex items-center ${
                   isActive
                     ? "bg-teal-600 hover:bg-teal-700"
                     : "bg-slate-700 hover:bg-slate-600"
                 }`}
               >
-                <Icon className="!h-16 !w-16 mr-3"/>
+                <Icon className=""/>
                 {label}
               </Button>
             )}

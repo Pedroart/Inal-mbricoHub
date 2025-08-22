@@ -59,7 +59,7 @@ export const DashboardSensores: React.FC<DashboardSensoresProps> = ({ onSensorCl
   };
 
   return (
-    <div className="h-full scrollbar-hidden overflow-y-auto">
+    <div className="h-full hide-scrollbar no-scrollbar overflow-y-auto">
       <div className="space-y-6">
         {dispositivosData.map((dispositivo) => (
           <Card key={dispositivo.codigoDispositivo} className="bg-slate-800/50 border-slate-700">
@@ -73,16 +73,16 @@ export const DashboardSensores: React.FC<DashboardSensoresProps> = ({ onSensorCl
                     }`}
                   />
                   <div>
-                    <h3 className="text-4xl font-bold text-white">{dispositivo.nombre}</h3>
-                    <p className="text-3xl text-slate-300 font-mono">
+                    <h3 className="font-bold text-white">{dispositivo.nombre}</h3>
+                    <p className="text-slate-300 font-mono">
                       {dispositivo.codigoDispositivo}
                     </p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-2xl text-slate-400">Estado</div>
+                  <div className="text-slate-400">Estado</div>
                   <div
-                    className={`text-3xl font-bold ${
+                    className={`font-bold ${
                       dispositivo.habilitador ? "text-green-400" : "text-red-400"
                     }`}
                   >
@@ -102,7 +102,7 @@ export const DashboardSensores: React.FC<DashboardSensoresProps> = ({ onSensorCl
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center space-x-2">
                         {getSensorIcon(sensor)}
-                        <span className="text-2xl font-semibold text-white">{sensor.nombre}</span>
+                        <span className="font-semibold text-white">{sensor.nombre}</span>
                       </div>
                       <div
                         className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full ${
@@ -112,8 +112,8 @@ export const DashboardSensores: React.FC<DashboardSensoresProps> = ({ onSensorCl
                     </div>
 
                     <div className="text-center">
-                      <div className="text-4xl text-slate-400 font-mono">{sensor.codigoSensor}</div>
-                      <div className="text-4xl text-slate-500">{sensor.tipo}</div>
+                      <div className="text-slate-400 font-mono">{sensor.codigoSensor}</div>
+                      <div className="text-slate-500">{sensor.tipo}</div>
                     </div>
                   </div>
                 ))}
