@@ -1,6 +1,8 @@
 import {AppModule} from './AppModule.js';
 import {ModuleContext} from './ModuleContext.js';
 import {app} from 'electron';
+import {Bus} from './Buss.js'
+import {AppEvents} from './Events.js'
 
 class ModuleRunner implements PromiseLike<void> {
   #promise: Promise<void>;
@@ -26,6 +28,8 @@ class ModuleRunner implements PromiseLike<void> {
   #createModuleContext(): ModuleContext {
     return {
       app,
+      bus: new Bus<AppEvents>(),   // canal de eventos compartido
+      services: new Map(),
     };
   }
 }
