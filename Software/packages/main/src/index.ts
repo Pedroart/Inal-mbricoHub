@@ -7,12 +7,7 @@ import {hardwareAccelerationMode} from './modules/HardwareAccelerationModule.js'
 import {autoUpdater} from './modules/AutoUpdater.js';
 import {allowInternalOrigins} from './modules/BlockNotAllowdOrigins.js';
 import {allowExternalUrls} from './modules/ExternalUrls.js';
-import { BLEScannerService } from './domainService/BLE/BLEScannerService.js';
-import { LayoudModule } from './domainService/layoud/layoudControler.js';
-import { MapaModule } from './domainService/mapa/mapaController.js';
-import { ModbusNodeModule } from './domainService/modbusNode/modbusNodeController.js';
-import { SensorModule } from './domainService/sensor/sensorController.js';
-import { StorageModule } from './domainService/storage/storageController.js';
+
 
 export async function initApp(initConfig: AppInitConfig) {
   const moduleRunner = createModuleRunner()
@@ -24,15 +19,7 @@ export async function initApp(initConfig: AppInitConfig) {
 
     // Install DevTools extension if needed
     // .init(chromeDevToolsExtension({extension: 'VUEJS3_DEVTOOLS'}))
-    
-    .init(new StorageModule())
-    .init(new ModbusNodeModule())
-    .init(new BLEScannerService())
-    
-    .init(new LayoudModule())
-    .init(new MapaModule())
-    .init(new SensorModule())
-    
+
     // Security
     .init(allowInternalOrigins(
       new Set(initConfig.renderer instanceof URL ? [initConfig.renderer.origin] : []),

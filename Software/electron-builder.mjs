@@ -11,12 +11,7 @@ export default /** @type import('electron-builder').Configuration */
   },
   generateUpdatesFilesForAllChannels: true,
   linux: {
-    target: [
-      {
-        target: "deb",  // o "deb", "snap", etc.
-        arch: ["x64", "arm64"]  // ✅ esta es la forma correcta
-      }
-    ]
+    target: ['deb'],
   },
   /**
    * It is recommended to avoid using non-standard characters such as spaces in artifact names,
@@ -27,7 +22,6 @@ export default /** @type import('electron-builder').Configuration */
     'LICENSE*',
     pkg.main,
     '!node_modules/@app/**',
-    'buildResources/mapas/**',
     ...await getListOfFilesFromEachWorkspace(),
   ],
 });
