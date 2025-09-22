@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Modbus TCP Simulator con UI en vivo (curses) y fallback a UI simple ANSI.
+Modbus TCP Simulator con UI en vivo (curses) y fallback a UI simple ANSI..
 Teclas:
   a=agregar/actualizar, d=borrar, s=guardar, l=cargar, c=vaciar, p=pausa, q=salir
 """
