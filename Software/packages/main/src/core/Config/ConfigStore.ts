@@ -3,7 +3,7 @@ import path from 'node:path'
 import fs from 'node:fs/promises'
 import {
   SensorType, Entry, ModbusServer, EntryModbus, EntryBle, DashboardWidget
-} from '../models/domain.js'
+} from '../../models/domain.js'
 import { AppModule } from 'src/AppModule.js'
 import { ModuleContext } from 'src/ModuleContext.js'
 

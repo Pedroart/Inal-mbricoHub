@@ -1,11 +1,11 @@
 // modules/ConfigIpcModule.ts
 import { BrowserWindow, ipcMain } from 'electron'
-import type { AppModule } from '../AppModule.js'
-import type { ModuleContext } from '../ModuleContext.js'
-import { ConfigStore } from '../core/ConfigStore.js'
+import type { AppModule } from '../../AppModule.js'
+import type { ModuleContext } from '../../ModuleContext.js'
+import { ConfigStore } from './ConfigStore.js'
 import type {
   Entry, SensorType, ModbusServer, EntryModbus, EntryBle, DashboardWidget
-} from '../models/domain.js'
+} from '../../models/domain.js'
 
 export class ConfigIpcModule implements AppModule {
   enable(ctx: ModuleContext): void {
