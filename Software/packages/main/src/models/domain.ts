@@ -2,7 +2,7 @@
 export type SensorType = {
   id: number
   name: string
-  unit: string
+  index: string
   quantity: number
   operation: string
 }

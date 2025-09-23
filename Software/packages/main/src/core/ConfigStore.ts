@@ -68,6 +68,93 @@ export class ConfigStore {
     await this.load()
   }
 
+  getProfile(): ConfigProfile {
+    if( !this.profile ) { throw new Error('No profile loaded') }
+    return this.profile
+  }
+
+  // ----- Entries  ----- 
+  listEntries() { return this.getProfile().entry }
+  upsertEntry(e: Entry) {
+    const p = this.getProfile()
+    const i = p.entry.findIndex( x => x.id === e.id )
+
+    if (i >= 0 ) p.entry[i] = e; else p.entry.push(e)
+  }
+  removeEntry(id: string){
+    const p = this.getProfile()
+    p.entry = p.entry.filter(x => x.id !== id)
+
+    p.entry_modbus = p.entry_modbus.filter(x => x.entry_id !== id)
+    p.entry_ble = p.entry_ble.filter(x => x.entry_id !== id)
+
+    p.dashboard_widget = p.dashboard_widget.filter( x => x.entry_id !== id )
+  }
+
+  // ---------- Sensor Types ----------
+  listSensorTypes() { return this.getProfile().sensor_type }
+  upsertSensorType(s: SensorType) {
+    const p = this.getProfile()
+    const i = p.sensor_type.findIndex(x => x.id === s.id)
+    if (i >= 0) p.sensor_type[i] = s; else p.sensor_type.push(s)
+  }
+  removeSensorType(id: number) {
+    const p = this.getProfile()
+    p.sensor_type = p.sensor_type.filter(x => x.id !== id)
+  }
+
+  // ---------- Modbus Servers ----------
+  listModbusServers() { return this.getProfile().modbus_server }
+  upsertModbusServer(s: ModbusServer) {
+    const p = this.getProfile()
+    const i = p.modbus_server.findIndex(x => x.id === s.id)
+    if (i >= 0) p.modbus_server[i] = s; else p.modbus_server.push(s)
+  }
+  removeModbusServer(id: number) {
+    const p = this.getProfile()
+    p.modbus_server = p.modbus_server.filter(x => x.id !== id)
+    // (opcional) limpiar entry_modbus que apunten a este server
+    p.entry_modbus = p.entry_modbus.filter(x => x.server_id !== id)
+  }
+
+  // ---------- Dashboard ----------
+  listWidgets() { return this.getProfile().dashboard_widget }
+  upsertWidget(w: DashboardWidget) {
+    const p = this.getProfile()
+    const i = p.dashboard_widget.findIndex(x => x.entry_id === w.entry_id)
+    if (i >= 0) p.dashboard_widget[i] = w; else p.dashboard_widget.push(w)
+  }
+  removeWidget(entry_id: string) {
+    const p = this.getProfile()
+    p.dashboard_widget = p.dashboard_widget.filter(x => x.entry_id !== entry_id)
+  }
+
+  // ---------- Bindings Modbus/BLE ----------
+  getEntryModbus(entry_id: string) {
+    return this.getProfile().entry_modbus.find(x => x.entry_id === entry_id)
+  }
+  setEntryModbus(b: EntryModbus) {
+    const p = this.getProfile()
+    const i = p.entry_modbus.findIndex(x => x.entry_id === b.entry_id)
+    if (i >= 0) p.entry_modbus[i] = b; else p.entry_modbus.push(b)
+  }
+  removeEntryModbus(entry_id: string) {
+    const p = this.getProfile()
+    p.entry_modbus = p.entry_modbus.filter(x => x.entry_id !== entry_id)
+  }
+
+  getEntryBle(entry_id: string) {
+    return this.getProfile().entry_ble.find(x => x.entry_id === entry_id)
+  }
+  setEntryBle(b: EntryBle) {
+    const p = this.getProfile()
+    const i = p.entry_ble.findIndex(x => x.entry_id === b.entry_id)
+    if (i >= 0) p.entry_ble[i] = b; else p.entry_ble.push(b)
+  }
+  removeEntryBle(entry_id: string) {
+    const p = this.getProfile()
+    p.entry_ble = p.entry_ble.filter(x => x.entry_id !== entry_id)
+  }
 }
 
 export class ConfigModule implements AppModule {

@@ -9,6 +9,7 @@ import {allowInternalOrigins} from './modules/BlockNotAllowdOrigins.js';
 import {allowExternalUrls} from './modules/ExternalUrls.js';
 //import { createIngestModule, createLoggerModule } from './modules/TestBuss.js'
 import {loadConfigModule} from './core/ConfigStore.js';
+import {createConfigIpcModule} from './core/ConfigIpcModule.js'
 
 export async function initApp(initConfig: AppInitConfig) {
   const moduleRunner = createModuleRunner()
@@ -20,6 +21,7 @@ export async function initApp(initConfig: AppInitConfig) {
     //.init(createIngestModule())
     //.init(createLoggerModule())
     .init(loadConfigModule())
+    .init(createConfigIpcModule())
 
     // Install DevTools extension if needed
     // .init(chromeDevToolsExtension({extension: 'VUEJS3_DEVTOOLS'}))
@@ -48,3 +50,4 @@ export async function initApp(initConfig: AppInitConfig) {
 
   await moduleRunner;
 }
+
