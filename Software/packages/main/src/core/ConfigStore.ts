@@ -4,6 +4,8 @@ import fs from 'node:fs/promises'
 import {
   SensorType, Entry, ModbusServer, EntryModbus, EntryBle, DashboardWidget
 } from '../models/domain.js'
+import { AppModule } from 'src/AppModule.js'
+import { ModuleContext } from 'src/ModuleContext.js'
 
 export type ConfigProfile = {
   sensor_type: SensorType[]
@@ -30,6 +32,7 @@ export class ConfigStore {
   }
 
   async load(): Promise<void> {
+    await app.whenReady()
     await fs.mkdir(this.dir, { recursive: true })
     const file = this.profilePath()
     let raw: string
@@ -48,6 +51,7 @@ export class ConfigStore {
       await fs.writeFile(file, JSON.stringify(empty, null, 2), 'utf8')
       raw = JSON.stringify(empty)
     }
+    console.log('Config user load: ',this.activeName )
     const json = JSON.parse(raw) as ConfigProfile
     this.profile = json
   }
@@ -55,6 +59,7 @@ export class ConfigStore {
   async save(): Promise<void> {
     if (!this.profile) throw new Error('No profile loaded')
     await fs.writeFile(this.profilePath(), JSON.stringify(this.profile, null, 2), 'utf8')
+    console.log('File saved in: ', this.profilePath())
   }
 
   async switchActive(name: string): Promise<void> {
@@ -63,4 +68,25 @@ export class ConfigStore {
     await this.load()
   }
 
+}
+
+export class ConfigModule implements AppModule {
+
+  constructor(private activateName?: string) {}
+
+  async enable(ctx: ModuleContext): Promise<void> {
+    await ctx.app.whenReady()
+
+    const cfg = new ConfigStore(this.activateName)
+    await cfg.load()
+
+    ctx.services.set('config',cfg)
+    ctx.bus.emit('config:loaded', {profile: cfg.activeProfileName} )
+
+    cfg.save()
+  }
+}
+
+export function loadConfigModule(){
+  return new ConfigModule()
 }

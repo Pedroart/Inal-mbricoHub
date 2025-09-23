@@ -5,4 +5,7 @@ export type AppEvents = {
   'store:updated': { devId: string }
   'update:available': { version: string }
   'update:progress': { percent: number }
+
+  // Eventos de config Module
+  'config:loaded': {profile: string}
 }
