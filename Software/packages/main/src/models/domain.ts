@@ -7,11 +7,13 @@ export type SensorType = {
   operation: string
 }
 
+export type Protocol = 'MODBUS' | 'BLE' | string
+
 export type Entry = {
   id: string            // uuid
   sensor_type_id: number
   order: number
-  protocol: 'MODBUS' | 'BLE' | string
+  protocol: Protocol
   enabled: boolean
   frecuency_s: number
   operation: string

@@ -130,6 +130,7 @@ export class ConfigStore {
   }
 
   // ---------- Bindings Modbus/BLE ----------
+  listEntryModbus() { this.getProfile().entry_modbus }
   getEntryModbus(entry_id: string) {
     return this.getProfile().entry_modbus.find(x => x.entry_id === entry_id)
   }
@@ -143,6 +144,7 @@ export class ConfigStore {
     p.entry_modbus = p.entry_modbus.filter(x => x.entry_id !== entry_id)
   }
 
+  listEntryBle() { this.getProfile().entry_ble }
   getEntryBle(entry_id: string) {
     return this.getProfile().entry_ble.find(x => x.entry_id === entry_id)
   }
