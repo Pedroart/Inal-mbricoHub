@@ -33,6 +33,8 @@ export class ConfigIpcModule implements AppModule {
       return true
     })
     ipcMain.handle('config.profile.save', async () => { await cfg().save(); notify(); return true })
+    ipcMain.handle('config.profile.saveAs', async (_e, newName: string, overwrite) => { await cfg().saveAs(newName,overwrite); notify(); return true })
+    ipcMain.handle('config.profile.remove', async (_e, name: string) => { await cfg().removeProfile(name); notify(); return } )
 
     // Entries
     ipcMain.handle('config.entries.list', () => cfg().listEntries())

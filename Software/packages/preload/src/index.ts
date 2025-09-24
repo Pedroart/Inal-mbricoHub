@@ -16,6 +16,8 @@ export const api = {
       get:     () => ipcRenderer.invoke('config.profile.get'),
       setActive: (name: string) => ipcRenderer.invoke('config.profile.setActive', name),
       save:      () => ipcRenderer.invoke('config.profile.save'),
+      saveAs:    (newName: string, overwrite: boolean) => ipcRenderer.invoke('config.profile.saveAs', newName, overwrite),
+      remove:    (name: string) => ipcRenderer.invoke('config.profile.remove',name),
       onChanged(cb: (e: { profile: string }) => void) {
         const h = (_: any, p: any) => cb(p)
         ipcRenderer.on('config:changed', h)

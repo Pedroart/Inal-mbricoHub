@@ -20,7 +20,8 @@ export type ConfigProfile = {
 
 export class ConfigStore {
   private dir = path.join(app.getPath('userData'), 'configs')
-  private activeName = 'default'
+  private readonly defaulName = 'activo'
+  private activeName = this.defaulName
   private profile: ConfigProfile | null = null
   private bus?: Bus<AppEvents>;
 
@@ -65,8 +66,40 @@ export class ConfigStore {
 
   async save(): Promise<void> {
     if (!this.profile) throw new Error('No profile loaded')
-    await fs.writeFile(this.profilePath(), JSON.stringify(this.profile, null, 2), 'utf8')
+    await fs.writeFile(this.profilePath(this.defaulName), JSON.stringify(this.profile, null, 2), 'utf8')
     console.log('File saved in: ', this.profilePath())
+  }
+
+  async saveAs(newName: string, overwrite: boolean = false): Promise<void> {
+    if (!this.profile) throw new Error('No profile loaded')
+
+    const newPath = this.profilePath(newName)
+
+    try {
+      // Verificar si existe
+      await fs.access(newPath)
+      if (!overwrite) {
+        throw new Error(`Profile "${newName}" already exists`)
+      }
+    } catch {
+      // si no existe, continúa normal
+    }
+
+    await fs.writeFile(newPath, JSON.stringify(this.profile, null, 2), 'utf8')
+
+    // cambiar activo si quieres
+    //this.activeName = newName
+    console.log(`Profile saved as: ${newPath}`)
+  }
+
+  async removeProfile(name: string): Promise<void> {
+    const file = this.profilePath(name)
+    await fs.rm(file, { force: true })
+    // si borras el activo, vuelve a default
+    if (this.activeName === name) {
+      this.activeName = this.defaulName
+      await this.load()
+    }
   }
 
   async switchActive(name: string): Promise<void> {
@@ -127,7 +160,19 @@ export class ConfigStore {
   upsertModbusServer(s: ModbusServer) {
     const p = this.getProfile()
     const i = p.modbus_server.findIndex(x => x.id === s.id)
-    if (i >= 0) p.modbus_server[i] = s; else p.modbus_server.push(s)
+    console.log(s)
+    if (i >= 0) {
+      // actualizar existente
+      p.modbus_server[i] = s
+    } else {
+      // asignar nuevo id autoincremental
+      const nextId =
+        p.modbus_server.length > 0
+          ? Math.max(...p.modbus_server.map(x => x.id)) + 1
+          : 1
+      s.id = nextId
+      p.modbus_server.push(s)
+    }
   }
   removeModbusServer(id: number) {
     const p = this.getProfile()
@@ -159,6 +204,7 @@ export class ConfigStore {
     if (i >= 0) p.entry_modbus[i] = b; else p.entry_modbus.push(b)
   }
   removeEntryModbus(entry_id: string) {
+    console.log('Delete entry Modbus: ',entry_id)
     const p = this.getProfile()
     p.entry_modbus = p.entry_modbus.filter(x => x.entry_id !== entry_id)
   }

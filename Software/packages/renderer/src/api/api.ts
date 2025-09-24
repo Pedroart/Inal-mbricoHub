@@ -1,14 +1,58 @@
-import type {ConfigProfile} from './models'
+import type {
+  ConfigProfile,
+  Entry,
+  SensorType,
+  ModbusServer,
+  EntryModbus,
+  EntryBle,
+  DashboardWidget
+} from './models'
 
 export type Api = {
-    config: {
-        profile: {
-            list: () => Promise<string[]>
-            getName: () => Promise<string>,
-            get: () => Promise<ConfigProfile>,
-            setActive: (name: string) => Promise<boolean>,
-            save: () => Promise<void>,
-            onChanged: (cb: (e: { profile: string }) => void) => () => void
-        }
+  config: {
+    profile: {
+      list: () => Promise<string[]>
+      getName: () => Promise<string>
+      get: () => Promise<ConfigProfile>
+      setActive: (name: string) => Promise<boolean>
+      save: () => Promise<void>
+      saveAs: (newName: string, overwrite: boolean) => Promise<void>
+      remove: (name: string) => Promise<void>
+      onChanged: (cb: (e: { profile: string }) => void) => () => void
     }
+    entries: {
+      list: () => Promise<Entry[]>
+      upsert: (e: Entry) => Promise<boolean>
+      remove: (id: string) => Promise<boolean>
+    }
+    sensorTypes: {
+      list: () => Promise<SensorType[]>
+      upsert: (s: SensorType) => Promise<boolean>
+      remove: (id: number) => Promise<boolean>
+    }
+    modbus: {
+      servers: {
+        list: () => Promise<ModbusServer[]>
+        upsert: (s: ModbusServer) => Promise<boolean>
+        remove: (id: number) => Promise<boolean>
+      }
+      bind: {
+        get: (entryId: string) => Promise<EntryModbus | undefined>
+        set: (b: EntryModbus) => Promise<boolean>
+        remove: (entryId: string) => Promise<boolean>
+      }
+    }
+    ble: {
+      bind: {
+        get: (entryId: string) => Promise<EntryBle | undefined>
+        set: (b: EntryBle) => Promise<boolean>
+        remove: (entryId: string) => Promise<boolean>
+      }
+    }
+    widgets: {
+      list: () => Promise<DashboardWidget[]>
+      upsert: (w: DashboardWidget) => Promise<boolean>
+      remove: (entryId: string) => Promise<boolean>
+    }
+  }
 }

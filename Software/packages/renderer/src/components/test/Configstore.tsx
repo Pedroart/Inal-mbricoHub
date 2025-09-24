@@ -16,6 +16,8 @@ export default function ProfileTests(){
     const [profiles, setProfiles] = useState<string[]>([])
     const [profile, setProfile] = useState<ConfigProfile>(emptyProfile)
     const [lastChanged, setLastChanged] = useState<Date>(new Date())
+    const [newProfileName, setNewProfileName] = useState('')
+    const [deleteTarget, setDeleteTarget] = useState('')
 
     useEffect(()=>{
         window.api.config.profile.getName().then(setName)
@@ -30,6 +32,13 @@ export default function ProfileTests(){
 
     const handleSave = async () => {
         await window.api.config.profile.save()
+        await window.api.config.profile.list().then(setProfiles)
+    }
+
+    const handleSaveAs = async () => {
+        if (!newProfileName.trim()) return
+        await window.api.config.profile.saveAs(newProfileName.trim(),false)
+        await window.api.config.profile.list().then(setProfiles)
     }
 
     const handleSelect = async ( e: React.ChangeEvent<HTMLSelectElement> ) => {
@@ -38,6 +47,20 @@ export default function ProfileTests(){
         if ( selected && selected !== name){
             await window.api.config.profile.setActive(selected)
         }
+    }
+
+    const handleDelete = async () => {
+        if (!deleteTarget) return
+        if (!confirm(`¿Seguro que deseas borrar el perfil "${deleteTarget}"?`)) return
+        await window.api.config.profile.remove(deleteTarget)
+        setProfiles(await window.api.config.profile.list())
+        // si borramos el activo, se cargará default otra vez en backend
+        if (deleteTarget === name) {
+        const newActive = await window.api.config.profile.getName()
+        setName(newActive)
+        setProfile(await window.api.config.profile.get())
+        }
+        setDeleteTarget('')
     }
 
     return (
@@ -71,7 +94,50 @@ export default function ProfileTests(){
                     </option>
                     ))}
                 </select>
-            </div>   
+            </div>
+            <div className="bg-white shadow rounded-xl p-6">
+                <h2 className="text-xl font-semibold text-gray-800">
+                    Guardar o Clonar
+                </h2>
+                <input
+                    type="text"
+                    placeholder="Nuevo nombre"
+                    value={newProfileName}
+                    onChange={(e) => setNewProfileName(e.target.value)}
+                    className="border rounded-md px-2 py-1 text-sm flex-1"
+                />
+                <button
+                    onClick={handleSaveAs}
+                >
+                    Guardar como
+                </button>
+            </div>
+            
+            <div className="bg-white shadow rounded-xl p-6 space-y-4">
+                <h2 className="text-xl font-semibold text-red-700">Borrar perfil</h2>
+                <select
+                value={deleteTarget}
+                onChange={(e) => setDeleteTarget(e.target.value)}
+                className="border rounded-md px-2 py-1 text-sm w-full"
+                >
+                <option value="">-- Selecciona un perfil --</option>
+                {profiles
+                    .filter((p) => p !== "default") // opcional: proteger default
+                    .map((p) => (
+                    <option key={p} value={p}>
+                        {p}
+                    </option>
+                    ))}
+                </select>
+                <button
+                onClick={handleDelete}
+                disabled={!deleteTarget}
+                className="px-4 py-2 bg-red-600 text-white rounded-md disabled:opacity-50"
+                >
+                Borrar perfil
+                </button>
+            </div>
+
             <div className="bg-white shadow rounded-xl p-6">
                 <h2 className="text-xl font-semibold text-gray-800">
                     Informacion del Perfil actual
