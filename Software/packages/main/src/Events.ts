@@ -8,4 +8,6 @@ export type AppEvents = {
 
   // Eventos de config Module
   'config:loaded': {profile: string}
+  'config:changed': {profile: string}
+  
 }

@@ -14,14 +14,17 @@ export class ConfigIpcModule implements AppModule {
       if (!i) throw new Error('ConfigStore not ready')
       return i as ConfigStore
     }
+    
     const notify = () => {
       const profile = cfg().activeProfileName
       for (const w of BrowserWindow.getAllWindows()) {
         w.webContents.send('config:changed', { profile })
+        ctx.bus.emit('config:changed', { profile })
       }
     }
 
     // Perfil
+    ipcMain.handle('config.profile.list', () => cfg().listProfile() )
     ipcMain.handle('config.profile.getName', () => cfg().activeProfileName)
     ipcMain.handle('config.profile.get', () => structuredClone(cfg().getProfile()))
     ipcMain.handle('config.profile.setActive', async (_e, name: string) => {

@@ -10,6 +10,7 @@ import {allowExternalUrls} from './modules/ExternalUrls.js';
 //import { createIngestModule, createLoggerModule } from './modules/TestBuss.js'
 import {loadConfigModule} from './core/config/ConfigStore.js';
 import {createConfigIpcModule} from './core/config/ConfigIpcModule.js'
+import {runnerModbus} from './core/entries/ModbusRunner.js'
 
 export async function initApp(initConfig: AppInitConfig) {
   const moduleRunner = createModuleRunner()
@@ -24,6 +25,7 @@ export async function initApp(initConfig: AppInitConfig) {
     .init(loadConfigModule())
     .init(createConfigIpcModule())
 
+    .init(runnerModbus())
     // Install DevTools extension if needed
     // .init(chromeDevToolsExtension({extension: 'VUEJS3_DEVTOOLS'}))
 

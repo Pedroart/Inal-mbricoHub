@@ -6,6 +6,8 @@ import {
 } from '../../models/domain.js'
 import { AppModule } from 'src/AppModule.js'
 import { ModuleContext } from 'src/ModuleContext.js'
+import {AppEvents} from '../../Events.js'
+import {Bus} from '../../Buss.js'
 
 export type ConfigProfile = {
   sensor_type: SensorType[]
@@ -20,9 +22,11 @@ export class ConfigStore {
   private dir = path.join(app.getPath('userData'), 'configs')
   private activeName = 'default'
   private profile: ConfigProfile | null = null
+  private bus?: Bus<AppEvents>;
 
-  constructor(activeName?: string) {
+  constructor(bus: Bus<AppEvents> ,activeName?: string) {
     if (activeName) this.activeName = activeName
+    this.bus = bus
   }
 
   get activeProfileName() { return this.activeName }
@@ -36,18 +40,21 @@ export class ConfigStore {
     await fs.mkdir(this.dir, { recursive: true })
     const file = this.profilePath()
     let raw: string
+
+    const empty: ConfigProfile = {
+      sensor_type: [],
+      entry: [],
+      modbus_server: [],
+      entry_modbus: [],
+      entry_ble: [],
+      dashboard_widget: []
+    }
+
     try {
       raw = await fs.readFile(file, 'utf8')
+      if (!raw.trim()) raw = JSON.stringify(empty)
     } catch {
       // si no existe, crear perfil vacío
-      const empty: ConfigProfile = {
-        sensor_type: [],
-        entry: [],
-        modbus_server: [],
-        entry_modbus: [],
-        entry_ble: [],
-        dashboard_widget: []
-      }
       await fs.writeFile(file, JSON.stringify(empty, null, 2), 'utf8')
       raw = JSON.stringify(empty)
     }
@@ -66,11 +73,23 @@ export class ConfigStore {
     this.activeName = name
     this.profile = null
     await this.load()
+    await this.bus?.emit('config:changed', {profile: this.activeName})
   }
 
   getProfile(): ConfigProfile {
     if( !this.profile ) { throw new Error('No profile loaded') }
     return this.profile
+  }
+
+  async listProfile(): Promise<string[]> {
+    await fs.mkdir(this.dir, {recursive: true})
+    const files = await fs.readdir(this.dir)
+
+    const profiles = files
+      .filter(_file => _file.endsWith(".json"))
+      .map(_file => path.basename(_file,".json"))
+
+    return profiles
   }
 
   // ----- Entries  ----- 
@@ -130,7 +149,7 @@ export class ConfigStore {
   }
 
   // ---------- Bindings Modbus/BLE ----------
-  listEntryModbus() { this.getProfile().entry_modbus }
+  listEntryModbus() { return this.getProfile().entry_modbus }
   getEntryModbus(entry_id: string) {
     return this.getProfile().entry_modbus.find(x => x.entry_id === entry_id)
   }
@@ -144,7 +163,7 @@ export class ConfigStore {
     p.entry_modbus = p.entry_modbus.filter(x => x.entry_id !== entry_id)
   }
 
-  listEntryBle() { this.getProfile().entry_ble }
+  listEntryBle() { return this.getProfile().entry_ble }
   getEntryBle(entry_id: string) {
     return this.getProfile().entry_ble.find(x => x.entry_id === entry_id)
   }
@@ -166,7 +185,7 @@ export class ConfigModule implements AppModule {
   async enable(ctx: ModuleContext): Promise<void> {
     await ctx.app.whenReady()
 
-    const cfg = new ConfigStore(this.activateName)
+    const cfg = new ConfigStore(ctx.bus,this.activateName)
     await cfg.load()
 
     ctx.services.set('config',cfg)
@@ -174,6 +193,7 @@ export class ConfigModule implements AppModule {
 
     cfg.save()
   }
+
 }
 
 export function loadConfigModule(){

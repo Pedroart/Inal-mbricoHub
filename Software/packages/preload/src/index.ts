@@ -1,9 +1,17 @@
 // preload/src/index.ts
+
+/* Nota: Si quieres aplicar el cambio correctamente
+  1. Cambiar el Handle a nivel de main
+  2. Cambiar el invoke a nivel de preload
+  3. cambiar la definicion de API a nivel de render
+*/
+
 import { contextBridge, ipcRenderer } from 'electron'
 
 export const api = {
   config: {
     profile: {
+      list:    () => ipcRenderer.invoke('config.profile.list'), 
       getName: () => ipcRenderer.invoke('config.profile.getName'),
       get:     () => ipcRenderer.invoke('config.profile.get'),
       setActive: (name: string) => ipcRenderer.invoke('config.profile.setActive', name),
