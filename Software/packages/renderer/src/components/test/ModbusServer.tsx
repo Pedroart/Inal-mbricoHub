@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import type { ModbusServer } from "../../api/models/modbus"
+import type { ModbusServer } from "../../api/models"
 
 export default function ModbusServerPage() {
   const [servers, setServers] = useState<ModbusServer[]>([])

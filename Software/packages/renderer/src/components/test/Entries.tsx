@@ -16,7 +16,9 @@ export default function EntriesPage() {
   const [bulkCount, setBulkCount] = useState(1)
 
   const [editTarget, setEditTarget] = useState<number>(-1)
-  const [editEntry, setEditEntry] = useState<Partial<Entry>>({})
+  const [editEntry, setEditEntry] = useState<Partial<Entry>>({
+    order: 0,
+  })
 
   const [deleteTarget, setDeleteTarget] = useState<number>(-1)
   const [deleteBulkTarget, setDeleteBulkTarget] = useState<number>(0)
@@ -40,7 +42,7 @@ export default function EntriesPage() {
 
     const toCreate: Entry[] = []
     let created = 0
-    let order = newEntry.order
+    let order = newEntry.order ?? 0
 
     while (created < bulkCount && order <= st.quantity) {
         if (!existingOrders.includes(order)) {
