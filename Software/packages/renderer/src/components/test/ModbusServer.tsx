@@ -1,11 +1,25 @@
 import React, { useState, useEffect } from "react"
-import type { ModbusServer } from "../../api/models"
+import type { ModbusServer } from "../../api/models/modbus"
 
 export default function ModbusServerPage() {
   const [servers, setServers] = useState<ModbusServer[]>([])
-  const [newServer, setNewServer] = useState<Partial<ModbusServer>>({ name: "", ip: "", port: 502 })
+  const [newServer, setNewServer] = useState<Partial<ModbusServer>>({
+    name: "",
+    type: "TCP",
+    ip: "",
+    port: 502,
+    unitId: 1,
+    timeout: 2000, // ✅ valor por defecto
+  })
   const [editTarget, setEditTarget] = useState<string>("")
-  const [editServer, setEditServer] = useState<Partial<ModbusServer>>({ name: "", ip: "", port: 502 })
+  const [editServer, setEditServer] = useState<Partial<ModbusServer>>({
+    name: "",
+    type: "TCP",
+    ip: "",
+    port: 502,
+    unitId: 1,
+    timeout: 2000, // ✅ valor por defecto
+  })
   const [deleteTarget, setDeleteTarget] = useState<string>("")
 
   useEffect(() => {
@@ -13,19 +27,25 @@ export default function ModbusServerPage() {
   }, [])
 
   const handleSaveNew = async () => {
-    if (!newServer.name || !newServer.ip || !newServer.port) return
+    if (!newServer.name || !newServer.unitId) return
+    if (newServer.type === "TCP" && (!newServer.ip || !newServer.port)) return
+    if (newServer.type === "RTU" && (!newServer.path || !newServer.baudRate)) return
+
     await window.api.config.modbus.servers.upsert(newServer as ModbusServer)
     setServers(await window.api.config.modbus.servers.list())
-    setNewServer({ name: "", ip: "", port: 502 })
+    setNewServer({ name: "", type: "TCP", ip: "", port: 502, unitId: 1, timeout: 2000 })
   }
 
   const handleSaveEdit = async () => {
     if (!editTarget) return
-    if (!editServer.name || !editServer.ip || !editServer.port) return
+    if (!editServer.name || !editServer.unitId) return
+    if (editServer.type === "TCP" && (!editServer.ip || !editServer.port)) return
+    if (editServer.type === "RTU" && (!editServer.path || !editServer.baudRate)) return
+
     await window.api.config.modbus.servers.upsert(editServer as ModbusServer)
     setServers(await window.api.config.modbus.servers.list())
     setEditTarget("")
-    setEditServer({ name: "", ip: "", port: 502 })
+    setEditServer({ name: "", type: "TCP", ip: "", port: 502, unitId: 1, timeout: 2000 })
   }
 
   const handleDelete = async () => {
@@ -39,9 +59,7 @@ export default function ModbusServerPage() {
   const handleSelectEdit = (id: string) => {
     setEditTarget(id)
     const srv = servers.find((s) => s.id === Number(id))
-    if (srv) {
-      setEditServer({ ...srv })
-    }
+    if (srv) setEditServer({ ...srv })
   }
 
   return (
@@ -52,7 +70,8 @@ export default function ModbusServerPage() {
         <ul className="divide-y divide-gray-200">
           {servers.map((s) => (
             <li key={s.id}>
-              {s.id} – {s.name} ({s.ip}:{s.port})
+              {s.id} – {s.name} ({s.type === "TCP" ? `${s.ip}:${s.port}` : `${s.path} @ ${s.baudRate}bps`})
+              {" — "}UnitId: {s.unitId} {" — "} Timeout: {s.timeout}ms
             </li>
           ))}
         </ul>
@@ -68,19 +87,63 @@ export default function ModbusServerPage() {
           onChange={(e) => setNewServer({ ...newServer, name: e.target.value })}
           className="border rounded-md px-2 py-1 text-sm mr-2"
         />
-        <input
-          type="text"
-          placeholder="IP"
-          value={newServer.ip}
-          onChange={(e) => setNewServer({ ...newServer, ip: e.target.value })}
+        <select
+          value={newServer.type}
+          onChange={(e) => setNewServer({ ...newServer, type: e.target.value as "TCP" | "RTU" })}
           className="border rounded-md px-2 py-1 text-sm mr-2"
+        >
+          <option value="TCP">TCP</option>
+          <option value="RTU">RTU</option>
+        </select>
+        {newServer.type === "TCP" && (
+          <>
+            <input
+              type="text"
+              placeholder="IP"
+              value={newServer.ip}
+              onChange={(e) => setNewServer({ ...newServer, ip: e.target.value })}
+              className="border rounded-md px-2 py-1 text-sm mr-2"
+            />
+            <input
+              type="number"
+              placeholder="Puerto"
+              value={newServer.port}
+              onChange={(e) => setNewServer({ ...newServer, port: parseInt(e.target.value) })}
+              className="border rounded-md px-2 py-1 text-sm mr-2 w-24"
+            />
+          </>
+        )}
+        {newServer.type === "RTU" && (
+          <>
+            <input
+              type="text"
+              placeholder="Path (ej: /dev/ttyUSB0)"
+              value={newServer.path}
+              onChange={(e) => setNewServer({ ...newServer, path: e.target.value })}
+              className="border rounded-md px-2 py-1 text-sm mr-2"
+            />
+            <input
+              type="number"
+              placeholder="BaudRate"
+              value={newServer.baudRate}
+              onChange={(e) => setNewServer({ ...newServer, baudRate: parseInt(e.target.value) })}
+              className="border rounded-md px-2 py-1 text-sm mr-2 w-24"
+            />
+          </>
+        )}
+        <input
+          type="number"
+          placeholder="Unit ID"
+          value={newServer.unitId}
+          onChange={(e) => setNewServer({ ...newServer, unitId: parseInt(e.target.value) })}
+          className="border rounded-md px-2 py-1 text-sm mr-2 w-24"
         />
         <input
           type="number"
-          placeholder="Puerto"
-          value={newServer.port}
-          onChange={(e) => setNewServer({ ...newServer, port: parseInt(e.target.value) })}
-          className="border rounded-md px-2 py-1 text-sm mr-2 w-24"
+          placeholder="Timeout (ms)"
+          value={newServer.timeout}
+          onChange={(e) => setNewServer({ ...newServer, timeout: parseInt(e.target.value) })}
+          className="border rounded-md px-2 py-1 text-sm mr-2 w-32"
         />
         <button onClick={handleSaveNew} className="px-4 py-2 bg-indigo-600 text-white rounded-md">
           Guardar nuevo
@@ -100,7 +163,7 @@ export default function ModbusServerPage() {
           </option>
           {servers.map((s) => (
             <option key={s.id} value={s.id}>
-              {s.name} ({s.ip}:{s.port})
+              {s.name}
             </option>
           ))}
         </select>
@@ -114,21 +177,63 @@ export default function ModbusServerPage() {
               onChange={(e) => setEditServer({ ...editServer, name: e.target.value })}
               className="border rounded-md px-2 py-1 text-sm mr-2"
             />
-            <input
-              type="text"
-              placeholder="IP"
-              value={editServer.ip}
-              onChange={(e) => setEditServer({ ...editServer, ip: e.target.value })}
+            <select
+              value={editServer.type}
+              onChange={(e) => setEditServer({ ...editServer, type: e.target.value as "TCP" | "RTU" })}
               className="border rounded-md px-2 py-1 text-sm mr-2"
+            >
+              <option value="TCP">TCP</option>
+              <option value="RTU">RTU</option>
+            </select>
+            {editServer.type === "TCP" && (
+              <>
+                <input
+                  type="text"
+                  placeholder="IP"
+                  value={editServer.ip}
+                  onChange={(e) => setEditServer({ ...editServer, ip: e.target.value })}
+                  className="border rounded-md px-2 py-1 text-sm mr-2"
+                />
+                <input
+                  type="number"
+                  placeholder="Puerto"
+                  value={editServer.port}
+                  onChange={(e) => setEditServer({ ...editServer, port: parseInt(e.target.value) })}
+                  className="border rounded-md px-2 py-1 text-sm mr-2 w-24"
+                />
+              </>
+            )}
+            {editServer.type === "RTU" && (
+              <>
+                <input
+                  type="text"
+                  placeholder="Path"
+                  value={editServer.path}
+                  onChange={(e) => setEditServer({ ...editServer, path: e.target.value })}
+                  className="border rounded-md px-2 py-1 text-sm mr-2"
+                />
+                <input
+                  type="number"
+                  placeholder="BaudRate"
+                  value={editServer.baudRate}
+                  onChange={(e) => setEditServer({ ...editServer, baudRate: parseInt(e.target.value) })}
+                  className="border rounded-md px-2 py-1 text-sm mr-2 w-24"
+                />
+              </>
+            )}
+            <input
+              type="number"
+              placeholder="Unit ID"
+              value={editServer.unitId}
+              onChange={(e) => setEditServer({ ...editServer, unitId: parseInt(e.target.value) })}
+              className="border rounded-md px-2 py-1 text-sm mr-2 w-24"
             />
             <input
               type="number"
-              placeholder="Puerto"
-              value={editServer.port}
-              onChange={(e) =>
-                setEditServer({ ...editServer, port: parseInt(e.target.value) })
-              }
-              className="border rounded-md px-2 py-1 text-sm mr-2 w-24"
+              placeholder="Timeout (ms)"
+              value={editServer.timeout}
+              onChange={(e) => setEditServer({ ...editServer, timeout: parseInt(e.target.value) })}
+              className="border rounded-md px-2 py-1 text-sm mr-2 w-32"
             />
             <button
               onClick={handleSaveEdit}
@@ -153,7 +258,7 @@ export default function ModbusServerPage() {
           </option>
           {servers.map((s) => (
             <option key={s.id} value={s.id}>
-              {s.name} ({s.ip}:{s.port})
+              {s.name}
             </option>
           ))}
         </select>
