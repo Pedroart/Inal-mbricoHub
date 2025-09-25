@@ -1,4 +1,4 @@
-import { Component, useState } from "react"
+import { useState } from "react"
 import "./App.css"
 
 import ProfileTests from "./components/test/Configstore"

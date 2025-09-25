@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import type { EntryBle } from "../../api/models"
 
 export default function BlePage() {
   const [bindings, setBindings] = useState<EntryBle[]>([])
-  const [newBind, setNewBind] = useState<Partial<EntryBle>>({ entry_id: "", device_id: "" })
-  const [deleteTarget, setDeleteTarget] = useState<string>("")
+  const [newBind, setNewBind] = useState<Partial<EntryBle>>({ entry_id: -1, device_id: "" })
+  const [deleteTarget, setDeleteTarget] = useState<number>(-1)
 
   useEffect(() => {
     // No hay un list BLE global → asumimos que viene de profile completo
@@ -16,7 +16,7 @@ export default function BlePage() {
     await window.api.config.ble.bind.set(newBind as EntryBle)
     const p = await window.api.config.profile.get()
     setBindings(p.entry_ble)
-    setNewBind({ entry_id: "", device_id: "" })
+    setNewBind({ entry_id: -1, device_id: "" })
   }
 
   const handleDelete = async () => {
@@ -25,7 +25,7 @@ export default function BlePage() {
     await window.api.config.ble.bind.remove(deleteTarget)
     const p = await window.api.config.profile.get()
     setBindings(p.entry_ble)
-    setDeleteTarget("")
+    setDeleteTarget(-1)
   }
 
   return (
@@ -44,10 +44,10 @@ export default function BlePage() {
       <div className="bg-white shadow rounded-xl p-6">
         <h2 className="text-xl font-semibold text-gray-800">Agregar / Editar</h2>
         <input
-          type="text"
+          type="number"
           placeholder="Entry ID"
           value={newBind.entry_id}
-          onChange={(e) => setNewBind({ ...newBind, entry_id: e.target.value })}
+          onChange={(e) => setNewBind({ ...newBind, entry_id: Number(e.target.value )})}
           className="border rounded-md px-2 py-1 text-sm mr-2"
         />
         <input
@@ -66,7 +66,7 @@ export default function BlePage() {
         <h2 className="text-xl font-semibold text-red-700">Borrar binding</h2>
         <select
           value={deleteTarget}
-          onChange={(e) => setDeleteTarget(e.target.value)}
+          onChange={(e) => setDeleteTarget(Number(e.target.value))}
           className="border rounded-md px-2 py-1 text-sm w-full"
         >
           <option value="">-- Selecciona un binding --</option>
