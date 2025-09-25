@@ -129,11 +129,23 @@ export class ConfigStore {
   listEntries() { return this.getProfile().entry }
   upsertEntry(e: Entry) {
     const p = this.getProfile()
-    const i = p.entry.findIndex( x => x.id === e.id )
+    const i = p.entry.findIndex(x => x.id === e.id)
 
-    if (i >= 0 ) p.entry[i] = e; else p.entry.push(e)
+    if (i >= 0) {
+      // actualizar existente
+      p.entry[i] = e
+    } else {
+      // asignar nuevo id autoincremental
+      const nextId =
+        p.entry.length > 0
+          ? Math.max(...p.entry.map(x => x.id)) + 1
+          : 1
+      e.id = nextId
+      p.entry.push(e)
+    }
   }
-  removeEntry(id: string){
+
+  removeEntry(id: number){
     const p = this.getProfile()
     p.entry = p.entry.filter(x => x.id !== id)
 
@@ -148,8 +160,19 @@ export class ConfigStore {
   upsertSensorType(s: SensorType) {
     const p = this.getProfile()
     const i = p.sensor_type.findIndex(x => x.id === s.id)
-    if (i >= 0) p.sensor_type[i] = s; else p.sensor_type.push(s)
+
+    if (i >= 0) {
+      p.sensor_type[i] = s
+    } else {
+      const nextId =
+        p.sensor_type.length > 0
+          ? Math.max(...p.sensor_type.map(x => x.id)) + 1
+          : 1
+      s.id = nextId
+      p.sensor_type.push(s)
+    }
   }
+
   removeSensorType(id: number) {
     const p = this.getProfile()
     p.sensor_type = p.sensor_type.filter(x => x.id !== id)
@@ -188,14 +211,14 @@ export class ConfigStore {
     const i = p.dashboard_widget.findIndex(x => x.entry_id === w.entry_id)
     if (i >= 0) p.dashboard_widget[i] = w; else p.dashboard_widget.push(w)
   }
-  removeWidget(entry_id: string) {
+  removeWidget(entry_id: number) {
     const p = this.getProfile()
     p.dashboard_widget = p.dashboard_widget.filter(x => x.entry_id !== entry_id)
   }
 
   // ---------- Bindings Modbus/BLE ----------
   listEntryModbus() { return this.getProfile().entry_modbus }
-  getEntryModbus(entry_id: string) {
+  getEntryModbus(entry_id: number) {
     return this.getProfile().entry_modbus.find(x => x.entry_id === entry_id)
   }
   setEntryModbus(b: EntryModbus) {
@@ -203,14 +226,14 @@ export class ConfigStore {
     const i = p.entry_modbus.findIndex(x => x.entry_id === b.entry_id)
     if (i >= 0) p.entry_modbus[i] = b; else p.entry_modbus.push(b)
   }
-  removeEntryModbus(entry_id: string) {
+  removeEntryModbus(entry_id: number) {
     console.log('Delete entry Modbus: ',entry_id)
     const p = this.getProfile()
     p.entry_modbus = p.entry_modbus.filter(x => x.entry_id !== entry_id)
   }
 
   listEntryBle() { return this.getProfile().entry_ble }
-  getEntryBle(entry_id: string) {
+  getEntryBle(entry_id: number) {
     return this.getProfile().entry_ble.find(x => x.entry_id === entry_id)
   }
   setEntryBle(b: EntryBle) {
@@ -218,7 +241,7 @@ export class ConfigStore {
     const i = p.entry_ble.findIndex(x => x.entry_id === b.entry_id)
     if (i >= 0) p.entry_ble[i] = b; else p.entry_ble.push(b)
   }
-  removeEntryBle(entry_id: string) {
+  removeEntryBle(entry_id: number) {
     const p = this.getProfile()
     p.entry_ble = p.entry_ble.filter(x => x.entry_id !== entry_id)
   }

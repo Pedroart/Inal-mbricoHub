@@ -23,7 +23,7 @@ export type Api = {
     entries: {
       list: () => Promise<Entry[]>
       upsert: (e: Entry) => Promise<boolean>
-      remove: (id: string) => Promise<boolean>
+      remove: (id: number) => Promise<boolean>
     }
     sensorTypes: {
       list: () => Promise<SensorType[]>
@@ -37,22 +37,22 @@ export type Api = {
         remove: (id: number) => Promise<boolean>
       }
       bind: {
-        get: (entryId: string) => Promise<EntryModbus | undefined>
+        get: (entryId: number) => Promise<EntryModbus | undefined>
         set: (b: EntryModbus) => Promise<boolean>
-        remove: (entryId: string) => Promise<boolean>
+        remove: (entryId: number) => Promise<boolean>
       }
     }
     ble: {
       bind: {
-        get: (entryId: string) => Promise<EntryBle | undefined>
+        get: (entryId: number) => Promise<EntryBle | undefined>
         set: (b: EntryBle) => Promise<boolean>
-        remove: (entryId: string) => Promise<boolean>
+        remove: (entryId: number) => Promise<boolean>
       }
     }
     widgets: {
       list: () => Promise<DashboardWidget[]>
       upsert: (w: DashboardWidget) => Promise<boolean>
-      remove: (entryId: string) => Promise<boolean>
+      remove: (entryId: number) => Promise<boolean>
     }
   }
 }

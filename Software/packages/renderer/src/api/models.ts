@@ -9,7 +9,7 @@ export type SensorType = {
 export type Protocol = 'MODBUS' | 'BLE' | string
 
 export type Entry = {
-  id: string            // uuid
+  id: number
   sensor_type_id: number
   order: number
   protocol: Protocol
@@ -20,7 +20,7 @@ export type Entry = {
 
 export type Measurement = {
   ts: number            // epoch ms (internamente guardamos ms)
-  entry_id: string
+  entry_id: number
   value: number
 }
 
@@ -32,23 +32,24 @@ export type ModbusServer = {
 }
 
 export type EntryModbus = {
-  entry_id: string
+  entry_id: number
   server_id: number
   address: number
 }
 
 export type EntryBle = {
-  entry_id: string
+  entry_id: number
   device_id: string
 }
 
 export type DashboardWidget = {
-  entry_id: string
+  entry_id: number
   x: number
   y: number
   visible: boolean
   title: string
 }
+
 
 export type ConfigProfile = {
   sensor_type: SensorType[]

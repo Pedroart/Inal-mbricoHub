@@ -39,7 +39,7 @@ export class ConfigIpcModule implements AppModule {
     // Entries
     ipcMain.handle('config.entries.list', () => cfg().listEntries())
     ipcMain.handle('config.entries.upsert', async (_e, e: Entry) => { cfg().upsertEntry(e); await cfg().save(); notify(); return true })
-    ipcMain.handle('config.entries.remove', async (_e, id: string) => { cfg().removeEntry(id); await cfg().save(); notify(); return true })
+    ipcMain.handle('config.entries.remove', async (_e, id: number) => { cfg().removeEntry(id); await cfg().save(); notify(); return true })
 
     // Sensor types
     ipcMain.handle('config.sensorTypes.list', () => cfg().listSensorTypes())
@@ -52,18 +52,18 @@ export class ConfigIpcModule implements AppModule {
     ipcMain.handle('config.modbus.servers.remove', async (_e, id: number) => { cfg().removeModbusServer(id); await cfg().save(); notify(); return true })
 
     // Bindings
-    ipcMain.handle('config.bind.modbus.get', (_e, entryId: string) => cfg().getEntryModbus(entryId))
+    ipcMain.handle('config.bind.modbus.get', (_e, entryId: number) => cfg().getEntryModbus(entryId))
     ipcMain.handle('config.bind.modbus.set',  async (_e, b: EntryModbus) => { cfg().setEntryModbus(b); await cfg().save(); notify(); return true })
-    ipcMain.handle('config.bind.modbus.remove', async (_e, entryId: string) => { cfg().removeEntryModbus(entryId); await cfg().save(); notify(); return true })
+    ipcMain.handle('config.bind.modbus.remove', async (_e, entryId: number) => { cfg().removeEntryModbus(entryId); await cfg().save(); notify(); return true })
 
-    ipcMain.handle('config.bind.ble.get', (_e, entryId: string) => cfg().getEntryBle(entryId))
+    ipcMain.handle('config.bind.ble.get', (_e, entryId: number) => cfg().getEntryBle(entryId))
     ipcMain.handle('config.bind.ble.set',  async (_e, b: EntryBle) => { cfg().setEntryBle(b); await cfg().save(); notify(); return true })
-    ipcMain.handle('config.bind.ble.remove', async (_e, entryId: string) => { cfg().removeEntryBle(entryId); await cfg().save(); notify(); return true })
+    ipcMain.handle('config.bind.ble.remove', async (_e, entryId: number) => { cfg().removeEntryBle(entryId); await cfg().save(); notify(); return true })
 
     // Dashboard
     ipcMain.handle('config.widgets.list', () => cfg().listWidgets())
     ipcMain.handle('config.widgets.upsert', async (_e, w: DashboardWidget) => { cfg().upsertWidget(w); await cfg().save(); notify(); return true })
-    ipcMain.handle('config.widgets.remove', async (_e, entryId: string) => { cfg().removeWidget(entryId); await cfg().save(); notify(); return true })
+    ipcMain.handle('config.widgets.remove', async (_e, entryId: number) => { cfg().removeWidget(entryId); await cfg().save(); notify(); return true })
   }
 }
 

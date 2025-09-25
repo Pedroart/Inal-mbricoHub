@@ -27,7 +27,7 @@ export const api = {
     entries: {
       list:   () => ipcRenderer.invoke('config.entries.list'),
       upsert: (e: any) => ipcRenderer.invoke('config.entries.upsert', e),
-      remove: (id: string) => ipcRenderer.invoke('config.entries.remove', id),
+      remove: (id: number) => ipcRenderer.invoke('config.entries.remove', id),
     },
     sensorTypes: {
       list:   () => ipcRenderer.invoke('config.sensorTypes.list'),
@@ -41,22 +41,22 @@ export const api = {
         remove: (id: number) => ipcRenderer.invoke('config.modbus.servers.remove', id),
       },
       bind: {
-        get:    (entryId: string) => ipcRenderer.invoke('config.bind.modbus.get', entryId),
+        get:    (entryId: number) => ipcRenderer.invoke('config.bind.modbus.get', entryId),
         set:    (b: any) => ipcRenderer.invoke('config.bind.modbus.set', b),
-        remove: (entryId: string) => ipcRenderer.invoke('config.bind.modbus.remove', entryId),
+        remove: (entryId: number) => ipcRenderer.invoke('config.bind.modbus.remove', entryId),
       },
     },
     ble: {
       bind: {
-        get:    (entryId: string) => ipcRenderer.invoke('config.bind.ble.get', entryId),
+        get:    (entryId: number) => ipcRenderer.invoke('config.bind.ble.get', entryId),
         set:    (b: any) => ipcRenderer.invoke('config.bind.ble.set', b),
-        remove: (entryId: string) => ipcRenderer.invoke('config.bind.ble.remove', entryId),
+        remove: (entryId: number) => ipcRenderer.invoke('config.bind.ble.remove', entryId),
       },
     },
     widgets: {
       list:   () => ipcRenderer.invoke('config.widgets.list'),
       upsert: (w: any) => ipcRenderer.invoke('config.widgets.upsert', w),
-      remove: (entryId: string) => ipcRenderer.invoke('config.widgets.remove', entryId),
+      remove: (entryId: number) => ipcRenderer.invoke('config.widgets.remove', entryId),
     },
   },
 } as const
