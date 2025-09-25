@@ -2,21 +2,12 @@ import { app } from 'electron'
 import path from 'node:path'
 import fs from 'node:fs/promises'
 import {
-  SensorType, Entry, ModbusServer, EntryModbus, EntryBle, DashboardWidget
+  SensorType, Entry, ModbusServer, EntryModbus, EntryBle, DashboardWidget, ConfigProfile
 } from '../../models/domain.js'
 import { AppModule } from 'src/AppModule.js'
 import { ModuleContext } from 'src/ModuleContext.js'
 import {AppEvents} from '../../Events.js'
 import {Bus} from '../../Buss.js'
-
-export type ConfigProfile = {
-  sensor_type: SensorType[]
-  entry: Entry[]
-  modbus_server: ModbusServer[]
-  entry_modbus: EntryModbus[]
-  entry_ble: EntryBle[]
-  dashboard_widget: DashboardWidget[]
-}
 
 export class ConfigStore {
   private dir = path.join(app.getPath('userData'), 'configs')
@@ -43,7 +34,12 @@ export class ConfigStore {
     let raw: string
 
     const empty: ConfigProfile = {
-      sensor_type: [],
+      sensor_type: [
+        { id: 1, name: "Sensor de Pinchar", index: "1", quantity: 16, simbol: "°C" },
+        { id: 2, name: "Sensor de Retorno", index: "18", quantity: 2, simbol: "°C" },
+        { id: 3, name: "Sensor de Ambiente", index: "20", quantity: 10, simbol: "°C" },
+        { id: 4, name: "Setpoint", index: "81-90", quantity: 10, simbol: "°C" },
+      ],
       entry: [],
       modbus_server: [],
       entry_modbus: [],
@@ -131,19 +127,31 @@ export class ConfigStore {
     const p = this.getProfile()
     const i = p.entry.findIndex(x => x.id === e.id)
 
+    // si no tiene order, o está duplicado, asignar automáticamente
+    if (
+      e.order == null ||
+      p.entry.some(x => x.order === e.order && x.id !== e.id)
+    ) {
+      const usedOrders = p.entry.map(x => x.order)
+      let nextOrder = 1
+      while (usedOrders.includes(nextOrder)) {
+        nextOrder++
+      }
+      e.order = nextOrder
+    }
+
     if (i >= 0) {
       // actualizar existente
       p.entry[i] = e
     } else {
       // asignar nuevo id autoincremental
       const nextId =
-        p.entry.length > 0
-          ? Math.max(...p.entry.map(x => x.id)) + 1
-          : 1
+        p.entry.length > 0 ? Math.max(...p.entry.map(x => x.id)) + 1 : 1
       e.id = nextId
       p.entry.push(e)
     }
   }
+
 
   removeEntry(id: number){
     const p = this.getProfile()

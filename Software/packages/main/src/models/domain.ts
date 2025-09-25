@@ -4,7 +4,7 @@ export type SensorType = {
   name: string
   index: string
   quantity: number
-  operation: string
+  simbol: string
 }
 
 export type Protocol = 'MODBUS' | 'BLE' | string
@@ -28,8 +28,13 @@ export type Measurement = {
 export type ModbusServer = {
   id: number
   name: string
-  ip: string
-  port: number
+  type: "TCP" | "RTU"   // tipo de conexión
+  ip?: string          // si es TCP
+  port?: number        // si es TCP
+  path?: string        // si es RTU (ej: /dev/ttyUSB0, COM3)
+  baudRate?: number    // si es RTU
+  unitId: number       // Slave ID (1–247)
+  timeout?: number     // opcional
 }
 
 export type EntryModbus = {
@@ -49,4 +54,13 @@ export type DashboardWidget = {
   y: number
   visible: boolean
   title: string
+}
+
+export type ConfigProfile = {
+  sensor_type: SensorType[]
+  entry: Entry[]
+  modbus_server: ModbusServer[]
+  entry_modbus: EntryModbus[]
+  entry_ble: EntryBle[]
+  dashboard_widget: DashboardWidget[]
 }

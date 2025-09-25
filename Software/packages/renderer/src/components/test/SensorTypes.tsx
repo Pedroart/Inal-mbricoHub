@@ -7,7 +7,7 @@ export default function SensorTypesPage() {
     name: "",
     index: "",
     quantity: 1,
-    operation: "",
+    simbol: "c°",
   })
   const [editTarget, setEditTarget] = useState<number | null>(null)
   const [editType, setEditType] = useState<Partial<SensorType>>({})
@@ -23,7 +23,7 @@ export default function SensorTypesPage() {
     if (!newType.name || !newType.index) return
     await window.api.config.sensorTypes.upsert(newType as SensorType)
     await reload()
-    setNewType({ name: "", index: "", quantity: 1, operation: "" })
+    setNewType({ name: "", index: "", quantity: 1, simbol: "" })
   }
 
   const handleSaveEdit = async () => {
@@ -56,7 +56,7 @@ export default function SensorTypesPage() {
         <ul className="divide-y divide-gray-200">
           {types.map((t) => (
             <li key={t.id}>
-              {t.id} – {t.name} ({t.index}) – Cantidad: {t.quantity} – Op: {t.operation}
+              {t.id} – {t.name} ({t.index}) – Cantidad: {t.quantity} – Op: {t.simbol}
             </li>
           ))}
         </ul>
@@ -89,8 +89,8 @@ export default function SensorTypesPage() {
         <input
           type="text"
           placeholder="Operación"
-          value={newType.operation}
-          onChange={(e) => setNewType({ ...newType, operation: e.target.value })}
+          value={newType.simbol}
+          onChange={(e) => setNewType({ ...newType, simbol: e.target.value })}
           className="border rounded-md px-2 py-1 text-sm mr-2"
         />
         <button onClick={handleSaveNew} className="px-4 py-2 bg-indigo-600 text-white rounded-md">
@@ -140,8 +140,8 @@ export default function SensorTypesPage() {
             <input
               type="text"
               placeholder="Operación"
-              value={editType.operation ?? ""}
-              onChange={(e) => setEditType({ ...editType, operation: e.target.value })}
+              value={editType.simbol ?? ""}
+              onChange={(e) => setEditType({ ...editType, simbol: e.target.value })}
               className="border rounded-md px-2 py-1 text-sm mr-2"
             />
             <button
