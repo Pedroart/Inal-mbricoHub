@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { Component, useState } from "react"
 import "./App.css"
 
 import ProfileTests from "./components/test/Configstore"
@@ -7,6 +7,7 @@ import BlePage from "./components/test/BLE"
 import EntriesPage from "./components/test/Entries"
 import SensorTypesPage from "./components/test/SensorTypes"
 import WidgetsPage from "./components/test/widgets"
+import EntryModbusPage from "./components/test/EntryModbus"
 
 export default function App() {
   const tabs = [
@@ -15,6 +16,7 @@ export default function App() {
     { id: "entries", label: "Entradas", component: <EntriesPage /> },
     { id: "widget", label: "Widget", component: <WidgetsPage/> },
     { id: "modbusServer", label: "Servidores Modbus", component: <ModbusServerPage /> },
+    { id: "modbusEntry", label: "Entradas Modbus", component: <EntryModbusPage/>  },
     { id: "ble", label: "BLE", component: <BlePage /> },
   ]
 
