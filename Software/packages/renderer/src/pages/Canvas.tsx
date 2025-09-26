@@ -1,5 +1,4 @@
 import { IndustrialHeader } from "../components/industrial-header"
-import { Mapsensor } from "../components/mapsSensor"
 
 export default function Dashboard() {
   return (
@@ -8,7 +7,9 @@ export default function Dashboard() {
       <main className="flex-1 w-full flex">
         {/* Este div ahora sí llena todo el espacio disponible */}
         <div className="flex-1 bg-gray-400 flex items-center justify-center">
-          <Mapsensor/>
+          <p className="text-lg text-white font-bold">
+            Contenido fullscreen (menos el header)
+          </p>
         </div>
       </main>
 
