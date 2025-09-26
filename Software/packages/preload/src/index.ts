@@ -58,11 +58,11 @@ export const api = {
       upsert: (w: any) => ipcRenderer.invoke('config.widgets.upsert', w),
       remove: (entryId: number) => ipcRenderer.invoke('config.widgets.remove', entryId),
     },
-    measures: {
+  },
+  measures: {
       latest: () => ipcRenderer.invoke('measurements:get-latest'),
-      latestByEntry: (entryId: number) => ipcRenderer.invoke('measurements:get-by-entry'),
-      historyByEntry: (entryId: number, since: number) => ipcRenderer.invoke('measurements:get-history')
-    }
+      latestByEntry: (entryId: number) => ipcRenderer.invoke('measurements:get-by-entry', entryId),
+      historyByEntry: (entryId: number, since: number) => ipcRenderer.invoke('measurements:get-history',entryId,since)
   },
 } as const
 

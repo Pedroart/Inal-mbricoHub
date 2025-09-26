@@ -68,29 +68,33 @@ export class MeasurementManager implements AppModule {
 
         // 4. exponer vía ipcMain
         ipcMain.handle("measurements:get-latest", () => {
-        return Array.from(this.latestValues.values())
+            return Array.from(this.latestValues.values())
         })
 
-        ipcMain.handle("measurements:get-by-entry", (_ev, entry_id: number) => {
-        return this.latestValues.get(entry_id)
+        ipcMain.handle("measurements:get-by-entry", (_ev, entryId: number) => {
+            console.log("entry_id recibido:", entryId, typeof entryId)
+            const value = this.latestValues.get(entryId)
+            console.log("measurements by entry", value)
+            return value
         })
 
-        ipcMain.handle("measurements:get-history", (_ev, entry_id: number, since: number) => {
-        const stmt = this.db.prepare(`
-            SELECT ts, entry_id, value
-            FROM measurement
-            WHERE entry_id = ? AND ts >= ?
-            ORDER BY ts ASC
-        `);
+        ipcMain.handle("measurements:get-history", (_ev, entryId: number, since: number) => {
+            console.log("history by entry")
+            const stmt = this.db.prepare(`
+                SELECT ts, entry_id, value
+                FROM measurement
+                WHERE entry_id = ? AND ts >= ?
+                ORDER BY ts ASC
+            `);
 
-        // usamos "as Row[]" para decirle a TS la forma de cada fila
-        const rows = stmt.all(entry_id, since) as Measurement[];
+            // usamos "as Row[]" para decirle a TS la forma de cada fila
+            const rows = stmt.all(entryId, since) as Measurement[];
 
-        return rows.map(row => ({
-            ts: row.ts,
-            entry_id: row.entry_id,
-            value: row.value
-        })) as Measurement[];
+            return rows.map(row => ({
+                ts: row.ts,
+                entry_id: row.entry_id,
+                value: row.value
+            })) as Measurement[];
         });
 
 
@@ -123,7 +127,7 @@ export class MeasurementManager implements AppModule {
 
             const processed: Measurement = { ts: Date.now(), entry_id: entry.id, value: val };
             this.latestValues.set(entry.id, processed);
-
+            console.log("Data Guardada: ", processed)
             insertStmt.run(processed.ts, processed.entry_id, processed.value);
         }
 

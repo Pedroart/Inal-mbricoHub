@@ -8,6 +8,7 @@ import EntriesPage from "./components/test/Entries"
 import SensorTypesPage from "./components/test/SensorTypes"
 import WidgetsPage from "./components/test/widgets"
 import EntryModbusPage from "./components/test/EntryModbus"
+import MeasuresPage from "./components/test/Measures"
 
 export default function App() {
   const tabs = [
@@ -18,6 +19,7 @@ export default function App() {
     { id: "modbusServer", label: "Servidores Modbus", component: <ModbusServerPage /> },
     { id: "modbusEntry", label: "Entradas Modbus", component: <EntryModbusPage/>  },
     { id: "ble", label: "BLE", component: <BlePage /> },
+    { id: "measures", label: "Measures", component: <MeasuresPage/> }
   ]
 
   const [active, setActive] = useState("profile")

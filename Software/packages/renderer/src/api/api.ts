@@ -55,10 +55,10 @@ export type Api = {
       upsert: (w: DashboardWidget) => Promise<boolean>
       remove: (entryId: number) => Promise<boolean>
     }
-    measures: {
-      latest: () => Promise<Measurement[]>
-      latestByEntry: (entryId: number) => Promise<Measurement>
-      historyByEntry: (entryId: number, since: number) => Promise<Measurement[]>
-    }
+  }
+  measures: {
+    latest: () => Promise<Measurement[]>
+    latestByEntry: (entryId: number) => Promise<Measurement>
+    historyByEntry: (entryId: number, since: number) => Promise<Measurement[]>
   }
 }
