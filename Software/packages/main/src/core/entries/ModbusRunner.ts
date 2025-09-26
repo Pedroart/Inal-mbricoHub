@@ -97,83 +97,110 @@ export class ModbusRunner implements AppModule {
     }
   }
 
-    private startTcpServerTask(ctx: ModuleContext, b: ModbusBilding): ActiveTask {
-        const socket = new net.Socket()
-        const client = new Modbus.client.TCP(socket, b.server.unitId ?? 1)
+  private startTcpServerTask(ctx: ModuleContext, b: ModbusBilding): ActiveTask {
+    const socket = new net.Socket()
+    const client = new Modbus.client.TCP(socket, b.server.unitId ?? 1)
 
-        // Validar host/port
-        if (!b.server.ip || !b.server.port || b.server.ip === "0.0.0.0") {
-            console.warn(`[WARN] Servidor Modbus inválido: ip=${b.server.ip}, port=${b.server.port}`)
-            return { stop: () => socket.destroy() }
-        }
+    let intervals: NodeJS.Timeout[] = []
+    let reconnectTimer: NodeJS.Timeout | null = null
+    let stopped = false
 
-        // Manejar eventos de error para que no crashee
-        socket.on("error", (err) => {
-            console.error(`[ERROR] Socket Modbus ${b.server.ip}:${b.server.port} → ${err.message}`)
-        })
-        socket.on("close", () => {
-            console.warn(`[WARN] Conexión cerrada: ${b.server.ip}:${b.server.port}`)
-        })
-        socket.on("timeout", () => {
-            console.warn(`[WARN] Timeout de conexión: ${b.server.ip}:${b.server.port}`)
-            socket.destroy()
-        })
-
-        try {
-            socket.connect({ host: b.server.ip, port: b.server.port }, () => {
-            console.log(`[INFO] Conectado a Modbus ${b.server.ip}:${b.server.port}`)
-            })
-        } catch (e) {
-            console.error(`[ERROR] Falló connect() → ${(e as Error).message}`)
-        }
-
-        const intervals: NodeJS.Timeout[] = []
-
-        for (const group of b.groups) {
-            const addresses = group.entries.map(e => e.address)
-            if (!addresses.length) continue
-
-            const minAddr = Math.min(...addresses)
-            const maxAddr = Math.max(...addresses)
-            const count = maxAddr - minAddr + 1
-
-            const intv = setInterval(async () => {
-            try {
-                const resp = await client.readHoldingRegisters(minAddr, count)
-                const values = resp.response.body.valuesAsArray
-
-                const measurements: Measurement[] = group.entries.map( _entrie => {
-                  const index = _entrie.address - minAddr
-
-                  return {
-                    ts: Date.now(),
-                    entry_id: _entrie.entry_id,
-                    value: values[index],
-                  } as Measurement;
-
-                } )
-
-                console.log(`[DATA] ${b.server.ip}:${b.server.port} →`, values)
-
-                ctx.bus.emit("measurement:new", {batch: measurements} )
-            } catch (err) {
-                console.error(`[ERROR] Lectura Modbus ${b.server.ip}:${b.server.port} → ${(err as Error).message}`)
-            }
-            }, group.frecuency_s * 1000)
-
-            intervals.push(intv)
-        }
-
-        // Retornar task activo con cleanup
-        return {
-            stop: () => {
-            for (const intv of intervals) clearInterval(intv)
-            socket.destroy()
-            console.log(`[INFO] Task Modbus detenido para ${b.server.ip}:${b.server.port}`)
-            }
-        }
+    const cleanup = () => {
+      for (const intv of intervals) clearInterval(intv)
+      intervals = []
+      socket.destroy()
     }
 
+    const scheduleReconnect = () => {
+      if (stopped) return
+      if (reconnectTimer) return // ya hay un timer programado
+
+      console.warn(`[WARN] Reintentando conexión a ${b.server.ip}:${b.server.port} en 5s...`)
+      reconnectTimer = setTimeout(() => {
+        reconnectTimer = null
+        if (!stopped) {
+          this.startTcpServerTask(ctx, b) // 🔄 vuelve a lanzar la tarea
+        }
+      }, 5000)
+    }
+
+    // Validar host/port
+    if (!b.server.ip || !b.server.port || b.server.ip === "0.0.0.0") {
+      console.warn(`[WARN] Servidor Modbus inválido: ip=${b.server.ip}, port=${b.server.port}`)
+      return { stop: () => socket.destroy() }
+    }
+
+    // Manejo de errores/conexión
+    socket.on("error", (err) => {
+      console.error(`[ERROR] Socket Modbus ${b.server.ip}:${b.server.port} → ${err.message}`)
+      cleanup()
+      scheduleReconnect()
+    })
+    socket.on("close", () => {
+      console.warn(`[WARN] Conexión cerrada: ${b.server.ip}:${b.server.port}`)
+      cleanup()
+      scheduleReconnect()
+    })
+    socket.on("timeout", () => {
+      console.warn(`[WARN] Timeout de conexión: ${b.server.ip}:${b.server.port}`)
+      cleanup()
+      scheduleReconnect()
+    })
+
+    try {
+      socket.connect({ host: b.server.ip, port: b.server.port }, () => {
+        console.log(`[INFO] Conectado a Modbus ${b.server.ip}:${b.server.port}`)
+
+        // Solo arrancar polling cuando conecte
+        for (const group of b.groups) {
+          const addresses = group.entries.map(e => e.address)
+          if (!addresses.length) continue
+
+          const minAddr = Math.min(...addresses)
+          const maxAddr = Math.max(...addresses)
+          const count = maxAddr - minAddr + 1
+
+          const intv = setInterval(async () => {
+            try {
+              const resp = await client.readHoldingRegisters(minAddr, count)
+              const values = resp.response.body.valuesAsArray
+
+              const measurements: Measurement[] = group.entries.map(e => {
+                const index = e.address - minAddr
+                return {
+                  ts: Date.now(),
+                  entry_id: e.entry_id,
+                  value: values[index],
+                }
+              })
+
+              console.log(`[DATA] ${b.server.ip}:${b.server.port} →`, measurements)
+              ctx.bus.emit("measurement:new", { batch: measurements })
+            } catch (err) {
+              console.error(`[ERROR] Lectura Modbus ${b.server.ip}:${b.server.port} → ${(err as Error).message}`)
+            }
+          }, group.frecuency_s * 1000)
+
+          intervals.push(intv)
+        }
+      })
+    } catch (e) {
+      console.error(`[ERROR] Falló connect() → ${(e as Error).message}`)
+      scheduleReconnect()
+    }
+
+    // Retornar task activo con cleanup y stop
+    return {
+      stop: () => {
+        stopped = true
+        if (reconnectTimer) clearTimeout(reconnectTimer)
+        cleanup()
+        console.log(`[INFO] Task Modbus detenido para ${b.server.ip}:${b.server.port}`)
+      }
+    }
+  }
+
+  
   private startRtuServerTask(ctx: ModuleContext, b: ModbusBilding): ActiveTask {
     // TODO: implementar lectura agrupada RTU
     return { stop: () => {} }
