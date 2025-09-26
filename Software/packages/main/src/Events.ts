@@ -1,3 +1,5 @@
+import type {Measurement} from './models/domain.js'
+
 export type AppEvents = {
   'window:ready': { id: number }
   'ingest:filtered': { devId: string; sample: any }
@@ -10,4 +12,5 @@ export type AppEvents = {
   'config:loaded': {profile: string}
   'config:changed': {profile: string}
   
+  'measurement:new': {batch: Measurement[]}
 }

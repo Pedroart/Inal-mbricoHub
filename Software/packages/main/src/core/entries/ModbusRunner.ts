@@ -2,7 +2,7 @@ import { resolve } from 'path';
 import {AppModule} from '../../AppModule.js';
 import {ModuleContext} from '../../ModuleContext.js';
 import {ConfigStore} from '../config/ConfigStore.js';
-import { EntryModbus, EntryBle, Entry, ModbusServer } from '../../models/domain.js';
+import { EntryModbus, EntryBle, Entry, ModbusServer, Measurement } from '../../models/domain.js';
 import Module from 'module';
 import SerialPort from "serialport"
 
@@ -141,7 +141,21 @@ export class ModbusRunner implements AppModule {
             try {
                 const resp = await client.readHoldingRegisters(minAddr, count)
                 const values = resp.response.body.valuesAsArray
+
+                const measurements: Measurement[] = group.entries.map( _entrie => {
+                  const index = _entrie.address - minAddr
+
+                  return {
+                    ts: Date.now(),
+                    entry_id: _entrie.entry_id,
+                    value: values[index],
+                  } as Measurement;
+
+                } )
+
                 console.log(`[DATA] ${b.server.ip}:${b.server.port} →`, values)
+
+                ctx.bus.emit("measurement:new", {batch: measurements} )
             } catch (err) {
                 console.error(`[ERROR] Lectura Modbus ${b.server.ip}:${b.server.port} → ${(err as Error).message}`)
             }
