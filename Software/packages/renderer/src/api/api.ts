@@ -5,7 +5,8 @@ import type {
   ModbusServer,
   EntryModbus,
   EntryBle,
-  DashboardWidget
+  DashboardWidget,
+  Measurement
 } from './models'
 
 export type Api = {
@@ -53,6 +54,11 @@ export type Api = {
       list: () => Promise<DashboardWidget[]>
       upsert: (w: DashboardWidget) => Promise<boolean>
       remove: (entryId: number) => Promise<boolean>
+    }
+    measures: {
+      latest: () => Promise<Measurement[]>
+      latestByEntry: (entryId: number) => Promise<Measurement>
+      historyByEntry: (entryId: number, since: number) => Promise<Measurement[]>
     }
   }
 }

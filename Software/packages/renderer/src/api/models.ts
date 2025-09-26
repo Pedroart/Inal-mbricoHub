@@ -6,5 +6,6 @@ export type {
   EntryBle,
   DashboardWidget,
   ConfigProfile,
-  Protocol
+  Protocol,
+  Measurement
 } from "../../../main/src/models/domain.ts";

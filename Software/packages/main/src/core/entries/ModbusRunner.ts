@@ -174,7 +174,7 @@ export class ModbusRunner implements AppModule {
                 }
               })
 
-              console.log(`[DATA] ${b.server.ip}:${b.server.port} →`, measurements)
+              //console.log(`[DATA] ${b.server.ip}:${b.server.port} →`, measurements)
               ctx.bus.emit("measurement:new", { batch: measurements })
             } catch (err) {
               console.error(`[ERROR] Lectura Modbus ${b.server.ip}:${b.server.port} → ${(err as Error).message}`)

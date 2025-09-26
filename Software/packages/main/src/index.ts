@@ -11,6 +11,7 @@ import {allowExternalUrls} from './modules/ExternalUrls.js';
 import {loadConfigModule} from './core/config/ConfigStore.js';
 import {createConfigIpcModule} from './core/config/ConfigIpcModule.js'
 import {runnerModbus} from './core/entries/ModbusRunner.js'
+import {measurementManager} from './core/MeasurementManager.js'
 
 export async function initApp(initConfig: AppInitConfig) {
   const moduleRunner = createModuleRunner()
@@ -24,6 +25,7 @@ export async function initApp(initConfig: AppInitConfig) {
 
     .init(loadConfigModule())
     .init(createConfigIpcModule())
+    .init(measurementManager())
 
     .init(runnerModbus())
     // Install DevTools extension if needed
