@@ -2,8 +2,8 @@ import { useState } from "react"
 import { IndustrialHeader } from "../components/industrial-header"
 
 import BlePage from "../components/test/BLE"
-import MeasuresPage from "../components/test/Measures"
 
+import MeasuresPage from "../components/config/Measures"
 import WidgetsPage from "../components/config/widgets"
 import ProfileTests from "../components/config/profile"
 import SensorTypesPage from "../components/config/SensorTypes"
