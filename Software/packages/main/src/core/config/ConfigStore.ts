@@ -38,7 +38,7 @@ export class ConfigStore {
         { id: 1, name: "Sensor de Pinchar", index: "1", quantity: 16, simbol: "°C" },
         { id: 2, name: "Sensor de Retorno", index: "18", quantity: 2, simbol: "°C" },
         { id: 3, name: "Sensor de Ambiente", index: "20", quantity: 10, simbol: "°C" },
-        { id: 4, name: "Setpoint", index: "81-90", quantity: 10, simbol: "°C" },
+        { id: 4, name: "Setpoint", index: "81", quantity: 10, simbol: "°C" },
       ],
       entry: [],
       modbus_server: [],
@@ -121,7 +121,7 @@ export class ConfigStore {
     return profiles
   }
 
-  // ----- Entries  ----- 
+  // ----- Entries  -----
   listEntries() { return this.getProfile().entry }
   upsertEntry(e: Entry) {
     const p = this.getProfile()
