@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { IndustrialHeader } from "../components/industrial-header"
 
-import BlePage from "../components/test/BLE"
+import BlePage from "../components/config/BLE"
 
 import MeasuresPage from "../components/config/Measures"
 import WidgetsPage from "../components/config/widgets"

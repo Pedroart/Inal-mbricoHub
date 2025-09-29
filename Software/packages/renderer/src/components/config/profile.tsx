@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react"
+import React, { useState, useEffect, useMemo, useRef } from "react"
 import type { ConfigProfile } from "../../api/models"
 import { IndustrialCard } from "../industrial-card"
 import { Button } from "../ui/button"
@@ -25,18 +25,16 @@ const emptyProfile: ConfigProfile = {
   dashboard_widget: [],
 }
 
-// Primera letra mayúscula, resto minúsculas
 function sentenceCase(s: string) {
   if (!s) return s
   return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase()
 }
 
-// Banner simple integrado (sin librerías extra)
 function Banner({
   kind = "info",
   children,
   onClose,
-  timeoutMs = 3000, // 0 = sin autodescartar
+  timeoutMs = 3000,
 }: {
   kind?: "info" | "success" | "warning" | "error"
   children: React.ReactNode
@@ -59,7 +57,7 @@ function Banner({
   return (
     <div
       className={`group rounded-md border px-3 py-2 text-sm ${palette} transition-opacity duration-200 hover:opacity-0`}
-      onMouseEnter={onClose} // ← desaparece al hacer hover
+      onMouseEnter={onClose}
       role="status"
       aria-live="polite"
     >
@@ -78,7 +76,6 @@ function Banner({
   )
 }
 
-
 export default function ProfileTests() {
   // ---- State principal ----
   const [name, setName] = useState("")
@@ -88,10 +85,7 @@ export default function ProfileTests() {
 
   // Guardar copia
   const [newProfileName, setNewProfileName] = useState("")
-  const [askOverwrite, setAskOverwrite] = useState<{
-    open: boolean
-    targetName: string
-  }>({ open: false, targetName: "" })
+  const [askOverwrite, setAskOverwrite] = useState<{ open: boolean; targetName: string }>({ open: false, targetName: "" })
 
   // Borrar
   const [deleteTarget, setDeleteTarget] = useState("")
@@ -99,10 +93,11 @@ export default function ProfileTests() {
 
   // UI
   const [showDetails, setShowDetails] = useState(false)
-  const [banner, setBanner] = useState<{
-    kind: "info" | "success" | "warning" | "error"
-    msg: string
-  } | null>(null)
+  const [banner, setBanner] = useState<{ kind: "info" | "success" | "warning" | "error"; msg: string } | null>(null)
+
+  // Import (upload) — solo almacenar meta por ahora
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const [uploadedMeta, setUploadedMeta] = useState<{ name: string; size: number } | null>(null)
 
   // ---- Efectos / API ----
   useEffect(() => {
@@ -129,7 +124,7 @@ export default function ProfileTests() {
     [profile]
   )
 
-  // ---- Acciones ----
+  // ---- Acciones existentes ----
   const handleSave = async () => {
     setBanner(null)
     await window.api.config.profile.save()
@@ -145,11 +140,9 @@ export default function ProfileTests() {
       return
     }
     if (profiles.includes(target)) {
-      // El nombre existe → preguntar si desea sobrescribir (diálogo integrado)
       setAskOverwrite({ open: true, targetName: target })
       return
     }
-    // No existe → guardar directo
     handleSaveCopy(target, false)
   }
 
@@ -161,9 +154,7 @@ export default function ProfileTests() {
     setAskOverwrite({ open: false, targetName })
     setBanner({
       kind: "success",
-      msg: overwrite
-        ? `Copia sobreescrita: “${targetName}”.`
-        : `Copia creada: “${targetName}”.`,
+      msg: overwrite ? `Copia sobreescrita: “${targetName}”.` : `Copia creada: “${targetName}”.`,
     })
   }
 
@@ -188,31 +179,18 @@ export default function ProfileTests() {
   const handleDelete = async () => {
     setBanner(null)
     setAskDelete(false)
-
     try {
-      // Si se intenta borrar "default", interpretamos “borrar configuración actual”.
-      // Respetamos la API existente: intentamos remove("default").
-      // Si el backend no lo permite, mostramos banner integrado (sin diálogos nativos).
       await window.api.config.profile.remove(deleteTarget)
-
       setProfiles(await window.api.config.profile.list())
       if (deleteTarget === name) {
         const newActive = await window.api.config.profile.getName()
         setName(newActive)
         setProfile(await window.api.config.profile.get())
       }
-
       if (deleteTarget === "default") {
-        setBanner({
-          kind: "success",
-          msg:
-            "Configuración por defecto borrada correctamente (según soporte del backend).",
-        })
+        setBanner({ kind: "success", msg: "Configuración por defecto borrada correctamente (según backend)." })
       } else {
-        setBanner({
-          kind: "success",
-          msg: `Perfil “${deleteTarget}” borrado.`,
-        })
+        setBanner({ kind: "success", msg: `Perfil “${deleteTarget}” borrado.` })
       }
       setDeleteTarget("")
     } catch (err) {
@@ -220,14 +198,50 @@ export default function ProfileTests() {
         setBanner({
           kind: "warning",
           msg:
-            "Tu backend no permite borrar “default”. Si deseas vaciar la configuración actual, actívalo y limpia los módulos correspondientes, luego guarda.",
+            "Tu backend no permite borrar “default”. Actívalo y limpia módulos para vaciarlo, luego guarda.",
         })
       } else {
-        setBanner({
-          kind: "error",
-          msg: `No se pudo borrar “${deleteTarget}”.`,
-        })
+        setBanner({ kind: "error", msg: `No se pudo borrar “${deleteTarget}”.` })
       }
+    }
+  }
+
+  // ---- NUEVO: Exportar / Importar JSON ----
+  const handleDownloadJSON = () => {
+    try {
+      const data = JSON.stringify(profile, null, 2)
+      const blob = new Blob([data], { type: "application/json" })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      const safeName = (name || "profile").replace(/[^\w.-]+/g, "_")
+      a.href = url
+      a.download = `${safeName}.json`
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      URL.revokeObjectURL(url)
+      setBanner({ kind: "success", msg: "JSON descargado." })
+    } catch {
+      setBanner({ kind: "error", msg: "No se pudo descargar el JSON." })
+    }
+  }
+
+  const handleUploadClick = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    try {
+      const text = await file.text()
+      // Por ahora NO hacemos nada con el contenido. Solo guardamos meta y avisamos.
+      setUploadedMeta({ name: file.name, size: file.size })
+      setBanner({ kind: "success", msg: `Archivo cargado: ${file.name} (${Math.ceil(file.size / 1024)} KB).` })
+      // Limpia el input para permitir volver a elegir el mismo archivo si se desea.
+      e.target.value = ""
+    } catch {
+      setBanner({ kind: "error", msg: "No se pudo leer el archivo." })
     }
   }
 
@@ -235,14 +249,10 @@ export default function ProfileTests() {
   return (
     <div className="p-6 space-y-6">
       {banner && (
-        <Banner
-          kind={banner.kind}
-          onClose={() => setBanner(null)}
-        >
+        <Banner kind={banner.kind} onClose={() => setBanner(null)}>
           {banner.msg}
         </Banner>
       )}
-
 
       {/* PERFIL */}
       <IndustrialCard title={sentenceCase("perfil")}>
@@ -280,10 +290,7 @@ export default function ProfileTests() {
               </select>
             </div>
             <div className="flex items-end">
-              <Button
-                onClick={handleSave}
-                className="h-10 px-4 bg-[#1e77e5] hover:bg-[#1b6bd0] text-white rounded-md"
-              >
+              <Button onClick={handleSave} className="h-10 px-4 bg-[#1e77e5] hover:bg-[#1b6bd0] text-white rounded-md">
                 Guardar cambios
               </Button>
             </div>
@@ -307,10 +314,7 @@ export default function ProfileTests() {
                   onChange={(e) => setNewProfileName(e.target.value)}
                   className="flex-1 rounded-md border border-[#343841] bg-[#1b1d23] text-white placeholder:text-gray-500"
                 />
-                <Button
-                  onClick={handleSaveCopyIntent}
-                  className="h-10 px-4 bg-[#2f8bff] hover:bg-[#277be3] text-white rounded-md"
-                >
+                <Button onClick={handleSaveCopyIntent} className="h-10 px-4 bg-[#2f8bff] hover:bg-[#277be3] text-white rounded-md">
                   Guardar copia
                 </Button>
               </div>
@@ -319,9 +323,7 @@ export default function ProfileTests() {
 
           {/* Resumen del contenido */}
           <div className="pt-2">
-            <div className="text-xs text-gray-400 mb-2">
-              {sentenceCase("resumen del contenido")}
-            </div>
+            <div className="text-xs text-gray-400 mb-2">{sentenceCase("resumen del contenido")}</div>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {stats.map((s) => (
                 <div
@@ -337,10 +339,7 @@ export default function ProfileTests() {
 
           {/* Detalles JSON (opcional) */}
           <div className="pt-2">
-            <button
-              onClick={() => setShowDetails((v) => !v)}
-              className="text-xs text-[#76a7ff] hover:underline"
-            >
+            <button onClick={() => setShowDetails((v) => !v)} className="text-xs text-[#76a7ff] hover:underline">
               {showDetails ? "Ocultar detalles" : "Ver detalles (JSON)"}
             </button>
             {showDetails && (
@@ -350,6 +349,43 @@ export default function ProfileTests() {
             )}
           </div>
         </div>
+      </IndustrialCard>
+
+      {/* NUEVO: Importar / Exportar */}
+      <IndustrialCard title="Importar / Exportar">
+        <div className="flex flex-col sm:flex-row items-start gap-3">
+          <Button
+            onClick={handleDownloadJSON}
+            className="h-10 px-4 bg-[#0ea5e9] hover:bg-[#0b90cc] text-white rounded-md"
+          >
+            Descargar JSON actual
+          </Button>
+
+          <div className="flex items-center gap-2">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="application/json,.json"
+              className="hidden"
+              onChange={handleFileChange}
+            />
+            <Button
+              onClick={handleUploadClick}
+              className="h-10 px-4 bg-[#22c55e] hover:bg-[#1faf54] text-white rounded-md"
+            >
+              Subir archivo JSON
+            </Button>
+            {uploadedMeta && (
+              <span className="text-xs text-gray-400">
+                Cargado: <span className="text-gray-200">{uploadedMeta.name}</span>{" "}
+                ({Math.ceil(uploadedMeta.size / 1024)} KB)
+              </span>
+            )}
+          </div>
+        </div>
+        <p className="mt-2 text-xs text-gray-400">
+          La subida solo almacena el archivo (no se aplica al perfil). Próximamente: validación e importación.
+        </p>
       </IndustrialCard>
 
       {/* ADMINISTRACIÓN */}
@@ -388,7 +424,7 @@ export default function ProfileTests() {
         </p>
       </IndustrialCard>
 
-      {/* Dialogo: sobreescribir copia */}
+      {/* Diálogos */}
       <AlertDialog open={askOverwrite.open} onOpenChange={(open) => setAskOverwrite((s) => ({ ...s, open }))}>
         <AlertDialogContent className="bg-[#1b1d23] text-white border border-[#343841]">
           <AlertDialogHeader>
@@ -398,9 +434,7 @@ export default function ProfileTests() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="bg-[#272a32] border border-[#343841] text-white">
-              Cancelar
-            </AlertDialogCancel>
+            <AlertDialogCancel className="bg-[#272a32] border border-[#343841] text-white">Cancelar</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => handleSaveCopy(askOverwrite.targetName, true)}
               className="bg-[#1e77e5] hover:bg-[#1b6bd0] text-white"
@@ -411,7 +445,6 @@ export default function ProfileTests() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Dialogo: borrar perfil */}
       <AlertDialog open={askDelete} onOpenChange={setAskDelete}>
         <AlertDialogContent className="bg-[#1b1d23] text-white border border-[#343841]">
           <AlertDialogHeader>
@@ -425,9 +458,7 @@ export default function ProfileTests() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="bg-[#272a32] border border-[#343841] text-white">
-              Cancelar
-            </AlertDialogCancel>
+            <AlertDialogCancel className="bg-[#272a32] border border-[#343841] text-white">Cancelar</AlertDialogCancel>
             <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700 text-white">
               Borrar
             </AlertDialogAction>
