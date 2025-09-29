@@ -15,7 +15,7 @@ import {measurementManager} from './core/MeasurementManager.js'
 
 export async function initApp(initConfig: AppInitConfig) {
   const moduleRunner = createModuleRunner()
-    .init(createWindowManagerModule({initConfig, openDevTools: import.meta.env.DEV}))
+    .init(createWindowManagerModule({initConfig, openDevTools: true}))//import.meta.env.DEV}))
     .init(disallowMultipleAppInstance())
     .init(terminateAppOnLastWindowClose())
     .init(hardwareAccelerationMode({enable: false}))

@@ -129,11 +129,12 @@ export default function WidgetsPage() {
     const st = sensorTypes.find((s) => s.id === e.sensor_type_id)
     return (st as any)?.simbol ?? ""
   }
+  /*
   const stName = (entry?: Entry) => {
     if (!entry) return "??"
     const st = sensorTypes.find((s) => s.id === entry.sensor_type_id)
     return st ? st.name : `SensorType ${entry.sensor_type_id}`
-  }
+  }*/
 
   // guardar cambios (upsert)
   const handleSave = async () => {

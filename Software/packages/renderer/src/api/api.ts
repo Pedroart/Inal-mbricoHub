@@ -6,7 +6,8 @@ import type {
   EntryModbus,
   EntryBle,
   DashboardWidget,
-  Measurement
+  Measurement,
+  BleDevice
 } from './models'
 
 export type Api = {
@@ -60,5 +61,15 @@ export type Api = {
     latest: () => Promise<Measurement[]>
     latestByEntry: (entryId: number) => Promise<Measurement>
     historyByEntry: (entryId: number, since: number) => Promise<Measurement[]>
+  }
+  ble: {
+    scan: {
+      start: () => Promise<void> 
+      stop: () => Promise<void>
+      list: () => Promise<BleDevice[]>
+    }
+    connect: {
+      try: (entryId: string) => Promise<boolean>
+    } 
   }
 }

@@ -1,5 +1,3 @@
-import React from "react";
-
 type MapCardProps = {
   x: number; // coordenada horizontal relativa (0–1)
   y: number; // coordenada vertical relativa (0–1)

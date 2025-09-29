@@ -3,15 +3,7 @@ import type { EntryBle, Entry, SensorType } from "../../api/models"
 import { IndustrialCard } from "../industrial-card"
 import { Button } from "../../components/ui/button"
 import { Input } from "../../components/ui/input"
-
-// --------- Tipos asumidos para el escaneo ---------
-type BleDevice = {
-  id: string               // MAC / UUID / dirección
-  name?: string            // nombre publicitado
-  rssi?: number            // potencia señal (dBm)
-  lastSeen?: number        // epoch ms del último anuncio recibido
-  serviceUuids?: string[]  // opcional: servicios anunciados
-}
+import type { BleDevice } from "../../api/models"
 
 // ---------- Banner reutilizable ----------
 function Banner({

@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState } from "react"
+import { useMemo, useEffect, useState } from "react"
 import { MapCard } from "./MapCard"
 import type { DashboardWidget, Entry, SensorType, Measurement } from "../api/models"
 
@@ -22,18 +22,26 @@ export function Mapsensor() {
   const [latestMap, setLatestMap] = useState<Map<number, Measurement>>(new Map())
 
   useEffect(() => {
+    if (!window.api?.config) {
+      console.warn("⚠️ window.api no está disponible aún");
+      return;
+    }
+
     // Cargar configuración base
     window.api.config.widgets.list().then(setWidgets)
     window.api.config.entries.list().then(setEntries)
     window.api.config.sensorTypes.list().then(setSensorTypes)
+
     // Una lectura inicial
     refreshLatest()
   }, [])
 
   const refreshLatest = async () => {
+    if (!window.api?.measures) return
     const data: Measurement[] = await window.api.measures.latest()
     setLatestMap(new Map(data.map((m) => [m.entry_id, m])))
   }
+
 
   // Recalcular datos (incluye valor en vivo)
   const filteredData = useMemo(() => {

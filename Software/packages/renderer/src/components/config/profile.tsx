@@ -12,7 +12,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "../ui/alert-dialog"
 
 // ---- Estático / helpers ----
@@ -234,7 +233,7 @@ export default function ProfileTests() {
     const file = e.target.files?.[0]
     if (!file) return
     try {
-      const text = await file.text()
+      //const text = await file.text()
       // Por ahora NO hacemos nada con el contenido. Solo guardamos meta y avisamos.
       setUploadedMeta({ name: file.name, size: file.size })
       setBanner({ kind: "success", msg: `Archivo cargado: ${file.name} (${Math.ceil(file.size / 1024)} KB).` })
