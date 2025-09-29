@@ -59,7 +59,7 @@ export default function Settings() {
       </main>
 
       {/* Header fijo abajo */}
-      <IndustrialHeader title="TITULO" />
+      <IndustrialHeader title="CONFIG" />
     </div>
   )
 

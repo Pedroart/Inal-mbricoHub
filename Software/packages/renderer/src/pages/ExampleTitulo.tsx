@@ -31,7 +31,7 @@ export default function Dashboard() {
         </div>
       </main>
 
-      <IndustrialHeader title="TITULO" />
+      <IndustrialHeader title="CONFIG" />
     </div>
   )
 }

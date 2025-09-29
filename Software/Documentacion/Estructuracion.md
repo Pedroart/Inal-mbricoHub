@@ -34,3 +34,7 @@ Sistema de Lectura de los datos leidos del sensor, 2 memorias
 
 Temperatura
 Bateria
+
+
+1. La UI debe tener primero un dasboard hacia abajo para que sea mas facil acceder a los demas
+2. El sistema de poder cambiar la configuracion de los sistea
