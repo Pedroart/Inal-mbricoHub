@@ -1,8 +1,10 @@
 #include <Arduino.h>
-#include "Adafruit_SPIFlash.h"
+#include <Adafruit_SPIFlash.h>
+#include <Adafruit_TinyUSB.h>
 #include <nrf.h>
 #include <nrf_power.h>
 #include <nrf_gpio.h>
+#include <Adafruit_TinyUSB.h>
 
 #define SERIAL_CDC
 #define CFG_PRINTF_NRF

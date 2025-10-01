@@ -5,7 +5,8 @@ Board: Seed XIA nRF52840
 */
 
 #include <Arduino.h>
-#include "Adafruit_SPIFlash.h"
+#include <Adafruit_SPIFlash.h>
+#include <Adafruit_TinyUSB.h>
 #include <nrf.h>
 #include <nrf_power.h>
 #include <nrf_gpio.h>
@@ -151,7 +152,7 @@ void setup() {
 }
 
 void loop() {
-  __WFI(); // No hace nada más
+  waitForEvent(); // No hace nada más
 }
 
 /////////////////////////////////////////////////////////////
@@ -199,7 +200,7 @@ void run(){
 
 void BeaconSetup(){
   Bluefruit.begin();
-  Bluefruit.setTxPower(4);
+  Bluefruit.setTxPower(-20);
   Bluefruit.setName("FrioSensor");
 }
 
@@ -217,7 +218,7 @@ void updateBeaconData() {
   Bluefruit.Advertising.addFlags(BLE_GAP_ADV_FLAGS_LE_ONLY_GENERAL_DISC_MODE);
   Bluefruit.Advertising.addTxPower();
   Bluefruit.Advertising.addManufacturerData(beaconData, sizeof(beaconData));
-  Bluefruit.Advertising.addName();
+  //Bluefruit.Advertising.addName();
 
   Bluefruit.Advertising.start(0);
 }
@@ -226,6 +227,7 @@ void startAdvertising() {
   Bluefruit.Advertising.stop();
   updateBeaconData();
 
+  Bluefruit.Advertising.setType(BLE_GAP_ADV_TYPE_NONCONNECTABLE_NONSCANNABLE_UNDIRECTED);
   Bluefruit.Advertising.setInterval(160, 160); // 100ms
   Bluefruit.Advertising.setFastTimeout(0);
   Bluefruit.Advertising.start(0);
