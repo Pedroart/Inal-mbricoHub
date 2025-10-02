@@ -7,12 +7,14 @@ interface IndustrialHeaderProps {
   title?: string
   onBack?: () => void
   showBackButton?: boolean
+  onMenuClick?: () => void   // 👈 nueva prop
 }
 
 export function IndustrialHeader({
   title = "TITULO",
   onBack,
   showBackButton = true,
+  onMenuClick,
 }: IndustrialHeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const navigate = useNavigate()
@@ -58,12 +60,12 @@ export function IndustrialHeader({
         <div className="flex-1 flex justify-end relative">
           <button
             className="w-8 h-8 bg-primary rounded-sm flex items-center justify-center hover:opacity-80 transition-opacity"
-            onClick={toggleMenu}
+            onClick={onMenuClick ?? toggleMenu}  // 👈 usa callback si existe
           >
             <Grid3X3 className="w-4 h-4 text-primary-foreground" />
           </button>
 
-          {isMenuOpen && (
+          {isMenuOpen && !onMenuClick && (   // 👈 solo muestra el menú si no hay callback
             <div className="absolute right-0 bottom-full mb-2 bg-background border border-border rounded-md shadow-2xl animate-in slide-in-from-bottom-2">
               <div className="grid grid-cols-2 gap-1 p-2 w-64">
                 {menuItems.map((item) => (

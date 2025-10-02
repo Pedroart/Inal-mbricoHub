@@ -89,9 +89,8 @@ export default function SensorTypesPage() {
     () =>
       types.map((t) => (
         <tr key={t.id} className="border-b border-[#343841] hover:bg-[#20242d]">
-          <td className="px-3 py-2 text-xs text-gray-400">{t.id}</td>
           <td className="px-3 py-2">{t.name}</td>
-          <td className="px-3 py-2">{t.index}</td>
+          <td className="px-3 py-2 text-center">{t.index}</td>
           <td className="px-3 py-2 text-center">{t.quantity}</td>
           <td className="px-3 py-2">{t.simbol}</td>
           <td className="px-3 py-2">
@@ -199,12 +198,11 @@ export default function SensorTypesPage() {
           <table className="w-full text-sm bg-[#1b1d23]">
             <thead className="bg-[#22262f] text-gray-300">
               <tr className="border-b border-[#343841]">
-                <th className="px-3 py-2 text-left text-xs uppercase tracking-wider">ID</th>
                 <th className="px-3 py-2 text-left text-xs uppercase tracking-wider">Nombre</th>
-                <th className="px-3 py-2 text-left text-xs uppercase tracking-wider">Índice</th>
-                <th className="px-3 py-2 text-center text-xs uppercase tracking-wider">Cantidad</th>
-                <th className="px-3 py-2 text-left text-xs uppercase tracking-wider">Símbolo</th>
-                <th className="px-3 py-2 text-left text-xs uppercase tracking-wider">Acciones</th>
+                <th className="px-3 py-2 text-center text-xs uppercase tracking-wider">ID</th>
+                <th className="px-3 py-2 text-center text-xs uppercase tracking-wider">#</th>
+                <th className="px-3 py-2 text-left text-xs uppercase tracking-wider">SIMB</th>
+                <th className="px-3 py-2 text-center text-xs uppercase tracking-wider w-[10%]">Acciones</th>
               </tr>
             </thead>
             <tbody>{tableRows}</tbody>
