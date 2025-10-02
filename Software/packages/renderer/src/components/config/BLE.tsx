@@ -2,9 +2,6 @@ import { useEffect, useMemo, useState } from "react"
 import type { EntryBle, Entry, SensorType } from "../../api/models"
 import { IndustrialCard } from "../industrial-card"
 import { Button } from "../../components/ui/button"
-import { Input } from "../../components/ui/input"
-
-
 
 function sentenceCase(s: string) {
   if (!s) return s

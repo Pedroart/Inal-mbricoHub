@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import type { Entry, Measurement } from "../../api/models"
 import { IndustrialCard } from "../industrial-card"
-import { Button } from "../ui/button"
+
 import {
   Dialog,
   DialogContent,

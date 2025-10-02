@@ -16,14 +16,15 @@
     "@app/renderer": "*",
     "electron-updater": "6.6.2",
     "jsmodbus": "^4.0.10",
+    "lokijs": "^1.5.12",
     "mathjs": "^14.8.1",
     "serialport": "^13.0.0",
-    "sql.js": "^1.13.0",
     "ws": "^8.18.3"
   },
   "devDependencies": {
     "@app/electron-versions": "*",
     "@types/better-sqlite3": "^7.6.13",
+    "@types/lokijs": "^1.5.14",
     "@types/sql.js": "^1.4.9",
     "@types/ws": "^8.18.1",
     "electron-devtools-installer": "4.0.0",

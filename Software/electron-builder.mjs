@@ -102,6 +102,8 @@ async function getListOfFilesFromEachWorkspace() {
 
     let patterns = workspacePkg.files || ['dist/**', 'package.json'];
 
+    patterns.push('**/*.wasm');
+
     patterns = patterns.map(p => join('node_modules', name, p));
     allFilesToInclude.push(...patterns);
   }
