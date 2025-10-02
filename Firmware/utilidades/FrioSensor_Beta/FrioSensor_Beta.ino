@@ -17,7 +17,7 @@ Board: Seed XIA nRF52840
 #include <bluefruit.h>
 
 #define LED_PIN        LED_BLUE
-#define REBOOT_TIME_S  10
+#define REBOOT_TIME_S  15
 
 #define ENABLE_LOGS false
 
@@ -164,53 +164,116 @@ void loop() {
 Adafruit_TMP117 tmp117;
 
 uint8_t beaconData[5] = {
-  0x00,   // ID del paquete
-  0x00,   // ID del paquete
+  0xAB,   // ID del paquete
+  0xCD,   // ID del paquete
   0xAA,   // Temp high byte
   0xAA,   // Temp low byte
   0xAA    // Ej. nivel batería o relleno
 };
 
+// Definir un servicio y una característica BLE global
+BLEService customService = BLEService(0x180A);          // UUID de servicio (puedes cambiarlo por un UUID 128-bit propio)
+BLECharacteristic tempResetChar = BLECharacteristic(0x2A57);  // UUID de característica
+
+
+void tempResetCallback(uint16_t conn_hdl, BLECharacteristic* chr, uint8_t* data, uint16_t len) {
+  if (len > 0 && data[0] == 0x01) {  // si recibe 0x01
+    // Aquí "reseteas" la lectura de tu TMP117
+    // En realidad el TMP117 no tiene "reset a 0" físico,
+    // pero puedes simularlo forzando el beaconData de temperatura a 0
+    beaconData[2] = 0x00;
+    beaconData[3] = 0x00;
+
+    // Confirmación opcional: sobrescribir characteristic con "0"
+    chr->write8(0x00);
+
+    beaconFlash(LED_BLUE, 2, 100);  // feedback
+  }
+}
 
 void run(){
   Wire.setPins(SDA_CUSTOM, SCL_CUSTOM);
   Wire.begin();
   
-  if (!checkBootButton()) {
-    BeaconSetup();
+    if (!checkBootButton()) {
+      BeaconSetup();
 
-    leerBateria();
-    if (!tmp117.begin(0x49)) {
-      beaconFlash(LED_RED, 5, 100);
+      leerBateria();
+      if (!tmp117.begin(0x49)) {
+        beaconFlash(LED_RED, 5, 100);
+        startAdvertising();
+        delay(300);
+        return;
+      }
+      getTemperatureBytes();
+
+
       startAdvertising();
-      delay(100);
-      return;
+      beaconFlash(LED_PIN, 3, 100);
+      delay(300);
+    } else {
+      beaconFlash(LED_GREEN, 3, 100);
+
+      delay(1000);
+
+      // Inicializa BLE en modo conectable
+      Bluefruit.begin();
+      Bluefruit.setTxPower(4);
+      char name[20];
+      ble_gap_addr_t mac;
+      sd_ble_gap_addr_get(&mac);
+      sprintf(name, "FrioSensor-%02X%02X", mac.addr[1], mac.addr[0]);  
+      Bluefruit.setName(name);
+
+      // Configurar servicio y característica
+      customService.begin();
+
+      tempResetChar.setProperties(CHR_PROPS_WRITE | CHR_PROPS_READ);
+      tempResetChar.setPermission(SECMODE_OPEN, SECMODE_OPEN);
+      tempResetChar.setFixedLen(1);
+      tempResetChar.begin();
+
+      // Callback cuando se escribe en la característica
+      tempResetChar.setWriteCallback(tempResetCallback);
+
+      // Arrancar advertising en modo conectable
+      Bluefruit.Advertising.stop();
+      Bluefruit.Advertising.addFlags(BLE_GAP_ADV_FLAGS_LE_ONLY_GENERAL_DISC_MODE);
+      Bluefruit.Advertising.addTxPower();
+      Bluefruit.Advertising.addName();
+      Bluefruit.Advertising.start(0); // 0 = infinito
+
+      while (true) {
+        waitForEvent(); // se queda esperando en bajo consumo
+        if (checkBootButton()) {
+          NVIC_SystemReset(); // si presionas otra vez, fuerza reinicio
+        }
+      }
     }
-    getTemperatureBytes();
-
-
-    startAdvertising();
-    beaconFlash(LED_PIN, 3, 100);
-    delay(100);
-  } else {
-    beaconFlash(LED_GREEN, 3, 100);
-  }
 
 }
 
 void BeaconSetup(){
   Bluefruit.begin();
-  Bluefruit.setTxPower(-20);
+  Bluefruit.setTxPower(4);
   Bluefruit.setName("FrioSensor");
 }
 
 void getManufacturerIDFromMAC() {
+  
   ble_gap_addr_t mac;
   sd_ble_gap_addr_get(&mac);
   beaconData[0] = mac.addr[0];  // Últimos 2 bytes
   beaconData[1] = mac.addr[1];  // Últimos 2 bytes
+  
+  /*
+  beaconData[0] = 0xAB;  // byte bajo
+  beaconData[1] = 0xCD;  
+  */
 }
 
+// En el tope del archivo (opcional)
+#define COMPANY_ID_TEST 0xFFFF
 
 void updateBeaconData() {
   Bluefruit.Advertising.clearData();
@@ -218,9 +281,9 @@ void updateBeaconData() {
   Bluefruit.Advertising.addFlags(BLE_GAP_ADV_FLAGS_LE_ONLY_GENERAL_DISC_MODE);
   Bluefruit.Advertising.addTxPower();
   Bluefruit.Advertising.addManufacturerData(beaconData, sizeof(beaconData));
-  //Bluefruit.Advertising.addName();
+  Bluefruit.Advertising.addName();
 
-  Bluefruit.Advertising.start(0);
+  //Bluefruit.Advertising.start(0);
 }
 
 void startAdvertising() {
@@ -228,7 +291,7 @@ void startAdvertising() {
   updateBeaconData();
 
   Bluefruit.Advertising.setType(BLE_GAP_ADV_TYPE_NONCONNECTABLE_NONSCANNABLE_UNDIRECTED);
-  Bluefruit.Advertising.setInterval(160, 160); // 100ms
+  Bluefruit.Advertising.setInterval(80, 80); // 100ms
   Bluefruit.Advertising.setFastTimeout(0);
   Bluefruit.Advertising.start(0);
 }
