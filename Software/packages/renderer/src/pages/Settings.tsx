@@ -3,7 +3,7 @@ import { IndustrialHeader } from "../components/industrial-header"
 
 import BlePage from "../components/config/BLE"
 
-import MeasuresPage from "../components/config/Measures"
+import MeasuresPage from "../components/config/Measures_v2"
 import WidgetsPage from "../components/config/widgets"
 import ProfileTests from "../components/config/profile"
 import SensorTypesPage from "../components/config/SensorTypes"

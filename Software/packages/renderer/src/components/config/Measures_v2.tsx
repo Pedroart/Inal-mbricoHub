@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react"
 import type { Entry, Measurement } from "../../api/models"
 import { IndustrialCard } from "../industrial-card"
-import { Button } from "../../components/ui/button"
+import { Button } from "../ui/button"
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from "../../components/ui/dialog"
+} from "../ui/dialog"
 import {
   LineChart,
   Line,
@@ -113,13 +113,22 @@ export default function MeasuresPage() {
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart
                   data={history.map((h) => ({
-                    ts: new Date(h.ts).toLocaleTimeString(),
+                    ts: h.ts,
                     value: h.value,
                   }))}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#2a2d35" />
                   <XAxis dataKey="ts" hide />
                   <YAxis />
+                  <XAxis 
+                    dataKey="ts" 
+                    tickFormatter={(ts) => {
+                      console.log(ts)
+                      const d = new Date(ts)
+                      return `${d.getDate()}/${d.getMonth() + 1} ${d.getHours()}:${String(d.getMinutes()).padStart(2,"0")}`
+                    }} 
+                  />
+
                   <ReTooltip />
                   <Line
                     type="monotone"
