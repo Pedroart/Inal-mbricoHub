@@ -64,6 +64,17 @@ export const api = {
       latestByEntry: (entryId: number) => ipcRenderer.invoke('measurements:get-by-entry', entryId),
       historyByEntry: (entryId: number, since: number) => ipcRenderer.invoke('measurements:get-history',entryId,since)
   },
+
+  ble: {
+    scan: {
+      list: async () => {
+        return await ipcRenderer.invoke("ble:scan:list");
+      },
+      connect: async (address: string) => {
+        return await ipcRenderer.invoke("ble:scan:connect", address);
+      },
+    },
+  },
 } as const
 
 contextBridge.exposeInMainWorld('api', api)

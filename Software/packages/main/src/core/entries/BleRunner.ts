@@ -3,6 +3,7 @@ import { AppModule } from "../../AppModule.js";
 import { ModuleContext } from "../../ModuleContext.js";
 import { ConfigStore } from "../config/ConfigStore.js";
 import { BleDeviceEvent, EntryBle, EntryBleType, Measurement } from "../../models/domain.js";
+import { ipcMain } from 'electron'
 
 type ActiveTask = {
   stop: () => void;
@@ -17,6 +18,15 @@ export class BleRunner implements AppModule {
   async enable(ctx: ModuleContext): Promise<void> {
     await ctx.bus.waitFor("config:loaded");
     const cfg = ctx.services.get("config") as ConfigStore;
+
+
+    ipcMain.handle("ble:scan:list", async () => {
+    return await this.scanList();
+    });
+
+    ipcMain.handle("ble:scan:connect", async (_evt, address: string) => {
+    return await this.scanConnect(address);
+    });
 
     this.buildBildings(cfg);
     this.startTask(ctx);
@@ -111,6 +121,58 @@ export class BleRunner implements AppModule {
       },
     });
   }
+
+    // dentro de BleRunner
+    async scanList(): Promise<any[]> {
+        if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
+            throw new Error("WS no conectado");
+        }
+        return new Promise((resolve, reject) => {
+            const handler = (raw: WebSocket.RawData) => {
+            try {
+                const msg = JSON.parse(raw.toString());
+                if (msg.type === "scan_devices") {
+                this.ws?.off("message", handler);
+                resolve(msg.data);
+                }
+            } catch (e) {
+                reject(e);
+            }
+            };
+            if (!this.ws) {
+                return reject(new Error("WS no conectado"));
+            }
+            this.ws.on("message", handler);
+            this.ws.send(JSON.stringify({ type: "scan_list" }));
+
+        });
+    }
+
+    async scanConnect(address: string): Promise<any> {
+        if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
+            throw new Error("WS no conectado");
+        }
+        return new Promise((resolve, reject) => {
+            const handler = (raw: WebSocket.RawData) => {
+            try {
+                const msg = JSON.parse(raw.toString());
+                if (msg.type === "scan_connect_result") {
+                this.ws?.off("message", handler);
+                resolve(msg.data);
+                }
+            } catch (e) {
+                reject(e);
+            }
+            };
+            if (!this.ws) {
+                return reject(new Error("WS no conectado"));
+            }
+
+            this.ws.on("message", handler);
+            this.ws.send(JSON.stringify({ type: "scan_connect", address }));
+        });
+    }
+
 
   /** Busca un entry_id a partir de la MAC */
   private findEntryForDevice(mac: string, _type: EntryBleType ): EntryBle | undefined {

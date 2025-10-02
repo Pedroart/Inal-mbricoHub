@@ -4,6 +4,8 @@ import { IndustrialCard } from "../industrial-card"
 import { Button } from "../../components/ui/button"
 import { Input } from "../../components/ui/input"
 
+
+
 function sentenceCase(s: string) {
   if (!s) return s
   return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase()
@@ -16,6 +18,21 @@ export default function BlePage() {
 
   const [newBind, setNewBind] = useState<Partial<EntryBle>>({ entry_id: -1, device_id: "", _type: "TEM" })
   const [editTarget, setEditTarget] = useState<number | null>(null) // entry_id en edición
+  const [scanDevices, setScanDevices] = useState<{ address: string; name?: string; rssi?: number }[]>([])
+
+
+  const refreshScan = async () => {
+    try {
+      const devices = await window.api.ble.scan.list()
+      setScanDevices(devices)
+    } catch (err) {
+      console.error("Error al escanear BLE:", err)
+    }
+  }
+
+  useEffect(() => {
+    refreshScan()
+  }, [])
 
   useEffect(() => {
     ;(async () => {
@@ -135,12 +152,26 @@ export default function BlePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs text-gray-400 mb-1">Device ID (MAC)</label>
-              <Input
-                placeholder="Ej: AA:BB:CC:DD:EE:FF"
-                value={newBind.device_id ?? ""}
-                onChange={(e) => setNewBind({ ...newBind, device_id: e.target.value })}
-                className="w-full rounded-md border border-[#343841] bg-[#1b1d23] text-white"
-              />
+              <div className="flex gap-2">
+                <select
+                  value={newBind.device_id ?? ""}
+                  onChange={(e) => setNewBind({ ...newBind, device_id: e.target.value })}
+                  className="flex-1 rounded-md border border-[#343841] bg-[#1b1d23] text-white px-3 py-2 text-sm"
+                >
+                  <option value="">— Selecciona un dispositivo —</option>
+                  {scanDevices.map((d) => (
+                    <option key={d.address} value={d.address}>
+                      {d.name ?? "Sin nombre"} · {d.address} · RSSI:{d.rssi}
+                    </option>
+                  ))}
+                </select>
+                <Button
+                  onClick={refreshScan}
+                  className="px-3 py-2 bg-[#2f8bff] hover:bg-[#277be3] text-white rounded-md text-sm"
+                >
+                  🔄
+                </Button>
+              </div>
             </div>
 
             <div>
@@ -155,6 +186,7 @@ export default function BlePage() {
               </select>
             </div>
           </div>
+
 
           <div className="flex justify-end gap-2">
             {editTarget && (

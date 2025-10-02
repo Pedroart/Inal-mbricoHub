@@ -64,12 +64,8 @@ export type Api = {
   }
   ble: {
     scan: {
-      start: () => Promise<void> 
-      stop: () => Promise<void>
       list: () => Promise<BleDevice[]>
+      connect: (address: string) => Promise<boolean>
     }
-    connect: {
-      try: (entryId: string) => Promise<boolean>
-    } 
   }
 }
