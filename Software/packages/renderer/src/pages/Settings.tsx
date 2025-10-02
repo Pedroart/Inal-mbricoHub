@@ -33,7 +33,7 @@ export default function Settings() {
         <div className="flex-1 flex min-h-0 overflow-hidden">
           {/* Barra lateral izquierda con tabs */}
           <div
-            className="w-56 flex flex-col justify-end overflow-y-auto text-white bg-[linear-gradient(200deg,#272a32_10%,#1e77e5)]"
+            className="flex flex-col justify-end overflow-y-auto text-white bg-[linear-gradient(200deg,#272a32_10%,#1e77e5)]"
           >
             {tabs.map((tab) => (
               <button
@@ -52,7 +52,7 @@ export default function Settings() {
 
 
           {/* Contenido principal scrolleable */}
-          <div className="flex-1 bg-[#1b1d23] p-4 overflow-y-auto min-h-0">
+          <div className="flex-1 bg-[#1b1d23] p-0 overflow-y-auto min-h-0">
             {tabs.find((tab) => tab.id === active)?.component}
           </div>
         </div>

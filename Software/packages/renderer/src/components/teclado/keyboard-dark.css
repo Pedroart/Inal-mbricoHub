@@ -1,0 +1,21 @@
+/* Tema oscuro personalizado */
+.myTheme {
+  background-color: #1b1d23;   /* fondo del teclado */
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.myTheme .hg-button {
+  background: #2d3340;         /* fondo tecla */
+  color: #ffffff !important;   /* texto blanco */
+  border: 1px solid #444;
+}
+
+.myTheme .hg-button:hover {
+  background: #3d4455;
+}
+
+.myTheme .hg-button:active {
+  background: #1e77e5;
+  color: #fff !important;
+}

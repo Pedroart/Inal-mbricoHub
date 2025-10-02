@@ -14,6 +14,9 @@ import {
   AlertDialogTitle,
 } from "../ui/alert-dialog"
 
+import { OnScreenKeyboardDialog } from "../teclado/OnScreenKeyboardDialog"
+
+
 // ---- Estático / helpers ----
 const emptyProfile: ConfigProfile = {
   sensor_type: [],
@@ -97,6 +100,8 @@ export default function ProfileTests() {
   // Import (upload) — solo almacenar meta por ahora
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [uploadedMeta, setUploadedMeta] = useState<{ name: string; size: number } | null>(null)
+
+  const [keyboardOpen, setKeyboardOpen] = useState(false)
 
   // ---- Efectos / API ----
   useEffect(() => {
@@ -253,6 +258,8 @@ export default function ProfileTests() {
         </Banner>
       )}
 
+      
+
       {/* PERFIL */}
       <IndustrialCard title={sentenceCase("perfil")}>
         <div className="flex flex-col gap-4">
@@ -310,7 +317,9 @@ export default function ProfileTests() {
                   type="text"
                   placeholder="Nombre de la copia"
                   value={newProfileName}
-                  onChange={(e) => setNewProfileName(e.target.value)}
+                  readOnly     // 👈 evita que abra el teclado físico
+                  onFocus={() => setKeyboardOpen(true)} // 👈 abre el popup
+                  onClick={() => setKeyboardOpen(true)} // (opcional, asegura en desktops)
                   className="flex-1 rounded-md border border-[#343841] bg-[#1b1d23] text-white placeholder:text-gray-500"
                 />
                 <Button onClick={handleSaveCopyIntent} className="h-10 px-4 bg-[#2f8bff] hover:bg-[#277be3] text-white rounded-md">
@@ -464,6 +473,17 @@ export default function ProfileTests() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <OnScreenKeyboardDialog
+        open={keyboardOpen}
+        initialValue={newProfileName}
+        title="Escribe el nombre de la copia"
+        onClose={() => setKeyboardOpen(false)}
+        onSubmit={(val: string) => {
+          setNewProfileName(val)
+        }}
+      />
+
     </div>
   )
 }
