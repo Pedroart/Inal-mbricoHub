@@ -12,6 +12,8 @@ import {loadConfigModule} from './core/config/ConfigStore.js';
 import {createConfigIpcModule} from './core/config/ConfigIpcModule.js'
 import {runnerModbus} from './core/entries/ModbusRunner.js'
 import {measurementManager} from './core/MeasurementManager.js'
+import {runnerBle} from './core/entries/BleRunner.js'
+
 
 export async function initApp(initConfig: AppInitConfig) {
   const moduleRunner = createModuleRunner()
@@ -28,6 +30,7 @@ export async function initApp(initConfig: AppInitConfig) {
     .init(measurementManager())
 
     .init(runnerModbus())
+    .init(runnerBle())
     // Install DevTools extension if needed
     // .init(chromeDevToolsExtension({extension: 'VUEJS3_DEVTOOLS'}))
 

@@ -3,3 +3,4 @@ source .venv/bin/activate
 
 sudo apt install -y bluez bluetooth
 pip install bleak
+pip install bleak websockets orjson

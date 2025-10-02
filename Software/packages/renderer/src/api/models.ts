@@ -7,7 +7,9 @@ export type {
   DashboardWidget,
   ConfigProfile,
   Protocol,
-  Measurement
+  Measurement,
+  BleDeviceEvent,
+  EntryBleType
 } from "../../../main/src/models/domain.ts";
 
 export type BleDevice = {

@@ -43,9 +43,12 @@ export type EntryModbus = {
   address: number
 }
 
+export type EntryBleType = "TEM" | "BAT"
+
 export type EntryBle = {
   entry_id: number
   device_id: string
+  _type: EntryBleType
 }
 
 export type DashboardWidget = {
@@ -64,3 +67,17 @@ export type ConfigProfile = {
   entry_ble: EntryBle[]
   dashboard_widget: DashboardWidget[]
 }
+
+export type BleDeviceEvent = {
+  type: string;         // "event", "devices", "hello"
+  event?: string;       // "adv"
+  address?: string;
+  rssi?: number;
+  cid?: string;
+  match?: boolean;
+  raw?: string;
+  temp_c?: number;
+  bat_pct?: number;
+  ts?: number;
+  data?: any;           // snapshot (para type=devices)
+};
