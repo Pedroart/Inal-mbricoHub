@@ -4,7 +4,7 @@ import type { AppModule } from '../../AppModule.js'
 import type { ModuleContext } from '../../ModuleContext.js'
 import { ConfigStore } from './ConfigStore.js'
 import type {
-  Entry, SensorType, ModbusServer, EntryModbus, EntryBle, DashboardWidget
+  Entry, SensorType, ModbusServer, EntryModbus, EntryBle, DashboardWidget, ConfigProfile
 } from '../../models/domain.js'
 
 export class ConfigIpcModule implements AppModule {
@@ -36,6 +36,9 @@ export class ConfigIpcModule implements AppModule {
     ipcMain.handle('config.profile.saveAs', async (_e, newName: string, overwrite) => { await cfg().saveAs(newName,overwrite); notify(); return true })
     ipcMain.handle('config.profile.remove', async (_e, name: string) => { await cfg().removeProfile(name); notify(); return } )
 
+    ipcMain.handle('config.profile.saveProfileToFile', async (_e, profile: ConfigProfile ,fileName: string = "profile.json") => { await cfg().saveProfileToFile(profile, fileName); notify(); return true } )
+    ipcMain.handle('config.profile.saveImageToProfile', async (_e, image: Uint8Array) => { cfg().saveImageToProfile(image); return true})
+
     // Entries
     ipcMain.handle('config.entries.list', () => cfg().listEntries())
     ipcMain.handle('config.entries.upsert', async (_e, e: Entry) => { cfg().upsertEntry(e); await cfg().save(); notify(); return true })
@@ -64,6 +67,8 @@ export class ConfigIpcModule implements AppModule {
     ipcMain.handle('config.widgets.list', () => cfg().listWidgets())
     ipcMain.handle('config.widgets.upsert', async (_e, w: DashboardWidget) => { cfg().upsertWidget(w); await cfg().save(); notify(); return true })
     ipcMain.handle('config.widgets.remove', async (_e, entryId: number) => { cfg().removeWidget(entryId); await cfg().save(); notify(); return true })
+  
+    
   }
 }
 

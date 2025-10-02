@@ -44,7 +44,8 @@ export class ConfigStore {
       modbus_server: [],
       entry_modbus: [],
       entry_ble: [],
-      dashboard_widget: []
+      dashboard_widget: [],
+      imageRawBits: undefined,
     }
 
     try {
@@ -64,6 +65,18 @@ export class ConfigStore {
     if (!this.profile) throw new Error('No profile loaded')
     await fs.writeFile(this.profilePath(this.defaulName), JSON.stringify(this.profile, null, 2), 'utf8')
     console.log('File saved in: ', this.profilePath())
+  }
+
+  async saveProfileToFile(profile: ConfigProfile, fileName = "profile") {
+    const filePath = this.profilePath(fileName)
+    try {
+      await fs.writeFile(filePath, JSON.stringify(profile, null, 2), "utf-8")
+      console.log(`[INFO] Perfil guardado en ${filePath}`)
+      return filePath
+    } catch (err) {
+      console.error("[ERROR] No se pudo guardar el perfil:", err)
+      throw err
+    }
   }
 
   async saveAs(newName: string, overwrite: boolean = false): Promise<void> {
@@ -119,6 +132,12 @@ export class ConfigStore {
       .map(_file => path.basename(_file,".json"))
 
     return profiles
+  }
+
+  saveImageToProfile(image: Uint8Array) {
+    const p = this.getProfile()
+    p.imageRawBits = image   // 👈 guardamos en memoria
+    console.log(`[INFO] Imagen guardada en el perfil actual (${image.byteLength} bytes)`)
   }
 
   // ----- Entries  -----

@@ -66,6 +66,7 @@ export type ConfigProfile = {
   entry_modbus: EntryModbus[]
   entry_ble: EntryBle[]
   dashboard_widget: DashboardWidget[]
+  imageRawBits?: Uint8Array
 }
 
 export type BleDeviceEvent = {

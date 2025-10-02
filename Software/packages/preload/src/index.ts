@@ -18,6 +18,12 @@ export const api = {
       save:      () => ipcRenderer.invoke('config.profile.save'),
       saveAs:    (newName: string, overwrite: boolean) => ipcRenderer.invoke('config.profile.saveAs', newName, overwrite),
       remove:    (name: string) => ipcRenderer.invoke('config.profile.remove',name),
+      
+      saveProfileToFile: (profile: any, fileName = "profile.json") => ipcRenderer.invoke('config.profile.saveProfileToFile', profile, fileName),
+
+      saveImageToProfile: (image: Uint8Array) => ipcRenderer.invoke('config.profile.saveImageToProfile', image),
+
+
       onChanged(cb: (e: { profile: string }) => void) {
         const h = (_: any, p: any) => cb(p)
         ipcRenderer.on('config:changed', h)

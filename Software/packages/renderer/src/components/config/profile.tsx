@@ -237,17 +237,55 @@ export default function ProfileTests() {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
+
     try {
-      //const text = await file.text()
-      // Por ahora NO hacemos nada con el contenido. Solo guardamos meta y avisamos.
-      setUploadedMeta({ name: file.name, size: file.size })
-      setBanner({ kind: "success", msg: `Archivo cargado: ${file.name} (${Math.ceil(file.size / 1024)} KB).` })
-      // Limpia el input para permitir volver a elegir el mismo archivo si se desea.
+      const text = await file.text()
+      const json = JSON.parse(text)
+
+      const safeName = file.name.replace(/[^\w.-]+/g, "_") // nombre seguro
+      const targetFile = safeName.endsWith(".json") ? safeName : `${safeName}`
+
+      // Verificar si ya existe en la lista de perfiles
+      const existingProfiles = await window.api.config.profile.list()
+      const baseName = targetFile.replace(/\.json$/i, "")
+
+      if (existingProfiles.includes(baseName)) {
+        // 👇 Si ya existe, pedimos confirmación
+        setAskOverwrite({ open: true, targetName: baseName })
+
+        // Cuando el usuario acepte:
+        const confirmOverwrite = async () => {
+          await window.api.config.profile.saveProfileToFile(json, targetFile)
+          setBanner({
+            kind: "success",
+            msg: `Perfil sobrescrito: “${baseName}” (${Math.ceil(file.size / 1024)} KB).`
+          })
+        }
+
+        // Guardamos la acción pendiente para ejecutarla desde el diálogo
+        ;(window as any).confirmOverwrite = confirmOverwrite
+
+      } else {
+        // 👇 Guardar directamente si no existe
+        await window.api.config.profile.saveProfileToFile(json, safeName)
+
+        setProfiles(await window.api.config.profile.list())
+        setUploadedMeta({ name: file.name, size: file.size })
+
+        setBanner({ 
+          kind: "success", 
+          msg: `Perfil importado: “${baseName}” (${Math.ceil(file.size / 1024)} KB).` 
+        })
+      }
+
+      // Reset input (permite volver a elegir el mismo archivo después)
       e.target.value = ""
-    } catch {
-      setBanner({ kind: "error", msg: "No se pudo leer el archivo." })
+    } catch (err) {
+      console.error("Error leyendo JSON:", err)
+      setBanner({ kind: "error", msg: "No se pudo leer o parsear el archivo JSON." })
     }
   }
+
 
   // ---- Render ----
   return (
@@ -277,8 +315,8 @@ export default function ProfileTests() {
           </div>
 
           {/* Selector + Guardar */}
-          <div className="flex flex-col sm:flex-row gap-2">
-            <div className="flex-1">
+          <div className="grid grid-cols-2 gap-2">
+            <div>
               <label htmlFor="profile-select" className="block text-xs text-gray-400 mb-1">
                 Cambiar perfil
               </label>
@@ -295,12 +333,17 @@ export default function ProfileTests() {
                 ))}
               </select>
             </div>
+
             <div className="flex items-end">
-              <Button onClick={handleSave} className="h-10 px-4 bg-[#1e77e5] hover:bg-[#1b6bd0] text-white rounded-md">
+              <Button
+                onClick={handleSave}
+                className="h-10 px-4 bg-[#1e77e5] hover:bg-[#1b6bd0] text-white rounded-md w-full"
+              >
                 Guardar cambios
               </Button>
             </div>
           </div>
+
 
           {/* Guardar copia del perfil actual */}
           <div className="flex flex-col sm:flex-row gap-2">
@@ -311,23 +354,29 @@ export default function ProfileTests() {
               <div className="text-xs text-gray-500 mb-2">
                 Si el nombre ya existe, podrás elegir sobrescribirlo.
               </div>
-              <div className="flex gap-2">
+
+              {/* Aquí usamos grid para 2 columnas fijas */}
+              <div className="grid grid-cols-2 gap-2">
                 <Input
                   id="copy-name"
                   type="text"
-                  placeholder="Nombre de la copia"
+                  placeholder="Nombre"
                   value={newProfileName}
-                  readOnly     // 👈 evita que abra el teclado físico
-                  onFocus={() => setKeyboardOpen(true)} // 👈 abre el popup
-                  onClick={() => setKeyboardOpen(true)} // (opcional, asegura en desktops)
-                  className="flex-1 rounded-md border border-[#343841] bg-[#1b1d23] text-white placeholder:text-gray-500"
+                  readOnly     // 👈 evita teclado físico
+                  onFocus={() => setKeyboardOpen(true)} // 👈 abre popup teclado
+                  onClick={() => setKeyboardOpen(true)}
+                  className="rounded-md border border-[#343841] bg-[#1b1d23] text-white placeholder:text-gray-500"
                 />
-                <Button onClick={handleSaveCopyIntent} className="h-10 px-4 bg-[#2f8bff] hover:bg-[#277be3] text-white rounded-md">
+                <Button
+                  onClick={handleSaveCopyIntent}
+                  className="h-10 px-4 bg-[#2f8bff] hover:bg-[#277be3] text-white rounded-md"
+                >
                   Guardar copia
                 </Button>
               </div>
             </div>
           </div>
+
 
           {/* Resumen del contenido */}
           <div className="pt-2">
@@ -361,14 +410,16 @@ export default function ProfileTests() {
 
       {/* NUEVO: Importar / Exportar */}
       <IndustrialCard title="Importar / Exportar">
-        <div className="flex flex-col sm:flex-row items-start gap-3">
+        <div className="grid grid-cols-2 gap-3 items-start">
+          {/* Columna izquierda: Descargar */}
           <Button
             onClick={handleDownloadJSON}
-            className="h-10 px-4 bg-[#0ea5e9] hover:bg-[#0b90cc] text-white rounded-md"
+            className="h-10 px-4 bg-[#0ea5e9] hover:bg-[#0b90cc] text-white rounded-md w-full"
           >
-            Descargar JSON actual
+            Descargar
           </Button>
 
+          {/* Columna derecha: Subir */}
           <div className="flex items-center gap-2">
             <input
               ref={fileInputRef}
@@ -383,23 +434,28 @@ export default function ProfileTests() {
             >
               Subir archivo JSON
             </Button>
-            {uploadedMeta && (
+            
+          </div>
+        </div>
+
+        {uploadedMeta && (
               <span className="text-xs text-gray-400">
                 Cargado: <span className="text-gray-200">{uploadedMeta.name}</span>{" "}
                 ({Math.ceil(uploadedMeta.size / 1024)} KB)
               </span>
             )}
-          </div>
-        </div>
+
         <p className="mt-2 text-xs text-gray-400">
           La subida solo almacena el archivo (no se aplica al perfil). Próximamente: validación e importación.
         </p>
       </IndustrialCard>
 
+
       {/* ADMINISTRACIÓN */}
       <IndustrialCard title={sentenceCase("administración de perfiles")}>
-        <div className="flex flex-col sm:flex-row gap-2">
-          <div className="flex-1">
+        <div className="grid grid-cols-2 gap-2 items-end">
+          {/* Columna izquierda: selector */}
+          <div>
             <label htmlFor="delete-select" className="block text-xs text-gray-400 mb-1">
               Selecciona un perfil para borrar
             </label>
@@ -417,20 +473,24 @@ export default function ProfileTests() {
               ))}
             </select>
           </div>
-          <div className="flex items-end">
+
+          {/* Columna derecha: botón */}
+          <div className="flex">
             <Button
               onClick={handleDeleteIntent}
               disabled={!deleteTarget}
-              className="h-10 px-4 bg-red-600 hover:bg-red-700 text-white rounded-md disabled:opacity-50"
+              className="h-10 px-4 bg-red-600 hover:bg-red-700 text-white rounded-md disabled:opacity-50 w-full"
             >
               Borrar perfil
             </Button>
           </div>
         </div>
+
         <p className="mt-2 text-xs text-gray-400">
           Si eliges “default”, se interpretará como borrar la configuración actual (según soporte del backend).
         </p>
       </IndustrialCard>
+
 
       {/* Diálogos */}
       <AlertDialog open={askOverwrite.open} onOpenChange={(open) => setAskOverwrite((s) => ({ ...s, open }))}>
