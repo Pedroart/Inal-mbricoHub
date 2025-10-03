@@ -37,7 +37,7 @@ export class ConfigIpcModule implements AppModule {
     ipcMain.handle('config.profile.remove', async (_e, name: string) => { await cfg().removeProfile(name); notify(); return } )
 
     ipcMain.handle('config.profile.saveProfileToFile', async (_e, profile: ConfigProfile ,fileName: string = "profile.json") => { await cfg().saveProfileToFile(profile, fileName); notify(); return true } )
-    ipcMain.handle('config.profile.saveImageToProfile', async (_e, image: Uint8Array) => { cfg().saveImageToProfile(image); return true})
+    ipcMain.handle('config.profile.saveImageToProfile', async (_e, image: Uint8Array) => { cfg().saveImageToProfile(image); await cfg().save(); notify(); return true})
     ipcMain.handle("config.profile.getImagen", async () => { const img = cfg().getImagen(); return img ? Buffer.from(img) : null})
 
     // Entries

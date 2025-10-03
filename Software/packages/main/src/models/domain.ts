@@ -67,6 +67,7 @@ export type ConfigProfile = {
   entry_ble: EntryBle[]
   dashboard_widget: DashboardWidget[]
   imageRawBits?: Uint8Array
+  imageBase64?: string
 }
 
 export type BleDeviceEvent = {

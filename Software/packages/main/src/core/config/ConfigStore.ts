@@ -136,16 +136,41 @@ export class ConfigStore {
 
   saveImageToProfile(image: Uint8Array) {
     const p = this.getProfile()
-    p.imageRawBits = image   // 👈 guardamos en memoria
-    console.log(`[INFO] Imagen guardada en el perfil actual (${image.byteLength} bytes)`)
+    p.imageRawBits = image
+    p.imageBase64 = Buffer.from(image).toString("base64")
+    console.log(`[INFO] Imagen guardada (${image.byteLength} bytes)`)
   }
 
 
   getImagen(): Uint8Array | null {
     const p = this.getProfile()
-    const img = p.imageRawBits
-    return (img && img.byteLength > 0) ? img : null
+
+    if (!p) return null
+
+    // 1. Si ya está en memoria
+    if (p.imageRawBits instanceof Uint8Array) {
+      return p.imageRawBits.byteLength > 0 ? p.imageRawBits : null
+    }
+
+    // 2. Si estaba serializado como number[] (ej. por JSON.stringify de Uint8Array)
+    if (Array.isArray(p.imageRawBits)) {
+      const arr = new Uint8Array(p.imageRawBits)
+      p.imageRawBits = arr // cachear como Uint8Array
+      return arr.byteLength > 0 ? arr : null
+    }
+
+    // 3. Si existe base64
+    if (typeof p.imageBase64 === "string" && p.imageBase64.length > 0) {
+      const buf = Buffer.from(p.imageBase64, "base64")
+      const arr = new Uint8Array(buf)
+      p.imageRawBits = arr // cachear
+      return arr.byteLength > 0 ? arr : null
+    }
+
+    return null
   }
+
+
 
   // ----- Entries  -----
   listEntries() { return this.getProfile().entry }
