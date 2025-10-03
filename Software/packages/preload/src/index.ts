@@ -1,52 +1,86 @@
-import {sha256sum} from './nodeCrypto.js';
-import {versions} from './versions.js';
-import {ipcRenderer} from 'electron';
+// preload/src/index.ts
+
+/* Nota: Si quieres aplicar el cambio correctamente
+  1. Cambiar el Handle a nivel de main
+  2. Cambiar el invoke a nivel de preload
+  3. cambiar la definicion de API a nivel de render
+*/
+
+import { contextBridge, ipcRenderer } from 'electron'
 
 export const api = {
-  ping: () => ipcRenderer.invoke('ping'),
+  config: {
+    profile: {
+      list:    () => ipcRenderer.invoke('config.profile.list'),
+      getName: () => ipcRenderer.invoke('config.profile.getName'),
+      get:     () => ipcRenderer.invoke('config.profile.get'),
+      setActive: (name: string) => ipcRenderer.invoke('config.profile.setActive', name),
+      save:      () => ipcRenderer.invoke('config.profile.save'),
+      saveAs:    (newName: string, overwrite: boolean) => ipcRenderer.invoke('config.profile.saveAs', newName, overwrite),
+      remove:    (name: string) => ipcRenderer.invoke('config.profile.remove',name),
 
-  // ✅ Agrega estos métodos
-  getSensoresView: () => ipcRenderer.invoke('sensor:getSensoresView'),
-  getSensores: () => ipcRenderer.invoke('sensor:getSensores'),
-  getDispositivos: () => ipcRenderer.invoke('dispositivo:getDeviceViews'),
-  getEmpresa: () => ipcRenderer.invoke('storage:get-empresa'),
-  setEmpresa: (nuevaEmpresa: string) => ipcRenderer.invoke('storage:set-empresa', nuevaEmpresa),
+      saveProfileToFile: (profile: any, fileName = "profile.json") => ipcRenderer.invoke('config.profile.saveProfileToFile', profile, fileName),
 
-  getSensorValue: ( codigoSensor: String ) => ipcRenderer.invoke('sensor:getDeviceValue',codigoSensor),
+      saveImageToProfile: (image: Uint8Array) => ipcRenderer.invoke('config.profile.saveImageToProfile', image),
+      getImagen: () => ipcRenderer.invoke("config.profile.getImagen"),
 
-  layoud:{
-    getllista: () => ipcRenderer.invoke('layoud:get-layouds'),
-    getActivo: () => ipcRenderer.invoke('layoud:get-activo'),
-    setActivo: (nuevoMapa: any) => ipcRenderer.invoke('layoud:set-activo', nuevoMapa),
-    getPathImage: () => ipcRenderer.invoke('layoud:get-imagen-path'),
-    getImage: () => ipcRenderer.invoke('layoud:get-imagen'),
+      onChanged(cb: (e: { profile: string }) => void) {
+        const h = (_: any, p: any) => cb(p)
+        ipcRenderer.on('config:changed', h)
+        return () => ipcRenderer.off('config:changed', h)
+      },
+    },
+    entries: {
+      list:   () => ipcRenderer.invoke('config.entries.list'),
+      upsert: (e: any) => ipcRenderer.invoke('config.entries.upsert', e),
+      remove: (id: number) => ipcRenderer.invoke('config.entries.remove', id),
+    },
+    sensorTypes: {
+      list:   () => ipcRenderer.invoke('config.sensorTypes.list'),
+      upsert: (s: any) => ipcRenderer.invoke('config.sensorTypes.upsert', s),
+      remove: (id: number) => ipcRenderer.invoke('config.sensorTypes.remove', id),
+    },
+    modbus: {
+      servers: {
+        list:   () => ipcRenderer.invoke('config.modbus.servers.list'),
+        upsert: (s: any) => ipcRenderer.invoke('config.modbus.servers.upsert', s),
+        remove: (id: number) => ipcRenderer.invoke('config.modbus.servers.remove', id),
+      },
+      bind: {
+        get:    (entryId: number) => ipcRenderer.invoke('config.bind.modbus.get', entryId),
+        set:    (b: any) => ipcRenderer.invoke('config.bind.modbus.set', b),
+        remove: (entryId: number) => ipcRenderer.invoke('config.bind.modbus.remove', entryId),
+      },
+    },
+    ble: {
+      bind: {
+        get:    (entryId: number) => ipcRenderer.invoke('config.bind.ble.get', entryId),
+        set:    (b: any) => ipcRenderer.invoke('config.bind.ble.set', b),
+        remove: (entryId: number) => ipcRenderer.invoke('config.bind.ble.remove', entryId),
+      },
+    },
+    widgets: {
+      list:   () => ipcRenderer.invoke('config.widgets.list'),
+      upsert: (w: any) => ipcRenderer.invoke('config.widgets.upsert', w),
+      remove: (entryId: number) => ipcRenderer.invoke('config.widgets.remove', entryId),
+    },
+  },
+  measures: {
+      latest: () => ipcRenderer.invoke('measurements:get-latest'),
+      latestByEntry: (entryId: number) => ipcRenderer.invoke('measurements:get-by-entry', entryId),
+      historyByEntry: (entryId: number, since: number) => ipcRenderer.invoke('measurements:get-history',entryId,since)
   },
 
-  mapa: {
-    getDispositivos: () => ipcRenderer.invoke('mapa:get-dispositivos'),
-    getSensores: (codigoDispositivo: string) => ipcRenderer.invoke('mapa:get-sensores', codigoDispositivo),
-    setNombreDispositivo: (codigo: string, nombre: string) => ipcRenderer.invoke('mapa:set-nombre-dispositivo', codigo, nombre),
-    setEstadoDispositivo: (codigo: string, habilitado: boolean) => ipcRenderer.invoke('mapa:set-estado-dispositivo', codigo, habilitado),
-    setNombreSensor: (codigo: string, nombre: string) => ipcRenderer.invoke('mapa:set-nombre-sensor', codigo, nombre),
-    setEstadoSensor: (codigo: string, habilitado: boolean) => ipcRenderer.invoke('mapa:set-estado-sensor', codigo, habilitado),
-    setConfigBle: (codigoSensor: string, codigoBle: string) => ipcRenderer.invoke('mapa:set-config-ble', codigoSensor, codigoBle),
-    setConfigModbus: (codigoSensor: string, modbusNodeCode?: string, address?: number, cantidad?: number) =>
-      ipcRenderer.invoke('mapa:set-config-modbus', codigoSensor, modbusNodeCode, address, cantidad),
-    getConfigSensor: (codigoSensor: string) => ipcRenderer.invoke('mapa:get-config-sensor', codigoSensor),
-    guardar: () => ipcRenderer.invoke('mapa:guardar'),
+  ble: {
+    scan: {
+      list: async () => {
+        return await ipcRenderer.invoke("ble:scan:list");
+      },
+      connect: async (address: string) => {
+        return await ipcRenderer.invoke("ble:scan:connect", address);
+      },
+    },
   },
+} as const
 
-  modbusNode: {
-    getAll: () => ipcRenderer.invoke('modbus:get-all'),
-    getById: (id: string) => ipcRenderer.invoke('modbus:get-by-id', id),
-    create: (nodo: any) => ipcRenderer.invoke('modbus:create', nodo),
-    edit: (id: string, datos: Partial<any>) => ipcRenderer.invoke('modbus:edit', id, datos),
-    delete: (id: string) => ipcRenderer.invoke('modbus:delete', id),
-  }
-};
-
-function send(channel: string, message: string) {
-  return ipcRenderer.invoke(channel, message);
-}
-
-export {sha256sum, versions, send};
+contextBridge.exposeInMainWorld('api', api)

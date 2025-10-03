@@ -11,12 +11,7 @@ export default /** @type import('electron-builder').Configuration */
   },
   generateUpdatesFilesForAllChannels: true,
   linux: {
-    target: [
-      {
-        target: "deb",  // o "deb", "snap", etc.
-        arch: ["x64", "arm64"]  // ✅ esta es la forma correcta
-      }
-    ]
+    target: ['deb'],
   },
   /**
    * It is recommended to avoid using non-standard characters such as spaces in artifact names,
@@ -27,7 +22,6 @@ export default /** @type import('electron-builder').Configuration */
     'LICENSE*',
     pkg.main,
     '!node_modules/@app/**',
-    'buildResources/mapas/**',
     ...await getListOfFilesFromEachWorkspace(),
   ],
 });
@@ -107,6 +101,8 @@ async function getListOfFilesFromEachWorkspace() {
     const {default: workspacePkg} = await import(pathToFileURL(pkgPath), {with: {type: 'json'}});
 
     let patterns = workspacePkg.files || ['dist/**', 'package.json'];
+
+    patterns.push('**/*.wasm');
 
     patterns = patterns.map(p => join('node_modules', name, p));
     allFilesToInclude.push(...patterns);
