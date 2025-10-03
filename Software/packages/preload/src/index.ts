@@ -11,18 +11,18 @@ import { contextBridge, ipcRenderer } from 'electron'
 export const api = {
   config: {
     profile: {
-      list:    () => ipcRenderer.invoke('config.profile.list'), 
+      list:    () => ipcRenderer.invoke('config.profile.list'),
       getName: () => ipcRenderer.invoke('config.profile.getName'),
       get:     () => ipcRenderer.invoke('config.profile.get'),
       setActive: (name: string) => ipcRenderer.invoke('config.profile.setActive', name),
       save:      () => ipcRenderer.invoke('config.profile.save'),
       saveAs:    (newName: string, overwrite: boolean) => ipcRenderer.invoke('config.profile.saveAs', newName, overwrite),
       remove:    (name: string) => ipcRenderer.invoke('config.profile.remove',name),
-      
+
       saveProfileToFile: (profile: any, fileName = "profile.json") => ipcRenderer.invoke('config.profile.saveProfileToFile', profile, fileName),
 
       saveImageToProfile: (image: Uint8Array) => ipcRenderer.invoke('config.profile.saveImageToProfile', image),
-
+      getImagen: () => ipcRenderer.invoke("config.profile.getImagen"),
 
       onChanged(cb: (e: { profile: string }) => void) {
         const h = (_: any, p: any) => cb(p)

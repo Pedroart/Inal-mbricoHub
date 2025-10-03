@@ -15,11 +15,11 @@ export default function Settings() {
     { id: "profile", label: "Config Perfil", component: <ProfileTests /> },
     { id: "sensors", label: "Tipos Sensor", component: <SensorTypesPage /> },
     { id: "entries", label: "Lista Entradas", component: <EntriesPage /> },
-    { id: "widget", label: "Dash Widget", component: <WidgetsPage /> },
-    { id: "modbusServer", label: "Srv Modbus", component: <ModbusServerPage /> },
+    { id: "widget", label: "Mapa", component: <WidgetsPage /> },
+    { id: "modbusServer", label: "Server Modbus", component: <ModbusServerPage /> },
     { id: "modbusEntry", label: "Modbus", component: <EntryModbusPage /> },
     { id: "ble", label: "BLE", component: <BlePage /> },
-    { id: "measures", label: "Hist Datos", component: <MeasuresPage /> }
+    { id: "measures", label: "Historial", component: <MeasuresPage /> }
   ]
 
   const [active, setActive] = useState("profile")
@@ -37,8 +37,8 @@ export default function Settings() {
         {/* Sidebar controlado por botón */}
         {showTabs && (
           <div
-            className="absolute right-0 top-0 bottom-0 h-full 
-                      w-48 bg-[linear-gradient(200deg,#272a32_10%,#1e77e5)] 
+            className="absolute right-0 top-0 bottom-0 h-full
+                      w-48 bg-[linear-gradient(200deg,#272a32_10%,#1e77e5)]
                       border-l border-[#343841] shadow-lg flex flex-col justify-end"
           >
             <div className="flex flex-col overflow-y-auto">

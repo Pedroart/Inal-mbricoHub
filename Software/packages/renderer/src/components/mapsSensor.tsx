@@ -20,6 +20,9 @@ export function Mapsensor() {
 
   // Mapa rápido: entry_id -> última medición
   const [latestMap, setLatestMap] = useState<Map<number, Measurement>>(new Map())
+  const [bgUrl, setBgUrl] = useState<string | null>(null)
+
+
 
   useEffect(() => {
     if (!window.api?.config) {
@@ -30,7 +33,16 @@ export function Mapsensor() {
     // Cargar configuración base
     window.api.config.widgets.list().then(setWidgets)
     window.api.config.entries.list().then(setEntries)
-    window.api.config.sensorTypes.list().then(setSensorTypes)
+    window.api.config.sensorTypes.list().then(setSensorTypes);
+
+    (async () => {
+      const bytes = await window.api.config.profile.getImagen()
+      if (bytes) {
+        const blob = new Blob([new Uint8Array(bytes)], { type: "image/png" })
+        const url = URL.createObjectURL(blob)
+        setBgUrl(url)
+      }
+    })()
 
     // Una lectura inicial
     refreshLatest()
@@ -40,6 +52,15 @@ export function Mapsensor() {
     if (!window.api?.measures) return
     const data: Measurement[] = await window.api.measures.latest()
     setLatestMap(new Map(data.map((m) => [m.entry_id, m])))
+
+    ;(async () => {
+      const bytes = await window.api.config.profile.getImagen()
+      if (bytes) {
+        const blob = new Blob([new Uint8Array(bytes)], { type: "image/png" })
+        const url = URL.createObjectURL(blob)
+        setBgUrl(url)
+      }
+    })()
   }
 
 
@@ -97,7 +118,7 @@ export function Mapsensor() {
     <div
       className="relative h-full w-full"
       style={{
-        backgroundImage: "url('/tunelTest.png')",
+        backgroundImage: bgUrl ? `url(${bgUrl})` : "none",
         backgroundSize: "contain",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",

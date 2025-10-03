@@ -214,7 +214,7 @@ export default function EntryModbusPage() {
 
       {/* AGREGAR */}
       <IndustrialCard title="Agregar bind">
-        <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
+        <div className="grid gap-3 grid-cols-2 md:grid-cols-3">
           <select
             value={newBind.entry_id}
             onChange={(e) => setNewBind({ ...newBind, entry_id: parseInt(e.target.value) })}
@@ -264,7 +264,7 @@ export default function EntryModbusPage() {
       {/* EDITAR */}
       {editTarget >= 0 && (
         <IndustrialCard title={`Editar bind — entry ${editTarget}`}>
-          <div id="edit-card" className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
+          <div id="edit-card" className="grid gap-3 grid-cols-2 md:grid-cols-3">
             <Input
               type="number"
               readOnly

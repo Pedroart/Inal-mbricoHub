@@ -22,7 +22,7 @@ export type Api = {
       remove: (name: string) => Promise<void>
       saveProfileToFile: (profile: ConfigProfile, fileName?: string) => Promise<boolean>
       saveImageToProfile: (image: Uint8Array) => Promise<boolean>
-
+      getImagen: () => Promise<Uint8Array | null>
       onChanged: (cb: (e: { profile: string }) => void) => () => void
     }
     entries: {

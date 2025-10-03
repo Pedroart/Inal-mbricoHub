@@ -140,6 +140,13 @@ export class ConfigStore {
     console.log(`[INFO] Imagen guardada en el perfil actual (${image.byteLength} bytes)`)
   }
 
+
+  getImagen(): Uint8Array | null {
+    const p = this.getProfile()
+    const img = p.imageRawBits
+    return (img && img.byteLength > 0) ? img : null
+  }
+
   // ----- Entries  -----
   listEntries() { return this.getProfile().entry }
   upsertEntry(e: Entry) {

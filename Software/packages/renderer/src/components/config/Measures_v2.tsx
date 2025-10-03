@@ -58,7 +58,7 @@ export default function MeasuresPage() {
     <div className="p-6 space-y-6">
       <IndustrialCard title={sentenceCase("lecturas en tiempo real")}>
         {latest.length ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 grid-cols-2 lg:grid-cols-3 gap-4">
             {latest.map((m) => {
               const entry = entries.find((e) => e.id === m.entry_id)
               const val =
@@ -120,13 +120,13 @@ export default function MeasuresPage() {
                   <CartesianGrid strokeDasharray="3 3" stroke="#2a2d35" />
                   <XAxis dataKey="ts" hide />
                   <YAxis />
-                  <XAxis 
-                    dataKey="ts" 
+                  <XAxis
+                    dataKey="ts"
                     tickFormatter={(ts) => {
                       console.log(ts)
                       const d = new Date(ts)
                       return `${d.getDate()}/${d.getMonth() + 1} ${d.getHours()}:${String(d.getMinutes()).padStart(2,"0")}`
-                    }} 
+                    }}
                   />
 
                   <ReTooltip />

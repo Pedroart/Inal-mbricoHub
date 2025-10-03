@@ -4,6 +4,7 @@ import { IndustrialCard } from "../industrial-card"
 import { Button } from "../../components/ui/button"
 import { Input } from "../../components/ui/input"
 import { MapCard } from "../MapCard"
+import { UploadProfileImage } from "./UploadProfileImage"
 
 // ---------- helpers ----------
 function sentenceCase(s: string) {
@@ -74,7 +75,7 @@ export default function WidgetsPage() {
   // selección/edición
   const [editTarget, setEditTarget] = useState<number>(-1) // entry_id seleccionado
   const [editWidget, setEditWidget] = useState<Partial<DashboardWidget>>({})
-
+  const [imageUploaded, setImageUploaded] = useState(false)
   // UI
   const [banner, setBanner] = useState<{ kind: "info" | "success" | "warning" | "error"; msg: string } | null>(null)
 
@@ -207,6 +208,37 @@ export default function WidgetsPage() {
     })
   }, [entries])
 
+  const [bgUrl, setBgUrl] = useState<string | null>(null)
+
+  const loadBackground = async () => {
+    const bytes = await window.api.config.profile.getImagen()
+    if (bytes) {
+      const blob = new Blob([new Uint8Array(bytes)], { type: "image/png" })
+      const url = URL.createObjectURL(blob)
+      setBgUrl(url)
+    } else {
+      setBgUrl(null)
+    }
+  }
+
+  useEffect(() => {
+    if (imageUploaded) {
+      loadBackground()
+      setImageUploaded(false) // opcional: resetear la flag
+    }
+  }, [imageUploaded])
+
+
+  useEffect(() => {
+    loadBackground() // cargar al iniciar
+
+    return () => {
+      // limpiar el objectURL cuando desmonta o cambie
+      if (bgUrl) URL.revokeObjectURL(bgUrl)
+    }
+  }, []) // 👈 solo una vez al montar
+
+
   return (
     <div className="p-6 space-y-6">
       {banner && (
@@ -220,25 +252,29 @@ export default function WidgetsPage() {
         <div className="grid gap-3">
 
           {/* Cruceta ARRIBA + acciones */}
-          <div className="flex items-center gap-3 flex-wrap">
-            <div className="flex items-center gap-2">
-              <Button onClick={() => nudge(0, -2)} disabled={!editWidget.entry_id}
-                className="h-8 w-16 bg-[#272a32] hover:bg-[#2c313b] text-white border border-[#343841] disabled:opacity-50">↑</Button>
-              <Button onClick={() => nudge(-2, 0)} disabled={!editWidget.entry_id}
-                className="h-8 w-16 bg-[#272a32] hover:bg-[#2c313b] text-white border border-[#343841] disabled:opacity-50">←</Button>
-              <Button onClick={center} disabled={!editWidget.entry_id}
-                className="h-8 w-16 bg-[#272a32] hover:bg-[#2c313b] text-white border border-[#343841] disabled:opacity-50">C</Button>
-              <Button onClick={() => nudge(2, 0)} disabled={!editWidget.entry_id}
-                className="h-8 w-16 bg-[#272a32] hover:bg-[#2c313b] text-white border border-[#343841] disabled:opacity-50">→</Button>
-              <Button onClick={() => nudge(0, 2)} disabled={!editWidget.entry_id}
-                className="h-8 w-16 bg-[#272a32] hover:bg-[#2c313b] text-white border border-[#343841] disabled:opacity-50">↓</Button>
+          <div className="flex flex-col items-center gap-3">
+            {/* Grupo de dirección + coords */}
+            <div className="flex flex-col items-center gap-2">
+              <div className="flex items-center gap-2">
+                <Button onClick={() => nudge(0, -2)} disabled={!editWidget.entry_id}
+                  className="h-8 w-16 bg-[#272a32] hover:bg-[#2c313b] text-white border border-[#343841] disabled:opacity-50">↑</Button>
+                <Button onClick={() => nudge(-2, 0)} disabled={!editWidget.entry_id}
+                  className="h-8 w-16 bg-[#272a32] hover:bg-[#2c313b] text-white border border-[#343841] disabled:opacity-50">←</Button>
+                <Button onClick={center} disabled={!editWidget.entry_id}
+                  className="h-8 w-16 bg-[#272a32] hover:bg-[#2c313b] text-white border border-[#343841] disabled:opacity-50">C</Button>
+                <Button onClick={() => nudge(2, 0)} disabled={!editWidget.entry_id}
+                  className="h-8 w-16 bg-[#272a32] hover:bg-[#2c313b] text-white border border-[#343841] disabled:opacity-50">→</Button>
+                <Button onClick={() => nudge(0, 2)} disabled={!editWidget.entry_id}
+                  className="h-8 w-16 bg-[#272a32] hover:bg-[#2c313b] text-white border border-[#343841] disabled:opacity-50">↓</Button>
+              </div>
+              <div className="text-[11px] text-gray-400">
+                X: {Math.round(editWidget.x ?? 50)}% · Y: {Math.round(editWidget.y ?? 50)}%
+              </div>
             </div>
 
-            <div className="text-[11px] text-gray-400">
-              X: {Math.round(editWidget.x ?? 50)}% · Y: {Math.round(editWidget.y ?? 50)}%
-            </div>
-
-            <div className="ml-auto flex gap-2">
+            {/* Grupo de acciones */}
+            <div className="flex items-center justify-center gap-2">
+              <UploadProfileImage uploaded={imageUploaded} setUploaded={setImageUploaded} />
               <Button
                 onClick={() => { setEditTarget(-1); setEditWidget({}) }}
                 className="h-8 bg-[#272a32] hover:bg-[#2c313b] text-white rounded-md border border-[#343841]">
@@ -249,6 +285,7 @@ export default function WidgetsPage() {
               </Button>
             </div>
           </div>
+
 
           {/* controles de edición */}
           <div className="grid sm:grid-cols-3 gap-3">
@@ -266,7 +303,7 @@ export default function WidgetsPage() {
                 <option value="" disabled>— Selecciona una entrada —</option>
                 {entriesForSelect.map(e => (
                   <option key={e.id} value={e.id}>
-                    {defaultTitleForEntry(e, sensorTypes)} · id:{e.id} · orden:{(e as any).order}
+                    {defaultTitleForEntry(e, sensorTypes)} · orden:{(e as any).order}
                   </option>
                 ))}
               </select>
@@ -308,7 +345,7 @@ export default function WidgetsPage() {
             style={{
               // Altura máxima del main (ajusta el 260px al alto de tu header/controles para evitar desbordes)
               height: "calc(100dvh - 260px)",
-              backgroundImage: "url('/tunelTest.png')",
+              backgroundImage: bgUrl ? `url(${bgUrl})` : "none",
               backgroundSize: "contain",
               backgroundRepeat: "no-repeat",
               backgroundPosition: "center",

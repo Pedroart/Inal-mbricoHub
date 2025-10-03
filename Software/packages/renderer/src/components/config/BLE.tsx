@@ -146,7 +146,7 @@ export default function BlePage() {
             </select>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 grid-cols-2 gap-3">
             <div>
               <label className="block text-xs text-gray-400 mb-1">Device ID (MAC)</label>
               <div className="flex gap-2">

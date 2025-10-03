@@ -62,7 +62,7 @@ export default function EntriesPage() {
   // Crear
   const [newEntry, setNewEntry] = useState<Partial<Entry>>({
     sensor_type_id: 0,
-    order: 0, // índice inicial
+    order: 1, // índice inicial
     protocol: "MODBUS",
     enabled: true,
     frecuency_s: 1,
@@ -236,13 +236,13 @@ export default function EntriesPage() {
     () =>
       entries.map((e) => (
         <tr key={e.id} className="border-b border-[#343841] hover:bg-[#20242d]">
-          <td className="px-3 py-2 text-xs text-gray-400">{e.id}</td>
+
           <td className="px-3 py-2">{stName(e.sensor_type_id)}</td>
-          <td className="px-3 py-2">{e.protocol}</td>
-          <td className="px-3 py-2 text-center">{e.enabled ? "Activo" : "Inactivo"}</td>
-          <td className="px-3 py-2 text-center">{e.frecuency_s}s</td>
           <td className="px-3 py-2 text-center">{e.order}</td>
+          <td className="px-3 py-2">{e.protocol}</td>
+          <td className="px-3 py-2 text-center">{e.frecuency_s}s</td>
           <td className="px-3 py-2">{e.operation ?? ""}</td>
+          <td className="px-3 py-2 text-center">{e.enabled ? "✓" : "✕"}</td>
           <td className="px-3 py-2">
             <div className="grid gap-2 sm:grid-cols-2">
               <Button
@@ -274,17 +274,16 @@ export default function EntriesPage() {
       {/* LISTADO */}
       <IndustrialCard title={sentenceCase("entradas")}>
         <div className="rounded-md border border-[#343841] overflow-hidden">
-          <table className="w-full text-sm bg-[#1b1d23]">
+          <table className="w-full text-sm bg-[#1b1d23] leading-tight">
             <thead className="bg-[#22262f] text-gray-300">
               <tr className="border-b border-[#343841]">
-                <th className="px-3 py-2 text-left text-xs uppercase tracking-wider">ID</th>
                 <th className="px-3 py-2 text-left text-xs uppercase tracking-wider">Tipo</th>
-                <th className="px-3 py-2 text-left text-xs uppercase tracking-wider">Protocolo</th>
-                <th className="px-3 py-2 text-center text-xs uppercase tracking-wider">Estado</th>
-                <th className="px-3 py-2 text-center text-xs uppercase tracking-wider">Frecuencia</th>
-                <th className="px-3 py-2 text-center text-xs uppercase tracking-wider">Índice</th>
-                <th className="px-3 py-2 text-left text-xs uppercase tracking-wider">Operación</th>
-                <th className="px-3 py-2 text-left text-xs uppercase tracking-wider">Acciones</th>
+                <th className="px-3 py-2 text-center text-xs uppercase tracking-wider">#</th>
+                <th className="px-3 py-2 text-left text-xs uppercase tracking-wider">Interfaz</th>
+                <th className="px-3 py-2 text-center text-xs uppercase tracking-wider">Fs</th>
+                <th className="px-3 py-2 text-left text-xs uppercase tracking-wider">Funcion</th>
+                <th className="px-3 py-2 text-center text-xs uppercase tracking-wider"></th>
+                <th className="px-3 py-2 text-left text-xs uppercase tracking-wider"></th>
               </tr>
             </thead>
             <tbody>{tableRows}</tbody>
@@ -305,14 +304,14 @@ export default function EntriesPage() {
               <option value={0}>-- Selecciona un tipo de sensor --</option>
               {sensorTypes.map((s) => (
                 <option key={s.id} value={s.id}>
-                  {s.name} ({s.index})
+                  {s.name}
                 </option>
               ))}
             </select>
           </div>
 
           {/* Fila compacta: índice inicial, cantidad de duplicados, protocolo, estado, frecuencia, operación */}
-          <div className="grid grid-cols-1 sm:grid-cols-6 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-6 gap-3">
             <div>
               <label className="block text-xs text-gray-400 mb-1">Índice inicial *</label>
               <Input
@@ -404,7 +403,7 @@ export default function EntriesPage() {
         <IndustrialCard title={sentenceCase(`editar entrada — id ${editTarget}`)}>
           <div id="edit-card" className="grid gap-3">
             {/* fila 1: tipo de sensor e índice (orden) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs text-gray-400 mb-1">Tipo de sensor *</label>
                 <select
@@ -415,7 +414,7 @@ export default function EntriesPage() {
                   <option value={0}>-- Selecciona un tipo de sensor --</option>
                   {sensorTypes.map((s) => (
                     <option key={s.id} value={s.id}>
-                      {s.name} ({s.index})
+                      {s.name}
                     </option>
                   ))}
                 </select>
@@ -436,7 +435,7 @@ export default function EntriesPage() {
             </div>
 
             {/* fila 2: protocolo, estado, frecuencia, operación */}
-            <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <div>
                 <label className="block text-xs text-gray-400 mb-1">Protocolo</label>
                 <select

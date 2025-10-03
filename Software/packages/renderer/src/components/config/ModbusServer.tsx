@@ -207,7 +207,7 @@ export default function ModbusServerPage() {
 
       {/* AGREGAR */}
       <IndustrialCard title="Agregar servidor">
-        <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
+        <div className="grid gap-3 grid-cols-2 md:grid-cols-3">
           <Input
             placeholder="Nombre *"
             value={newServer.name}
@@ -281,7 +281,7 @@ export default function ModbusServerPage() {
       {/* EDITAR */}
       {editTarget >= 0 && (
         <IndustrialCard title={`Editar servidor — id ${editTarget}`}>
-          <div id="edit-card" className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
+          <div id="edit-card" className="grid gap-3 grid-cols-2 md:grid-cols-3">
             <Input
               placeholder="Nombre"
               value={editServer.name}

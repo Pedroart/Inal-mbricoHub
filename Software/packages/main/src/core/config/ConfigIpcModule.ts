@@ -14,7 +14,7 @@ export class ConfigIpcModule implements AppModule {
       if (!i) throw new Error('ConfigStore not ready')
       return i as ConfigStore
     }
-    
+
     const notify = () => {
       const profile = cfg().activeProfileName
       for (const w of BrowserWindow.getAllWindows()) {
@@ -38,6 +38,7 @@ export class ConfigIpcModule implements AppModule {
 
     ipcMain.handle('config.profile.saveProfileToFile', async (_e, profile: ConfigProfile ,fileName: string = "profile.json") => { await cfg().saveProfileToFile(profile, fileName); notify(); return true } )
     ipcMain.handle('config.profile.saveImageToProfile', async (_e, image: Uint8Array) => { cfg().saveImageToProfile(image); return true})
+    ipcMain.handle("config.profile.getImagen", async () => { const img = cfg().getImagen(); return img ? Buffer.from(img) : null})
 
     // Entries
     ipcMain.handle('config.entries.list', () => cfg().listEntries())
@@ -67,8 +68,8 @@ export class ConfigIpcModule implements AppModule {
     ipcMain.handle('config.widgets.list', () => cfg().listWidgets())
     ipcMain.handle('config.widgets.upsert', async (_e, w: DashboardWidget) => { cfg().upsertWidget(w); await cfg().save(); notify(); return true })
     ipcMain.handle('config.widgets.remove', async (_e, entryId: number) => { cfg().removeWidget(entryId); await cfg().save(); notify(); return true })
-  
-    
+
+
   }
 }
 
