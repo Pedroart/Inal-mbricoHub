@@ -55,14 +55,14 @@ El proyecto **HMI SensorDesk** se organiza en tres grandes componentes: **Firmwa
 │ │ ├─ main/        # Proceso principal (TS) — inicializa DB, agentes y ventanas
 │ │ ├─ preload/     # Puente IPC seguro (contextBridge)
 │ │ └─ renderer/    # Interfaz (React + Tailwind + shadcn/ui)
-│ └─ scripts/ # Scripts CLI, postinstalación y herramientas auxiliares
+│ └─ scripts/       # Scripts CLI, postinstalación y herramientas auxiliares
 │
-└─ Agentes/ # Módulos externos para adquisición y simulación
-    ├─ BLE-Agent/ # Agente Python (Bleak) para escaneo BLE en ARM
-    ├─ SERIAL-Agent/ # Agente para comunicación Modbus/RTU o UART
-    ├─ SIM-Agent/ # Emulador de sensores para modo simulador
-    ├─ LORA-Agent/ # (Futuro) Gateway LoRa → DB / WebSocket
-    └─ README.md # Guía de integración de agentes
+└─ Agentes/             # Módulos externos para adquisición y simulación
+    ├─ BLE-Agent/       # Agente Python (Bleak) para escaneo BLE en ARM
+    ├─ SERIAL-Agent/    # Agente para comunicación Modbus/RTU o UART
+    ├─ SIM-Agent/       # Emulador de sensores para modo simulador
+    ├─ LORA-Agent/      # (Futuro) Gateway LoRa → DB / WebSocket
+    └─ README.md        # Guía de integración de agentes
 ```
 
 ### Descripción de carpetas
