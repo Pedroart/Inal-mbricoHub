@@ -22,29 +22,25 @@ export function Mapsensor() {
   const [latestMap, setLatestMap] = useState<Map<number, Measurement>>(new Map())
   const [bgUrl, setBgUrl] = useState<string | null>(null)
 
+  async function loadBackground() {
+    const bytes = await window.api.config.profile.getImagen()
+    if (!bytes) return
+
+    // Solo si aún no se cargó el fondo
+    if (!bgUrl) {
+      const blob = new Blob([new Uint8Array(bytes)], { type: "image/png" })
+      const url = URL.createObjectURL(blob)
+      setBgUrl(url)
+    }
+  }
 
 
   useEffect(() => {
-    if (!window.api?.config) {
-      console.warn("⚠️ window.api no está disponible aún");
-      return;
-    }
-
-    // Cargar configuración base
+    if (!window.api?.config) return
     window.api.config.widgets.list().then(setWidgets)
     window.api.config.entries.list().then(setEntries)
-    window.api.config.sensorTypes.list().then(setSensorTypes);
-
-    (async () => {
-      const bytes = await window.api.config.profile.getImagen()
-      if (bytes) {
-        const blob = new Blob([new Uint8Array(bytes)], { type: "image/png" })
-        const url = URL.createObjectURL(blob)
-        setBgUrl(url)
-      }
-    })()
-
-    // Una lectura inicial
+    window.api.config.sensorTypes.list().then(setSensorTypes)
+    loadBackground()
     refreshLatest()
   }, [])
 
@@ -52,16 +48,9 @@ export function Mapsensor() {
     if (!window.api?.measures) return
     const data: Measurement[] = await window.api.measures.latest()
     setLatestMap(new Map(data.map((m) => [m.entry_id, m])))
-
-    ;(async () => {
-      const bytes = await window.api.config.profile.getImagen()
-      if (bytes) {
-        const blob = new Blob([new Uint8Array(bytes)], { type: "image/png" })
-        const url = URL.createObjectURL(blob)
-        setBgUrl(url)
-      }
-    })()
+    // ❌ Ya no recargamos la imagen aquí
   }
+
 
 
   // Recalcular datos (incluye valor en vivo)
