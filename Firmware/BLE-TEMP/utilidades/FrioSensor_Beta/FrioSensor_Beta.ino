@@ -48,7 +48,7 @@ void lfclk_start() {
 // Deshabilita todos los GPIOs no usados
 void disableGPIOs(uint8_t start, uint8_t end) {
   for (uint32_t i = start; i <= end; i++) {
-    if (i == 0 || i == 1 || i == 26 || i == 30 || i == 6) continue;
+    if (i == 0 || i == 1 || i == 26 || i == 30 || i == 6 || i == 7 ) continue;
     nrf_gpio_cfg_input(i, NRF_GPIO_PIN_PULLUP);
   }
 }
@@ -161,7 +161,18 @@ void loop() {
 #define SDA_CUSTOM 5
 #define SCL_CUSTOM 4
 #define BUTTON_PIN 3
+#define VBAT_GND_EN_PIN D7
 Adafruit_TMP117 tmp117;
+
+// Habilita/deshabilita el camino a GND (open-drain "fake")
+inline void vbatGndEnable(bool on) {
+  if (on) {
+    pinMode(VBAT_GND_EN_PIN, OUTPUT);
+    digitalWrite(VBAT_GND_EN_PIN, LOW);  // conecta a GND
+  } else {
+    pinMode(VBAT_GND_EN_PIN, INPUT);     // alta-Z, desconecta de GND
+  }
+}
 
 uint8_t beaconData[5] = {
   0xAB,   // ID del paquete
@@ -326,23 +337,30 @@ void beaconFlash(uint8_t pin, int times, int duration) {
 }
 
 void leerBateria() {
-  const float voltajeMax = 3.0;
-  const float refVoltage = 3.6;
-  const float divisorFactor = 2.0;
+  const float voltajeMax = 3.0;   // batería llena (ajusta si usas otro umbral)
+  const float refVoltage = 3.6;   // referencia ADC de la XIAO nRF52840
+  const float divisorFactor = 2.0; // tu divisor 1:2
 
   analogReadResolution(12);
   pinMode(VBAT_PIN, INPUT);
 
+  // Habilita divisor: D7 = GND (solo durante la medición)
+  vbatGndEnable(true);
+  delay(5);                       // tiempo de asentamiento (2–5 ms suele bastar)
+
   uint16_t raw = analogRead(VBAT_PIN);
-  float vSample = (raw / 4095.0) * refVoltage;
+
+  // Apaga divisor: D7 en alta-Z
+  vbatGndEnable(false);
+
+  float vSample = (raw / 4095.0f) * refVoltage;
   float vBat = vSample * divisorFactor;
-  uint8_t batteryPct = min(100, (uint8_t)(vBat / voltajeMax * 100.0));
+
+  // % batería simple lineal (ajusta curva si quieres algo menos lineal)
+  uint8_t batteryPct = min(100, (uint8_t)(vBat / voltajeMax * 100.0f));
   beaconData[4] = batteryPct;
 
-  LOG_PRINT("ADC raw: ");
-  LOG_PRINTLN(raw);
-  LOG_PRINT("Voltaje: ");
-  LOG_PRINTLN(vBat);
-  LOG_PRINT("Bateria %: ");
-  LOG_PRINTLN(batteryPct);
+  LOG_PRINT("ADC raw: ");   LOG_PRINTLN(raw);
+  LOG_PRINT("Voltaje: ");   LOG_PRINTLN(vBat);
+  LOG_PRINT("Bateria %: "); LOG_PRINTLN(batteryPct);
 }
