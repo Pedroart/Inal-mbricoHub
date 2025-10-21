@@ -46,10 +46,6 @@ El sistema puede ejecutarse en 2 modalidades:
 El proyecto **HMI SensorDesk** se organiza en tres grandes componentes: **Firmware**, **Software** y **Agentes**, cada uno con un propósito definido dentro del ecosistema completo de monitoreo y simulación.
 
 ```
-├─ Firmware/        # Código y documentación de los sensores físicos
-│ ├─ BLE-TEMP/      # Firmware para sensores BLE de temperatura (nRF52 / ESP32)
-│ └─ docs/          # Esquemáticos, diagramas y documentación técnica
-│
 ├─ Software/        # Aplicación principal HMI (Electron + React + Vite)
 │ ├─ package/       # Paquete principal con las tres capas de ejecución
 │ │ ├─ main/        # Proceso principal (TS) — inicializa DB, agentes y ventanas
@@ -67,6 +63,5 @@ El proyecto **HMI SensorDesk** se organiza en tres grandes componentes: **Firmwa
 
 ### Descripción de carpetas
 
-- **Firmware/** contiene el código embebido y la documentación de los sensores que comunican con el HMI. Aquí se almacenan los proyectos de **nRF52**, **ESP32** o cualquier otro hardware que se integre.  
 - **Software/** agrupa toda la aplicación de escritorio, incluyendo la lógica principal, la interfaz de usuario, la base de datos y el empaquetado final.  
 - **Agentes/** incluye los módulos externos que complementan el **modo Operador** (lectura real) y el **modo Simulador** (datos emulados). Estos agentes pueden ejecutarse como servicios independientes en nodos ARM o PC locales.  
